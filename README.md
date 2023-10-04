@@ -38,4 +38,4 @@
 - 美化网站样式；
 - 添加更多微信读书API，比如导出笔记、书评等；
 - 支持下载更多电子书格式，比如 epub/azw3 等，[可以关注这个issue。](https://github.com/champkeh/weread-download/issues/2)
-- 加入搜索功能，方便下载非书架上的书（因为[技术限制](#3)，并不保证能搜索到所有的书）。
+- 加入搜索功能，方便下载非书架上的书（因为[技术限制](https://github.com/champkeh/weread-download/issues/3)，并不保证能搜索到所有的书）。
