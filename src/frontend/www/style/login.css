@@ -1,0 +1,53 @@
+body {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+h1 {
+    margin: 2rem;
+}
+
+#qrcode {
+    display: block;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    transition: opacity .2s;
+}
+
+.expired {
+    position: relative;
+
+    #qrcode {
+        opacity: .1;
+    }
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        content: "已过期";
+        color: red;
+        font-size: 30px;
+    }
+}
+
+button {
+    --primary-color: rgba(2, 107, 235, 1);
+    margin-top: 30px;
+    color: rgba(255, 255, 255, 1);
+    padding: 0 1.125rem;
+    background-color: var(--primary-color);
+    border-radius: 0.375rem;
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+    height: 2.25rem;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        color: var(--primary-color);
+        background-color: rgba(255, 255, 255, 1);
+    }
+}

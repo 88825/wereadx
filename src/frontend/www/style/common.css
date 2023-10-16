@@ -1,0 +1,122 @@
+body {
+    font-size: 12px;
+    line-height: 1.5;
+    background: #eee;
+    font-family: PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+    outline: none;
+    -webkit-text-size-adjust: none;
+}
+
+.navBar {
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background-color: rgba(255, 255, 255, 0.9);
+    --un-backdrop-blur: blur(8px);
+    -webkit-backdrop-filter: var(--un-backdrop-blur);
+    backdrop-filter: var(--un-backdrop-blur);
+    box-shadow: rgba(0, 0, 0, 0) 0 0 0 0,
+                rgba(0, 0, 0, 0) 0 0 0 0,
+                rgba(0, 0, 0, 0.1) 0 4px 6px -1px,
+                rgba(0, 0, 0, 0.1) 0 2px 4px -2px;
+}
+
+.navBar_inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 60px;
+}
+
+@media (max-width: 460px) {
+    .navBar_inner {
+        padding: 10px 0 6px;
+    }
+}
+
+.navBar_title {
+    font-size: 20px;
+    font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+    color: #212832;
+
+    .total {
+        font-size: 14px;
+    }
+}
+
+.navBar_menu {
+    display: flex;
+    align-items: center;
+}
+
+.navBar_link {
+    margin-left: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    opacity: .5;
+    color: #0d141e;
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, .03);
+    user-select: none;
+
+    &:hover {
+        opacity: 1;
+    }
+    &.current {
+        opacity: 1;
+    }
+}
+
+.navBar_separator {
+    display: block;
+    width: 1px;
+    height: 16px;
+    margin-left: 18px;
+    opacity: .3;
+    background-color: #0d141e;
+}
+
+.feedback {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 1000;
+    font-size: 1.3rem;
+    color: #007fff;
+    transition: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    width: 3.33rem;
+    height: 3.33rem;
+    line-height: 1;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(50,50,50,.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+@media (max-width: 460px) {
+    .feedback {
+        display: none;
+    }
+}
+
+
+.page_container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hide_scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    &::-webkit-scrollbar {
+        display: none; /* Chrome Safari */
+    }
+}

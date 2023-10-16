@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>图书详情</title>
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/common.css">
+    <link rel="stylesheet" href="style/detail.css">
+    <script src="lib/jszip.min.js" async></script>
+    <script src="lib/FileSaver.min.js" async></script>
+</head>
+<body class="wr_whiteTheme">
+
+<div class="navBar">
+    <div class="navBar_inner">
+        <h2 class="navBar_title">书籍详情</h2>
+        <div class="navBar_menu">
+            <button class="btn_primary download"><span>开始下载</span></button>
+
+            <a href="/" class="navBar_link">我的书架</a>
+            <span class="navBar_separator"></span>
+            <a href="/read.html" class="navBar_link">自动阅读</a>
+            <span class="navBar_separator"></span>
+            <a href="/search.html" class="navBar_link">搜索</a>
+<!--            <span class="navBar_separator"></span>-->
+<!--            <a class="navBar_link">我的</a>-->
+            <span class="navBar_separator"></span>
+            <a href="https://github.com/champkeh/wereadx" target="_blank" class="navBar_link">GitHub</a>
+        </div>
+    </div>
+</div>
+
+<div class="page_container">
+    <div class="readerBookInfo">
+        <div class="readerBookInfo_head">
+            <div class="wr_bookCover bookInfo_cover">
+                <img src="" alt="书籍封面" class="wr_bookCover_img">
+                <div class="wr_bookCover_border"></div>
+                <span class="wr_bookCover_decor wr_bookCover_gradientDecor wr_bookCover_borderDecor"></span>
+            </div>
+            <div class="bookInfo_right">
+                <div class="bookInfo_right_header">
+                    <div class="bookInfo_right_header_title">
+                        <h2 class="bookInfo_right_header_title_text">---</h2>
+                        <div class="bookInfo_author_container">
+                            <a class="bookInfo_author">作者：---</a>
+                        </div>
+                    </div>
+                    <button class="btn_primary add_task"><span>加入自动阅读</span></button>
+                </div>
+                <div class="bookInfo_intro">简介：---</div>
+            </div>
+        </div>
+
+        <div class="introDialogWrap">
+            <div class="introDialog_content">
+                <h3 class="introDialog_content_title">详细信息</h3>
+                <div class="introDialog_content_pub_line">
+                    <span class="introDialog_content_pub_title">出版社</span>
+                    <span class="publisher"></span></div>
+                <div class="introDialog_content_pub_line">
+                    <span class="introDialog_content_pub_title">出版时间</span>
+                    <span class="publishTime"></span></div>
+                <!--            <div class="introDialog_content_pub_line">-->
+                <!--                <span class="introDialog_content_pub_title">字数</span>-->
+                <!--                <span></span>-->
+                <!--            </div>-->
+                <div class="introDialog_content_pub_line">
+                    <span class="introDialog_content_pub_title">原始格式</span>
+                    <p>
+                        <span class="format"></span>
+                        <a class="origin-download">下载</a>
+                    </p>
+                </div>
+                <div class="introDialog_content_pub_line">
+                    <span class="introDialog_content_pub_title">其他可用格式</span>
+                    <span class="otherFormat"></span>
+                </div>
+                <div class="introDialog_content_pub_line">
+                    <span class="introDialog_content_pub_title">ISBN</span>
+                    <span class="isbn"></span>
+                </div>
+            </div>
+            <div class="introDialog_content">
+                <h3 class="introDialog_content_title">章节信息</h3>
+                <ol class="chapters"></ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a title="建议反馈" class="feedback" href="https://github.com/champkeh/weread-download/issues/new" target="_blank">
+    <svg data-v-98989b36="" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+         class="">
+        <path data-v-98989b36=""
+              d="M3.26628 5.18082C3.26628 4.35104 3.94716 3.67545 4.7907 3.67545H15.2093C16.0528 3.67545 16.7337 4.35104 16.7337 5.18082V12.538C16.7337 13.3678 16.0528 14.0434 15.2093 14.0434H11.6358C11.4624 14.0434 11.2948 14.1064 11.165 14.221L8.28954 16.7575V14.7452C8.28954 14.356 7.97087 14.0434 7.5814 14.0434H4.7907C3.94716 14.0434 3.26628 13.3678 3.26628 12.538V5.18082ZM4.7907 2.27187C3.16822 2.27187 1.85 3.57264 1.85 5.18082V12.538C1.85 14.1462 3.16822 15.447 4.7907 15.447H6.87326V17.5004C6.87326 18.4274 7.97825 18.9111 8.67204 18.2991L11.9053 15.447H15.2093C16.8318 15.447 18.15 14.1462 18.15 12.538V5.18082C18.15 3.57264 16.8318 2.27187 15.2093 2.27187H4.7907Z"
+              fill="#1E80FF" stroke="#1E80FF" stroke-width="0.3" stroke-linejoin="round"></path>
+        <path data-v-98989b36=""
+              d="M7.00132 9.49204C6.79163 9.17668 6.366 9.09101 6.05063 9.3007C5.73527 9.51038 5.6496 9.93602 5.85929 10.2514C6.74878 11.5891 8.27183 12.4732 10.0017 12.4732C11.7316 12.4732 13.2546 11.5891 14.1441 10.2514C14.3538 9.93602 14.2681 9.51038 13.9528 9.3007C13.6374 9.09101 13.2118 9.17668 13.0021 9.49204C12.356 10.4637 11.2532 11.1018 10.0017 11.1018C8.75017 11.1018 7.64741 10.4637 7.00132 9.49204Z"
+              fill="#1E80FF" stroke="#1E80FF" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+</a>
+
+<script>
+    function gotoLogin() {
+        localStorage.removeItem('token')
+        window.location.href = '/login.html'
+    }
+
+    let bookDetail = null
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            gotoLogin()
+            return
+        }
+
+        // 获取详情
+        const bookId = new URLSearchParams(location.search).get('bookId')
+        fetch('/api/book/detail', {
+            headers: {
+                token: token,
+                bookId: bookId,
+            }
+        }).then(resp => resp.json()).then(resp => {
+            const {code, data, msg} = resp
+            if (code === 2) {
+                gotoLogin()
+                return
+            } else if (code !== 0) {
+                alert(msg)
+                return
+            }
+            bookDetail = data
+            renderBookDetail(data)
+
+            // 获取章节
+            fetch('/api/book/chapters', {
+                headers: {
+                    token: token,
+                    bookId: bookId,
+                }
+            }).then(resp => resp.json()).then(resp => {
+                const {code, data, msg} = resp
+                if (code === 2) {
+                    gotoLogin()
+                    return
+                } else if (code !== 0) {
+                    alert(msg)
+                    return
+                }
+                const [book] = data.data
+                renderChapters(book.updated)
+            })
+        })
+    })
+
+    function formatDate(date) {
+        const year = date.slice(0, 4)
+        const month = date.slice(5, 7).replace(/^0+/, '')
+        return `${year}年${month}月`
+    }
+
+    function renderBookDetail(book) {
+        let {title, author, cover, intro, format, isbn, publishTime, publisher, otherType} = book
+        // 替换成高清图片
+        const re = /(.+)\/s_([^/]+)$/
+        if (re.test(cover)) {
+            cover = cover.replace(/(.+)\/s_([^/]+)$/, '$1/t6_$2')
+        }
+        document.querySelector('.wr_bookCover_img').src = cover
+        document.querySelector('.bookInfo_right_header_title_text').textContent = title
+        document.querySelector('.bookInfo_author').textContent = '作者：' + (author || '无')
+        document.querySelector('.format').textContent = format || '无'
+        if (format === 'pdf') {
+            document.querySelector('.origin-download').style.display = 'inline'
+        }
+        if (Array.isArray(otherType)) {
+            document.querySelector('.otherFormat').textContent = otherType.map(_ => _.type).join('/')
+        } else {
+            document.querySelector('.otherFormat').textContent = '无'
+        }
+        document.querySelector('.isbn').textContent = isbn || '无'
+        document.querySelector('.publishTime').textContent = publishTime ? formatDate(publishTime) : '无'
+        document.querySelector('.publisher').textContent = publisher || '无'
+        document.querySelector('.bookInfo_intro').textContent = '简介：' + (intro || '暂无')
+    }
+
+    function renderChapters(chapters) {
+        const fragment = document.createDocumentFragment()
+        for (const chapter of chapters) {
+            const {title, level, chapterUid} = chapter
+            const li = document.createElement('li')
+            li.textContent = title
+            li.className = 'chapter'
+            li.dataset.level = level
+            li.dataset.chapterUid = chapterUid
+            fragment.append(li)
+        }
+
+        document.querySelector('.chapters').append(fragment)
+    }
+
+    let evtSource
+
+    async function zip(bookId, html) {
+        const zip = new JSZip()
+        zip.file(`${bookId}.html`, html)
+        const blob = await zip.generateAsync({type: "blob"})
+        saveAs(blob, `${bookId}.zip`)
+    }
+
+    /**
+     * 合并章节及添加自定义内容，包括样式与脚本
+     */
+    function mergeBookContent(bookId, htmls, styles, scripts) {
+        const style = styles.map(style => `<style>${style}</style>`).join('\n')
+        const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
+        return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>${bookId}</title>
+    ${style}
+</head>
+<body>
+${htmls.join("\n")}
+${script}
+</body>
+</html>
+`
+}
+
+    // 获取下载凭证
+    function getDownloadSecret(bookId, chapterUids, token) {
+        document.querySelector('.download').disabled = true
+        return fetch('/api/book/download/secret', {
+            headers: {
+                token: token,
+                bookId: bookId,
+                chapterUids: chapterUids.join('|'),
+            }
+        }).then(resp => resp.json())
+    }
+
+    // 下载
+    function download(secret, token, bookId) {
+        if (evtSource) {
+            evtSource.close()
+        }
+
+        const query = new URLSearchParams({secret, token}).toString()
+        document.querySelector('.download').disabled = true
+        evtSource = new EventSource(new URL('/api/book/download?' + query, location.origin).toString())
+        evtSource.addEventListener('close', () => {
+            evtSource.close()
+        })
+        evtSource.addEventListener('error', (event) => {
+            console.error(event)
+            if (event.data) {
+                alert(event.data)
+            }
+            document.querySelector('.download').disabled = false
+            document.querySelector('.download').textContent = '开始下载'
+            evtSource.close()
+        })
+        const htmls = []
+        evtSource.addEventListener('progress', (event) => {
+            const {total, current, content} = JSON.parse(event.data)
+            htmls.push(content)
+            document.querySelector('.download').textContent = `进度: ${current}/${total}`
+        }, false)
+        evtSource.addEventListener('complete', (event) => {
+            const {styles, scripts} = JSON.parse(event.data)
+            const html = mergeBookContent(bookId, htmls, styles, scripts)
+            zip(bookId, html)
+            document.querySelector('.download').disabled = false
+            document.querySelector('.download').textContent = '开始下载'
+        }, false)
+    }
+
+    // 下载 pdf 版本
+    function downloadPDF(token, bookId) {
+        fetch('/api/book/getUrl', {
+            headers: {
+                token: token,
+                bookId: bookId,
+            }
+        }).then(resp => resp.json()).then(resp => {
+            const {code, data, msg} = resp
+            if (code === 0) {
+                window.open(data.url)
+            } else if (code === 2) {
+                gotoLogin()
+            } else {
+                alert(msg)
+            }
+        })
+    }
+
+    // 开始下载按钮
+    document.querySelector('.download').addEventListener('click', async () => {
+        const token = localStorage.getItem('token')
+        const bookId = new URLSearchParams(location.search).get('bookId')
+        const chapterUids = Array.from(document.querySelectorAll('.chapter')).map(node => node.dataset.chapterUid)
+
+        if (bookDetail && bookDetail.format === 'pdf' && !bookDetail.otherType) {
+            // 只有 pdf 版本可用，下载 pdf 文件
+            downloadPDF(token, bookId)
+            return
+        } else if (bookDetail && bookDetail.format === 'pdf') {
+            const ok = confirm('注意：这本书的原始格式为 pdf，本次下载的为 html 格式，如果想下载原始格式，可通过下方的详细信息中的链接进行下载。是否继续下载？')
+            if (!ok) {
+                return
+            }
+        }
+        const {code, data, msg} = await getDownloadSecret(bookId, chapterUids, token)
+        if (code === 0) {
+            download(data, token, bookId)
+        } else if (code === 2) {
+            gotoLogin()
+        } else {
+            alert(msg)
+            document.querySelector('.download').disabled = false
+        }
+    })
+
+    document.querySelector('.origin-download').addEventListener('click', (event) => {
+        event.preventDefault()
+
+        const token = localStorage.getItem('token')
+        const bookId = new URLSearchParams(location.search).get('bookId')
+        downloadPDF(token, bookId)
+    })
+
+    // 添加阅读按钮
+    document.querySelector('.add_task').addEventListener('click', async () => {
+        const token = localStorage.getItem('token')
+        const bookId = new URLSearchParams(location.search).get('bookId')
+
+        document.querySelector('.add_task').disabled = true
+        fetch('/api/task/read/start', {
+            headers: {
+                token: token,
+                bookId: bookId,
+            }
+        }).then(resp => resp.json()).then(resp => {
+            const {code, data, msg} = resp
+            if (code === 2) {
+                gotoLogin()
+            } else if (code !== 0) {
+                alert(msg)
+            } else if (data.succ !== 1 || !data.synckey) {
+                alert('接口调用失败，请提交issue')
+            } else {
+                alert('添加成功')
+            }
+        }).finally(() => {
+            document.querySelector('.add_task').disabled = false
+        })
+    })
+</script>
+</body>
+</html>

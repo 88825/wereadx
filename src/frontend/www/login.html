@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>登录微信读书</title>
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/login.css">
+</head>
+<body>
+<h1>微信扫码登录</h1>
+
+<div class="qrcode-wrapper">
+    <div id="qrcode"></div>
+</div>
+<button onclick="login()">刷新二维码</button>
+
+<script src="lib/qrcode.min.js"></script>
+<script>
+    let evtSource
+
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "",
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    })
+
+    function login() {
+        if (evtSource) {
+            evtSource.close()
+        }
+
+        evtSource = new EventSource(new URL('/api/user/login', location.origin).toString())
+
+        evtSource.addEventListener('close', () => {
+            evtSource.close()
+        })
+        evtSource.addEventListener('error', (event) => {
+            console.error(event)
+            evtSource.close()
+        })
+
+        evtSource.addEventListener('qrcode', (event) => {
+            const url = decodeURIComponent(event.data)
+            qrcode.makeCode(url)
+            document.querySelector('.qrcode-wrapper').classList.remove('expired')
+        }, false)
+        evtSource.addEventListener('token', (event) => {
+            const token = JSON.parse(event.data)
+            localStorage.setItem('token', token)
+            window.location.href = '/index.html'
+        })
+        evtSource.addEventListener('expired', () => {
+            document.querySelector('.qrcode-wrapper').classList.add('expired')
+        })
+    }
+
+    window.addEventListener('DOMContentLoaded', login)
+</script>
+</body>
+</html>

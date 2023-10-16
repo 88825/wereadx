@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>我的笔记</title>
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/review.css">
+</head>
+<body class="wr_whiteTheme">
+<div id="reviews"></div>
+
+<div class="readerNotePanel">
+    <div class="readerNoteList">
+        <div class="sectionListItem">
+            <div class="sectionListItem_title">第1章 权衡的艺术</div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">
+                        纯运行时，就是用户写的代码可以直接运行，中间不需要任何操作。而运行时+编译时，就是用户代码在运行之前还需要进一步处理，不能直接运行，运行之前的这个处理，就是编译过程
+                    </div>
+                    <div class="abstract">实际上，我们刚刚编写的框架就是一个纯运行时的框架。</div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionListItem">
+            <div class="sectionListItem_title">第4章 响应系统的作用与实现</div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">
+                        这里创建包装函数的目的是因为我们想要在副作用函数上保存一些数据，比如这里的deps数组，但是我们不能直接保存到传进来的fn上面，因为这个fn是用户的函数，我们不能污染这个函数，所以这里创建了一个wrapper函数，我们把deps数据保存到这个wrapper函数上面，这样就不会无意间覆盖用户代码上的数据。
+                    </div>
+                    <div class="abstract">在 effect 内部我们定义了新的 effectFn 函数</div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionListItem">
+            <div class="sectionListItem_divider leftIndent"></div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">
+                        这里应该用Set会更好吧，要不然在同一个副作用函数中多次访问同一个响应式对象下的同一个属性，会导致这个数组存储多份相同的dep依赖集合。
+                    </div>
+                    <div class="abstract">该属性是一个数组</div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionListItem">
+            <div class="sectionListItem_divider leftIndent"></div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">https://tc39.es/ecma262/#sec-set.prototype.foreach
+                        在备注里面有说明，正常情况下，集合里面的元素只会被访问(遍历)一次，但如果该元素被访问之后，先从集合里面删除，然后在整个集合完成遍历之前又被添加到集合里面，则这个元素还会被再次访问到。
+
+                        注意，这个操作并没有被局限在一个回调函数之内，也就是说，在整个forEach遍历过程中，只要满足先删除，再添加，则这个元素都会被访问多次。
+                    </div>
+                    <div class="abstract">明确的说明</div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionListItem">
+            <div class="sectionListItem_title">第5章 非原始值的响应式方案</div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">这里是错误的，receiver只有在访问的是getter或者setter时才有效，所以这里打印的还是1</div>
+                    <div class="abstract">这时读取到的值是 receiver 对象的 foo 属性值</div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionListItem">
+            <div class="sectionListItem_divider leftIndent"></div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">这里如果是用Object.keys获取属性列表，可以被拦截到嘛</div>
+                    <div class="abstract">下面列出了对一个普通对象的所有可能的读取操作。
+                        ● 访问属性：obj.foo。
+                        ● 判断对象或原型上是否存在给定的 key：key in obj。
+                        ● 使用 for...in 循环遍历对象：for (const key in obj){}。
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionListItem">
+            <div class="sectionListItem_title">第13章 异步组件与函数式组件</div>
+            <div class="sectionListItem_content noteItem_content noteItem_content_review clickable"><span
+                    class="icon"></span>
+                <div><!---->
+                    <div class="text">这种方式有个缺点，就是一旦观察了错误对象就无法再重试了。
+                        比如，对于网络错误我想要重试，但是对于其他错误，重试没有意义，所以我需要观察这个错误的类型
+                    </div>
+                    <div class="abstract">下面的代码展示了用户是如何进行重试加载的</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function gotoLogin() {
+        localStorage.removeItem('token')
+        window.location.href = '/login.html'
+    }
+
+    function fetchReviewList() {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            gotoLogin()
+            return
+        }
+
+        fetch('/api/review/list', {
+            headers: {
+                token: token,
+                bookId: '3300028078',
+            }
+        }).then(resp => resp.json()).then(resp => {
+            const {code, data, msg} = resp
+            if (code === 2) {
+                gotoLogin()
+                return
+            } else if (code !== 0) {
+                alert(msg)
+                return
+            }
+
+            const {reviews} = data
+            // document.querySelector('.total').textContent = `(共${bookCount}本书)`
+            renderReviews(reviews)
+        })
+    }
+
+    function renderReviews(reviews) {
+        const fragment = document.createDocumentFragment()
+        for (const review of reviews) {
+            const div = document.createElement('div')
+        }
+
+        document.querySelector('#reviews').append(fragment)
+    }
+
+    window.addEventListener('DOMContentLoaded', fetchReviewList)
+</script>
+</body>
+</html>

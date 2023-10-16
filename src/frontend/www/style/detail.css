@@ -1,0 +1,275 @@
+.readerBookInfo {
+    border-radius: 0;
+    border: solid rgba(0, 0, 0, .05);
+    border-width: 0 0 1px;
+    background-color: #FFF;
+    padding: 0 36px;
+}
+
+.readerBookInfo_head {
+    display: flex;
+    padding-top: 40px;
+    background: white;
+}
+
+@media (max-width: 460px) {
+    .readerBookInfo_head {
+        padding-top: 20px
+    }
+}
+
+.readerBookInfo_head .bookInfo_cover {
+    flex-shrink: 0;
+    width: 160px;
+    height: 232px
+}
+
+@media (max-width: 1365px) {
+    .readerBookInfo_head .bookInfo_cover {
+        width: 134px;
+        height: 195px
+    }
+}
+
+@media (max-width: 1023px) {
+    .readerBookInfo_head .bookInfo_cover {
+        width: 108px;
+        height: 157px
+    }
+}
+
+@media (max-width: 460px) {
+    .readerBookInfo_head .bookInfo_cover {
+        width: 108px;
+        height: 157px
+    }
+}
+
+.bookInfo_right {
+    flex: 1;
+    margin-left: 40px
+}
+
+@media (max-width: 1023px) {
+    .bookInfo_right {
+        margin-left: 20px
+    }
+}
+
+@media (max-width: 460px) {
+    .bookInfo_right {
+        margin-left: 20px;
+        padding-top: 0
+    }
+}
+
+.bookInfo_right_header {
+    display: flex;
+    justify-content: space-between
+}
+
+.bookInfo_right_header_title {
+    margin-right: 2rem;
+}
+
+.bookInfo_right_header_title_text {
+    margin-top: 4px;
+    color: #212832;
+    font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+    font-size: 24px;
+    line-height: 34px;
+    font-weight: 500
+}
+
+@media (max-width: 1023px) {
+    .bookInfo_right_header_title_text {
+        font-size: 20px;
+        line-height: 31px
+    }
+}
+
+@media (max-width: 460px) {
+    .bookInfo_right_header_title_text {
+        margin-top: 0;
+        font-size: 18px;
+        line-height: 29px
+    }
+}
+
+.bookInfo_right_header_title_action_wrapper {
+    display: flex;
+    flex-direction: row
+}
+
+@media (max-width: 1365px) {
+    .bookInfo_right_header_title_action_wrapper {
+        display: block
+    }
+}
+
+.btn_primary {
+    flex-shrink: 0;
+    display: flex;
+    padding: 0 25px;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background-image: linear-gradient(90deg, #0087fc, #28b7ff);
+    color: #fff;
+
+    &[disabled] {
+        background-color: rgba(13, 20, 30, .04);
+        color: #717882;
+        cursor: not-allowed;
+        background-image: none;
+    }
+}
+.download {
+    margin-right: 30px;
+}
+
+.origin-download {
+    color: #0087fc;
+    cursor: pointer;
+    display: none;
+}
+
+.bookInfo_author_container {
+    margin-top: 2px
+}
+
+.bookInfo_author {
+    color: #5d646e;
+    font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+    font-size: 18px;
+    line-height: 26px
+}
+
+.bookInfo_intro {
+    position: relative;
+    margin-top: 21px;
+    text-align: justify;
+    color: #5d646e;
+    line-height: 25px;
+    overflow: hidden;
+    height: 100px;
+    display: -webkit-box;
+    display: -moz-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 4;
+    -moz-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    -webkit-text-size-adjust: none;
+    box-orient: vertical;
+    font-size: 14px;
+}
+
+.introDialogWrap {
+    max-height: 80%;
+    overflow: auto;
+    padding-bottom: 50px;
+}
+
+.introDialog_content {
+    min-width: 300px;
+    padding: 20px;
+    text-align: left;
+    color: #b2b4b8;
+    font-size: 14px
+}
+
+.wr_whiteTheme .introDialog_content {
+    color: #5d646e
+}
+
+.introDialog_content_title {
+    font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+    font-size: 18px;
+    color: #eef0f4;
+    margin-bottom: 16px
+}
+
+.wr_whiteTheme .introDialog_content_title {
+    color: #212832
+}
+
+.introDialog_content_title:not(:first-child) {
+    margin-top: 32px
+}
+
+.introDialog_content_intro_para {
+    line-height: 24px;
+    text-align: justify
+}
+
+.introDialog_content_intro_para:not(:first-child) {
+    margin-top: 12px
+}
+
+.introDialog_content_pub_line {
+    display: flex;
+    justify-content: space-between
+}
+
+.introDialog_content_pub_line:not(:last-child) {
+    margin-bottom: 12px
+}
+
+.introDialog_content_pub_line.long {
+    max-width: 100%
+}
+
+.introDialog_content_pub_title {
+    color: #8a8c90
+}
+
+.wr_whiteTheme .introDialog_content_pub_title {
+    color: #858c96
+}
+
+button {
+    background: none;
+    border: 0;
+    padding: 0;
+    text-decoration: none;
+    cursor: pointer
+}
+
+.chapters {
+    list-style-type: none;
+    padding-left: 0;
+    .chapter {
+        &[data-level="1"] {
+            padding-left: 0;
+        }
+        &[data-level="2"] {
+            padding-left: 2rem;
+        }
+        &[data-level="3"] {
+            padding-left: 4rem;
+        }
+        &[data-level="4"] {
+            padding-left: 6rem;
+        }
+        &[data-level="5"] {
+            padding-left: 8rem;
+        }
+        &[data-level="6"] {
+            padding-left: 10rem;
+        }
+        &[data-level="7"] {
+            padding-left: 10rem;
+        }
+        &[data-level="8"] {
+            padding-left: 10rem;
+        }
+        &[data-level="9"] {
+            padding-left: 10rem;
+        }
+    }
+}

@@ -1,0 +1,273 @@
+.wr_whiteTheme .bookshelf_preview_item {
+    /*box-shadow: 0 0 30px rgba(0, 0, 0, .04)*/
+    box-shadow: #fff 0 0 0 0, rgb(229, 231, 235) 0 0 0 1px, rgba(0, 0, 0, 0) 0 0 0 0;
+}
+
+.bookshelf_preview_item {
+    position: relative;
+    height: 169px;
+    overflow: hidden;
+    border-radius: 12px;
+    width: 23.5%;
+    transition: all .2s ease-in-out;
+    background-color: #1c1c1d
+}
+
+.wr_whiteTheme .bookshelf_preview_item {
+    background-color: #fff;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1200px) {
+    .bookshelf_preview_item {
+        height: 138px
+    }
+}
+
+@media (max-width: 960px) {
+    .bookshelf_preview_item {
+        width: 48%;
+    }
+
+    .bookshelf_preview_item:first-child, .bookshelf_preview_item:nth-child(2) {
+        margin-top: 0
+    }
+}
+
+@media (max-width: 720px) {
+    .bookshelf_preview_item {
+        width: 100%;
+        margin-top: 20px
+    }
+
+    .bookshelf_preview_item:nth-child(2) {
+        margin-top: 20px
+    }
+}
+
+@media (max-width: 460px) {
+    .bookshelf_preview_item {
+        height: auto;
+        margin-top: 0 !important;
+        padding: 10px 0;
+        border-radius: 0;
+    }
+
+    .bookshelf_preview_item, .wr_whiteTheme .bookshelf_preview_item {
+        background-color: transparent
+    }
+
+    .bookshelf_preview_item:nth-child(-n+3) {
+        display: block
+    }
+
+    .bookshelf_preview_item:nth-child(3) {
+        border-radius: 0;
+        border: 0 solid hsla(0, 0%, 100%, .05)
+    }
+}
+
+@media (max-width: 460px)and (-webkit-min-device-pixel-ratio: 2),(max-width: 460px)and (min-device-pixel-ratio: 2),(max-width: 460px)and (min-resolution: 2dppx),(max-width: 460px)and (min-resolution: 192dpi) {
+    .bookshelf_preview_item:nth-child(3) {
+        position: relative;
+        border: 0
+    }
+
+    .bookshelf_preview_item:nth-child(3):after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 200%;
+        border-radius: 0;
+        border: 0 solid hsla(0, 0%, 100%, .05);
+        transform: scale(.5);
+        transform-origin: 0 0;
+        pointer-events: none
+    }
+}
+
+@media (max-width: 460px)and (-webkit-min-device-pixel-ratio: 3),(max-width: 460px)and (min-device-pixel-ratio: 3),(max-width: 460px)and (min-resolution: 3dppx),(max-width: 460px)and (min-resolution: 288dpi) {
+    .bookshelf_preview_item:nth-child(3):after {
+        width: 300%;
+        height: 300%;
+        border-radius: 0;
+        transform: scale(.3333333333)
+    }
+}
+
+.bookshelf_preview_item:last-child {
+    margin-right: 0
+}
+
+.bookshelf_preview_item:hover {
+    transform: scale(1.1)
+}
+
+.bookshelf_preview_item:hover .bookshelf_preview_title {
+    color: #eef0f4
+}
+
+.wr_whiteTheme .bookshelf_preview_item:hover .bookshelf_preview_title {
+    color: #212832
+}
+
+
+.bookshelf_preview_item_container {
+    display: table;
+    padding: 24px;
+    box-sizing: border-box
+}
+
+.bookshelf_preview_item_link {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important
+}
+
+.bookshelf_preview_item .bookshelf_preview_cover {
+    display: table-cell;
+    text-align: left;
+    vertical-align: middle;
+    width: 84px;
+    height: 121px
+}
+
+.bookshelf_preview_content {
+    padding: 0 0 0 24px;
+    display: table-cell;
+    vertical-align: middle
+}
+
+.bookshelf_preview_title {
+    font-size: 16px;
+    font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+    color: #eef0f4;
+    line-height: 24px;
+    overflow: hidden;
+    height: 48px;
+    display: -webkit-box;
+    display: -moz-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -moz-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    -webkit-text-size-adjust: none;
+    box-orient: vertical;
+    height: auto;
+    max-height: 48px;
+    word-break: break-all
+}
+
+.wr_whiteTheme .bookshelf_preview_title {
+    color: #0d141e
+}
+
+.bookshelf_preview_author {
+    position: relative;
+    display: inline-block !important;
+    margin-top: 8px;
+    font-size: 14px;
+    vertical-align: bottom;
+    color: #8a8c90;
+    line-height: 22px;
+    overflow: hidden;
+    height: 22px;
+    display: -webkit-box;
+    display: -moz-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -moz-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    -webkit-text-size-adjust: none;
+    box-orient: vertical;
+    height: auto;
+    max-height: 22px
+}
+
+.wr_whiteTheme .bookshelf_preview_author {
+    color: #858c96
+}
+
+@media (max-width: 1200px) {
+    .bookshelf_preview_item .bookshelf_preview_cover {
+        width: 68px;
+        height: 98px
+    }
+
+    .bookshelf_preview_content {
+        padding-left: 18px
+    }
+
+    .bookshelf_preview_title {
+        font-size: 15px;
+        word-break: break-all
+    }
+
+    .bookshelf_preview_author {
+        font-size: 13px;
+        margin-top: 6px
+    }
+
+    .bookshelf_preview_item_container {
+        padding: 20px
+    }
+}
+
+@media (max-width: 460px) {
+    .bookshelf_preview_item .bookshelf_preview_cover {
+        width: 56px;
+        height: 81px
+    }
+
+    .bookshelf_preview_title {
+        font-family: PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+        font-weight: 700
+    }
+
+    .bookshelf_preview_author {
+        font-size: 12px;
+        margin-top: 2px
+    }
+
+    .bookshelf_preview_item_container {
+        padding: 0
+    }
+}
+
+
+.bookshelf_preview_container {
+    margin-bottom: 40px
+}
+
+@media (max-width: 1200px) {
+    .bookshelf_preview_container {
+        padding: 0 40px
+    }
+}
+
+@media (max-width: 960px) {
+    .bookshelf_preview_container {
+        margin-bottom: 32px;
+        padding: 0 30px
+    }
+}
+
+@media (max-width: 460px) {
+    .bookshelf_preview_container {
+        margin-bottom: 28px;
+        padding: 0 20px
+    }
+}
+
+.bookshelf_preview_body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between
+}
