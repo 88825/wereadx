@@ -6,17 +6,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "deno run -A --unstable src/server.ts",
-    "style": "deno run -A test/style.ts",
-    "html": "deno run -A test/html.ts",
-    "clean": "deno run -A --unstable scripts/clean.ts",
-    "read": "deno run -A --unstable scripts/read.ts",
     "check:type": "deno check --unstable src/**/*.ts",
     "lint": "deno lint src/**/*.ts",
     "fmt": "deno fmt src/**/*.ts",
-    "logs": "deno run -A scripts/logs.ts",
     "compile:pre-push": "deno compile -A --output .husky/pre-push scripts/pre-push.ts",
-    "prepare": "husky install",
-    "webnovel": "deno run -A --unstable src/apis/webnovel/chapter.ts"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "husky": "^8.0.0"
