@@ -155,35 +155,3 @@ export async function getDownloadSecret(req: Request) {
         }
     })
 }
-
-/**
- * 书籍查询
- * @param req
- */
-export async function bookSearch(req: Request) {
-    const params: ParamCheckEntity[] = [
-        {
-            name: "token",
-            from: "header",
-            statusCode: ResponseCode.CredentialError,
-            statusText: "token无效",
-        },
-        {
-            name: "hash",
-            from: "header",
-            statusCode: ResponseCode.ParamError,
-            statusText: "hash无效",
-        },
-    ];
-
-    return await apiCallWithRetry(req, params, async ({hash}: Record<string, string>) => {
-        console.log(hash)
-        const bookId = await search(hash)
-        console.log('search bookId: ', bookId)
-        if (bookId) {
-            return jsonResponse({code: ResponseCode.Success, data: bookId, msg: 'success'})
-        } else {
-            return jsonResponse({code: ResponseCode.Error, msg: '未找到，欢迎提供反馈'})
-        }
-    })
-}

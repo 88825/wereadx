@@ -4,7 +4,6 @@ import {
     bookDetail,
     bookDownload,
     bookList,
-    bookSearch,
     getDownloadSecret,
 } from "./frontend/apis/shelf.ts";
 import {reviewList} from "./frontend/apis/review.ts";
@@ -30,7 +29,6 @@ const config: Record<string, APIHandler> = {
     '/api/book/chapters': bookChapters,
     '/api/book/download/secret': getDownloadSecret,
     '/api/book/download': bookDownload,
-    '/api/book/search': bookSearch,
     '/api/book/getUrl': getPdfUrl,
 
     '/api/review/list': reviewList,
