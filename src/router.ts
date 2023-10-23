@@ -3,6 +3,7 @@ import {
     bookChapters,
     bookDetail,
     bookDownload,
+    bookHash,
     bookList,
     getDownloadSecret,
 } from "./frontend/apis/shelf.ts";
@@ -30,6 +31,7 @@ const config: Record<string, APIHandler> = {
     '/api/book/download/secret': getDownloadSecret,
     '/api/book/download': bookDownload,
     '/api/book/getUrl': getPdfUrl,
+    '/api/book/hash': bookHash,
 
     '/api/review/list': reviewList,
 

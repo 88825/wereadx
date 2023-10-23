@@ -43,7 +43,10 @@
                             <a class="bookInfo_author">作者：---</a>
                         </div>
                     </div>
-                    <button class="btn_primary add_task"><span>加入自动阅读</span></button>
+                    <div style="display: flex;gap: 10px">
+                        <button class="btn_primary begin_read"><span>去微信读书阅读</span></button>
+                        <button class="btn_primary add_task"><span>加入自动阅读</span></button>
+                    </div>
                 </div>
                 <div class="bookInfo_intro">简介：---</div>
             </div>
@@ -358,6 +361,31 @@ ${script}
             }
         }).finally(() => {
             document.querySelector('.add_task').disabled = false
+        })
+    })
+
+    // 开始阅读
+    document.querySelector('.begin_read').addEventListener('click', async () => {
+        const token = localStorage.getItem('token')
+        const bookId = new URLSearchParams(location.search).get('bookId')
+
+        document.querySelector('.begin_read').disabled = true
+        fetch('/api/book/hash', {
+            headers: {
+                token: token,
+                bookId: bookId,
+            }
+        }).then(resp => resp.json()).then(resp => {
+            const {code, data, msg} = resp
+            if (code === 2) {
+                gotoLogin()
+            } else if (code !== 0) {
+                alert(msg)
+            } else {
+                window.open(`https://weread.qq.com/web/bookDetail/${data}`)
+            }
+        }).finally(() => {
+            document.querySelector('.begin_read').disabled = false
         })
     })
 </script>

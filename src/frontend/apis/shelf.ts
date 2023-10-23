@@ -1,17 +1,12 @@
 import {web_shelf_sync} from "../../apis/web/shelf.ts";
 import {web_book_chapterInfos, web_book_info} from "../../apis/web/book.ts";
 import {downloadSSE} from "./downloadSSE.ts";
-import {
-    checkDownloadCount,
-    newDownloadSecret,
-    useSecret,
-} from "../../kv/download.ts";
+import {checkDownloadCount, newDownloadSecret, useSecret,} from "../../kv/download.ts";
 import {MAX_DOWNLOAD_COUNT_PER_MONTH} from "../../config.ts";
-import {ResponseCode, ParamCheckEntity, apiCallWithRetry} from "./common.ts";
-import {jsonResponse} from "../../utils/index.ts";
-import {search} from "../../database/bookid.ts";
-import * as credentialUtil from "../../kv/credential.ts";
+import {apiCallWithRetry, ParamCheckEntity, ResponseCode} from "./common.ts";
+import {calcHash, jsonResponse} from "../../utils/index.ts";
 import type {Credential} from "../../kv/credential.ts";
+import * as credentialUtil from "../../kv/credential.ts";
 
 
 /**
@@ -153,5 +148,25 @@ export async function getDownloadSecret(req: Request) {
             );
             return jsonResponse({code: ResponseCode.Success, data: secret, msg: 'success'})
         }
+    })
+}
+
+export async function bookHash(req: Request) {
+    const params: ParamCheckEntity[] = [
+        {
+            name: "token",
+            from: "header",
+            statusCode: ResponseCode.CredentialError,
+            statusText: "token无效",
+        },
+        {
+            name: "bookId",
+            from: "header",
+            statusCode: ResponseCode.ParamError,
+            statusText: "bookId不能为空",
+        },
+    ]
+    return await apiCallWithRetry(req, params, ({bookId}) => {
+        return Promise.resolve(calcHash(bookId))
     })
 }
