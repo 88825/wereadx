@@ -30,7 +30,7 @@ DENO_KV_ACCESS_TOKEN=
 DENO_KV_UUID=
 ```
 
-### 2. 执行脚本
+### 2. 启动服务
 ```shell
 npm run dev
 ```
@@ -98,12 +98,12 @@ export default {
 
 ![登录时二次确认](assets/login.png)
 
-这个应该是属于微信读书的bug，后续如果微信读书调整的话，我会跟进处理这个问题。
+这个应该是属于微信读书的bug，后续如果微信读书调整的话，我再跟进处理这个问题。
 
 
 ## 后续计划
 
-- 修复部分图片无法加载的问题；
-- 美化网站样式；
+- 修复html中图片及样式问题；
+- 优化网站；
 - 添加更多微信读书API，比如导出自己的笔记与想法等；
-- 支持下载更多电子书格式，比如 epub/azw3 等，[可以关注这个issue。](https://github.com/champkeh/wereadx/issues/2)
+- 支持下载更多电子书格式，包括 epub/azw3 等，[可以关注这个issue。](https://github.com/champkeh/wereadx/issues/2)

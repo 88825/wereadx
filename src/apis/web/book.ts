@@ -392,7 +392,7 @@ export async function web_book_chapter_e(
         return [htmls, null];
       } else {
         console.log(results);
-        throw Error("下载失败");
+        throw Error(`下载失败(${bookId})`);
       }
     });
   } else {
