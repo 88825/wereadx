@@ -18,7 +18,6 @@ class EncUtil {
     constructor() {
         this.app = 'tob-web'
         this.time = new Date().getTime()
-        // this.time = 1698383159892
     }
 
     getUuid() {
@@ -109,7 +108,7 @@ class EncUtil {
             app: this.app,
             tm: this.time,
             team_id: '371_371',
-            uuid: 'h5d9170918388655fea688f177c2158503', //this.getUuid(),
+            uuid: this.getUuid(),
             client: 'pc',
             os: 'web',
         }
