@@ -43,7 +43,7 @@ export function downloadSSE(
                     const data = {total: chapterUids.length, current: chapterUid, content: html}
                     sendEvent(isClosed, controller, "progress", data);
 
-                    await sleep(300);
+                    await sleep(2000);
                 }
 
                 const fileRe = /^file:\/\//
