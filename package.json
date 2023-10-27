@@ -10,9 +10,14 @@
     "lint": "deno lint src/**/*.ts",
     "fmt": "deno fmt src/**/*.ts",
     "compile:pre-push": "deno compile -A --output .husky/pre-push scripts/pre-push.ts",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "backup": "deno run -A --unstable scripts/pre-push.ts",
+    "example:jdread": "deno run -A --unstable examples/jdread/index.ts"
   },
   "devDependencies": {
     "husky": "^8.0.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0"
   }
 }

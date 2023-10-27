@@ -1,12 +1,20 @@
 lockfileVersion: 5.4
 
 specifiers:
+  crypto-js: ^4.2.0
   husky: ^8.0.0
+
+dependencies:
+  crypto-js: 4.2.0
 
 devDependencies:
   husky: 8.0.3
 
 packages:
+
+  /crypto-js/4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    dev: false
 
   /husky/8.0.3:
     resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}

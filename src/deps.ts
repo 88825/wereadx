@@ -7,3 +7,4 @@ export * as postgres from "https://deno.land/x/postgresjs@v3.3.5/mod.js";
 export * as parse5 from "npm:parse5@7.1.2";
 export * as xss from "npm:xss@1.0.14";
 // export * as csstree from "npm:css-tree@2.3.1";
+export * as cryptoJS from "npm:crypto-js"
