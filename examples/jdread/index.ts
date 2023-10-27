@@ -1,14 +1,19 @@
 import {md5} from "../../src/utils/encode.ts";
 import {cryptoJS} from "../../src/deps.ts"
+import {sleep} from "../../src/utils/index.ts";
 
 const crypto = cryptoJS.default
 
 const referer = 'https://m-tob.jd.com/readertob/reader?ebookId=30846299&team_id=371_371&return_url=https%3A%2F%2Fm-tob.jd.com%2Fuser_login'
 const ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
 
+const token = 'jdd03BVOWWZRSBIDBXC2RP66GXRQPKWIAPS3OFJUVD76A7QRUBNNDYMK6FVHHIVRAZMSHIRWR7KGYJAGVJV74AIJLZI2U2AAAAAMLOBZC35QAAAAADC2SHN66SLFNIEX'
+const h5st = '20231027172551748;1679513456279505;7e98a;tk03wb6be1c3e18nvGhEEkHlYcrv20e6eUkWpQBk9g5BkoLukdj2-tgK_oA5EapHdEDCm8IUZeCnvlPV4XYCKoqIFr4O;84a242549c846d8483b17c728ff1ff914b1f09b5b63343d935f52208997ccda6;3.1;1698398751748;76dcb804add1320a126905907ff5ddbfe6354a3d8eb09a6164035064d003aab8d0dd2ba3365155923e199a44208113eec7f7a35fb6a2a0bce4a65fb65e5bc08161cb418a3c22b4d73e5fd15e76d3a125288ef01c5635c277272c32eb8d4ac304'
+
 function t() {
     return (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
 }
+
 
 class EncUtil {
     app: string
@@ -130,6 +135,47 @@ class EncUtil {
         }).then(resp => resp.text())
     }
 
+    /**
+     * 获取章节目录
+     * @param bookId
+     */
+    async fetchToc(bookId: string | number) {
+        const t = new Date().getTime()
+        const body = {
+            app: 'tob-web',
+            tm: t,
+            os: 'web',
+            client: 'pc',
+            team_id: '371_371',
+            uuid: this.getUuid(),
+            ebookId: bookId.toString(),
+            $ebookId: bookId.toString(),
+        }
+        const payload = {
+            appid: 'jdread-m',
+            t: t.toString(),
+            client: 'web',
+            clientVersion: '1.0.0',
+            body: JSON.stringify(body),
+            'x-api-eid-token': token,
+            h5st: h5st,
+        }
+        const data = new URLSearchParams(payload).toString()
+
+        return await fetch('https://api.m.jd.com/api?functionId=jdread_api_ebook_catalog_v2_ebookId', {
+            method: 'post',
+            body: data,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(resp => resp.json())
+    }
+
+    /**
+     * 下载章节内容
+     * @param bookId
+     * @param chapterIdx
+     */
     async fetchChapterContent(bookId: string | number, chapterIdx: string | number) {
         let url = this.getUrl(bookId)
         // 加上章节编号
@@ -149,10 +195,35 @@ class EncUtil {
     }
 }
 
-const bookId = '30846299'
-const chapterIdx = 3
 
-const encUtil = new EncUtil()
-const data = await encUtil.fetchChapterContent(bookId, chapterIdx)
+async function downloadBook(bookId: string | number) {
+    const encUtil = new EncUtil()
+    const resp = await encUtil.fetchToc(bookId)
+    if (resp['result_code'] === 0) {
+        try {
+            // 确保目录存在
+            const path = `./examples/jdread/${bookId}`
+            Deno.mkdirSync(path, {recursive: true})
+        } catch (_) {
+            // no op
+            console.log(_)
+        }
 
-Deno.writeTextFileSync(`./examples/jdread/${bookId}-${chapterIdx}.html`, data)
+        for (const chapter of resp.data.chapter_info) {
+            const {chapter_name, chapter_index, is_try, is_buy} = chapter
+            if (!is_try && !is_buy) {
+                console.warn(`章节: 《${chapter_name}》 无法阅读，跳过下载`)
+                continue
+            }
+            console.log(`开始下载: 《${chapter_name}》`)
+            const data = await encUtil.fetchChapterContent(bookId, chapter_index)
+            Deno.writeTextFileSync(`./examples/jdread/${bookId}/${chapter_index}.html`, data)
+
+            await sleep(1000)
+        }
+    } else {
+        console.warn(`获取目录(${bookId})失败: `, resp)
+    }
+}
+
+await downloadBook('30846310')
