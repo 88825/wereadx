@@ -295,13 +295,16 @@ ${script}
             htmls.push(content)
             document.querySelector('.download').textContent = `进度: ${current}/${total}`
         }, false)
-        evtSource.addEventListener('complete', async (event) => {
-            const {styles, scripts} = JSON.parse(event.data)
-            const html = mergeBookContent(bookId, htmls, styles, scripts)
-            const result = await renderHtml(html)
-            zip(bookId, result)
-            document.querySelector('.download').disabled = false
-            document.querySelector('.download').textContent = '开始下载'
+        evtSource.addEventListener('complete', (event) => {
+            document.querySelector('.download').textContent = '打包中'
+            setTimeout(async () => {
+                const {styles, scripts} = JSON.parse(event.data)
+                const html = mergeBookContent(bookId, htmls, styles, scripts)
+                const result = await renderHtml(html)
+                zip(bookId, result)
+                document.querySelector('.download').disabled = false
+                document.querySelector('.download').textContent = '开始下载'
+            }, 0)
         }, false)
     }
 
