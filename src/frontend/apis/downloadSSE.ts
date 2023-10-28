@@ -9,7 +9,7 @@ import {
     web_book_chapter_t1,
     web_book_info
 } from "../../apis/web/book.ts";
-import {sleep} from "../../utils/index.ts";
+import {randomInteger, sleep} from "../../utils/index.ts";
 import {incrementDownloadCount} from "../../kv/download.ts";
 import {sendEvent} from "./common.ts";
 import {Credential} from "../../kv/credential.ts";
@@ -33,6 +33,7 @@ export function downloadSSE(
             try {
                 const cookie = credentialUtil.getCookieByCredential(credential)
 
+                let idx = 1
                 for (const chapterUid of chapterUids) {
                     if (isClosed) {
                         return;
@@ -40,10 +41,10 @@ export function downloadSSE(
 
                     // 单章下载
                     const html = await web_book_chapter_e(bookId, chapterUid, cookie);
-                    const data = {total: chapterUids.length, current: chapterUid, content: html}
+                    const data = {total: chapterUids.length, current: idx++, chapterUid, content: html};
                     sendEvent(isClosed, controller, "progress", data);
 
-                    await sleep(2000);
+                    await sleep(randomInteger(1000, 2000));
                 }
 
                 const fileRe = /^file:\/\//
