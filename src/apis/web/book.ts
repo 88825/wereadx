@@ -6,6 +6,7 @@ import styleParser from "../../utils/style.ts";
 import htmlParser from "../../utils/html.ts";
 import {processHtmls, processStyles} from "../../utils/process.ts";
 import {sha256} from "../../utils/encode.ts";
+import {M278} from "./utils.ts";
 
 /**
  * 获取图书详情
@@ -351,8 +352,9 @@ export async function web_book_chapter_e(
   cookie = "",
 ): Promise<string> {
   let promise: Promise<[string[], string | null]>;
-  const { format } = await web_book_info(bookId, cookie);
-  if (format === "epub" || format === "pdf") {
+  const bookInfo = await web_book_info(bookId, cookie);
+  if (M278.isEpub(bookInfo)) {
+    // epub 格式
     promise = Promise.all([
       web_book_chapter_e0(bookId, chapterUid, cookie),
       web_book_chapter_e1(bookId, chapterUid, cookie),
@@ -378,7 +380,8 @@ export async function web_book_chapter_e(
         throw Error(`下载失败(${bookId})`);
       }
     });
-  } else if (format === "txt") {
+  } else {
+    // txt 格式
     promise = Promise.all([
       web_book_chapter_t0(bookId, chapterUid, cookie),
       web_book_chapter_t1(bookId, chapterUid, cookie),
@@ -395,8 +398,6 @@ export async function web_book_chapter_e(
         throw Error(`下载失败(${bookId})`);
       }
     });
-  } else {
-    throw Error(`暂不支持${format}格式(${bookId})`);
   }
 
   let [htmls, styles] = await promise;
