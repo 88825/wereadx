@@ -37,11 +37,11 @@ export function processStyles(styles: string, bookId: string) {
 
 /**
  * 处理html
- * @param htmls
+ * @param sections
  * @param bookId
  */
-export function processHtmls(htmls: string[], bookId: string) {
-  return htmls.map((html) => {
+export function processHtmls(sections: string[], bookId: string) {
+  return sections.map((html) => {
     return function (html, bookId) {
       if (!html || html.length <= 0) {
         return "";
