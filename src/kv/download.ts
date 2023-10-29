@@ -7,7 +7,6 @@ import type { Credential } from "./credential.ts";
 
 interface DownloadSecret {
   bookId: string;
-  chapterUids: number[];
 }
 
 /**
@@ -46,12 +45,10 @@ export async function incrementDownloadCount(credential: Credential, bookId: str
 export async function newDownloadSecret(
   credential: Credential,
   bookId: string,
-  chapterUids: number[],
 ) {
   const secret = crypto.randomUUID();
   const payload: DownloadSecret = {
     bookId: bookId,
-    chapterUids: chapterUids,
   }
   await kv.set(["download", credential.token, secret], payload, {
     expireIn: 1000 * 60 * 5, // 5分钟有效
@@ -69,10 +66,10 @@ export async function newDownloadSecret(
 export async function useSecret(
   credential: Credential,
   secret: string,
-): Promise<[boolean, string, number[]]> {
+): Promise<[boolean, string]> {
   const entry = await kv.get<DownloadSecret>(["download", credential.token, secret]);
   if (entry.value) {
-    return [true, entry.value.bookId, entry.value.chapterUids];
+    return [true, entry.value.bookId];
   }
-  return [false, "", []];
+  return [false, ""];
 }

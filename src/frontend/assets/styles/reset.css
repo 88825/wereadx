@@ -1,3 +1,14 @@
+body {
+    line-height: 1.8;
+    font-size: 16px;
+    /*font-family: "SourceHanSerifCN-Bold",PingFang SC,-apple-system,SF UI Text,Lucida Grande,STheiti,Microsoft YaHei,sans-serif;*/
+}
 img, picture, video, canvas, svg {
     max-width: 100% !important;
+}
+.chapterTitle {
+    margin-bottom: 18px;
+    font-size: 24px;
+    font-family: "SourceHanSerifCN-Bold",PingFang SC,-apple-system,SF UI Text,Lucida Grande,STheiti,Microsoft YaHei,sans-serif;
+    color: #0d141e;
 }

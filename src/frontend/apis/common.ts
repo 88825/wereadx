@@ -137,7 +137,7 @@ export async function apiCallWithRetry(
 
 const encoder = new TextEncoder();
 
-export type EventType = "close" | "error" | "progress" | "complete" | "qrcode" | "token" | "expired";
+export type EventType = "close" | "error" | "progress" | "preface" | "complete" | "qrcode" | "token" | "expired";
 
 
 /**

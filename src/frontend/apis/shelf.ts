@@ -99,9 +99,9 @@ export async function bookDownload(req: Request) {
     ];
 
     return await apiCallWithRetry(req, params, async ({secret}: Record<string, string>, credential: Credential) => {
-        const [ok, bookId, chapterUids] = await useSecret(credential, secret);
+        const [ok, bookId] = await useSecret(credential, secret);
         if (ok) {
-            return downloadSSE(bookId, chapterUids, credential);
+            return downloadSSE(bookId, credential);
         } else {
             return jsonResponse({code: ResponseCode.ParamError, msg: 'secret无效'})
         }
@@ -126,15 +126,9 @@ export async function getDownloadSecret(req: Request) {
             statusCode: ResponseCode.ParamError,
             statusText: "bookId不能为空",
         },
-        {
-            name: "chapterUids",
-            from: "header",
-            statusCode: ResponseCode.ParamError,
-            statusText: "chapterUids不能为空",
-        },
     ];
 
-    return await apiCallWithRetry(req, params, async ({bookId, chapterUids}: Record<string, string>, credential: Credential) => {
+    return await apiCallWithRetry(req, params, async ({bookId}: Record<string, string>, credential: Credential) => {
         // 验证该用户的月下载量
         if (!(await checkDownloadCount(credential))) {
             // 无法下载
@@ -144,7 +138,6 @@ export async function getDownloadSecret(req: Request) {
             const secret = await newDownloadSecret(
                 credential,
                 bookId,
-                chapterUids.split("|").map((uid: string) => Number(uid)),
             );
             return jsonResponse({code: ResponseCode.Success, data: secret, msg: 'success'})
         }

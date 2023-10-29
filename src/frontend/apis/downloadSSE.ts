@@ -1,5 +1,5 @@
 import * as credentialUtil from "../../kv/credential.ts";
-import {web_book_chapter_e} from "../../apis/web/book.ts";
+import {web_book_chapter_e, web_book_chapterInfos, web_book_info} from "../../apis/web/book.ts";
 import {randomInteger, runInDenoDeploy, sleep} from "../../utils/index.ts";
 import {incrementDownloadCount} from "../../kv/download.ts";
 import {sendEvent} from "./common.ts";
@@ -10,26 +10,38 @@ const inDenoDeploy = runInDenoDeploy()
 /**
  * 下载
  */
-export function downloadSSE(
-    bookId: string,
-    chapterUids: number[],
-    credential: Credential,
-): Response {
+export function downloadSSE(bookId: string, credential: Credential): Response {
     let isClosed = false;
     const body = new ReadableStream({
         start: async (controller) => {
             try {
                 const cookie = credentialUtil.getCookieByCredential(credential)
 
+                const bookInfo = await web_book_info(bookId, cookie)
+                const chapterInfos = await web_book_chapterInfos([bookId], cookie)
+                const chapters = chapterInfos.data[0].updated
+
+                // 开始下载前，先发送自定义样式及脚本
+                const fileRe = /^file:\/\//
+                const resetStyle = Deno.readTextFileSync(import.meta.resolve("../assets/styles/reset.css").replace(fileRe, ''))
+                const footerNoteStyle = Deno.readTextFileSync(
+                    import.meta.resolve("../assets/styles/footer_note.css").replace(fileRe, ""),
+                );
+                const footerNoteScript = Deno.readTextFileSync(
+                    import.meta.resolve("../assets/js/footer_note.js").replace(fileRe, "")
+                )
+                const preface = {styles: [resetStyle, footerNoteStyle], scripts: [footerNoteScript]}
+                sendEvent(isClosed, controller, "preface", preface);
+
                 let idx = 1
-                for (const chapterUid of chapterUids) {
+                for (const chapter of chapters) {
                     if (isClosed) {
                         return;
                     }
 
                     // 单章下载
-                    const html = await web_book_chapter_e(bookId, chapterUid, cookie);
-                    const data = {total: chapterUids.length, current: idx++, chapterUid, content: html};
+                    const html = await web_book_chapter_e(bookInfo, chapter, cookie);
+                    const data = {total: chapters.length, current: idx++, chapterUid: chapter.chapterUid, content: html};
                     sendEvent(isClosed, controller, "progress", data);
 
                     if (inDenoDeploy) {
@@ -40,16 +52,7 @@ export function downloadSSE(
                     }
                 }
 
-                const fileRe = /^file:\/\//
-                const resetStyle = Deno.readTextFileSync(import.meta.resolve("../assets/styles/reset.css").replace(fileRe, ''))
-                const footerNoteStyle = Deno.readTextFileSync(
-                    import.meta.resolve("../assets/styles/footer_note.css").replace(fileRe, ""),
-                );
-                const footerNoteScript = Deno.readTextFileSync(
-                    import.meta.resolve("../assets/js/footer_note.js").replace(fileRe, "")
-                )
-                const extra = {styles: [resetStyle, footerNoteStyle], scripts: [footerNoteScript]}
-                sendEvent(isClosed, controller, "complete", extra);
+                sendEvent(isClosed, controller, "complete", null);
 
                 await incrementDownloadCount(credential, bookId);
             } catch (e) {

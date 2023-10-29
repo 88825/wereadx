@@ -6,7 +6,8 @@ import styleParser from "../../utils/style.ts";
 import htmlParser from "../../utils/html.ts";
 import {mergeSpanInHtml, processHtmls, processStyles} from "../../utils/process.ts";
 import {sha256} from "../../utils/encode.ts";
-import {M278} from "./utils.ts";
+import {chapterTitleText, M278, showChapterTitle} from "./utils.ts";
+import type {BookInfo, ChapterInfo} from "./utils.ts";
 
 /**
  * 获取图书详情
@@ -342,24 +343,26 @@ export async function web_book_chapter_t1(
 
 /**
  * 获取章节内容
- * @param bookId
- * @param chapterUid
+ * @param bookInfo
+ * @param chapter
  * @param cookie
  */
 export async function web_book_chapter_e(
-    bookId: string,
-    chapterUid: number,
+    bookInfo: BookInfo,
+    chapter: ChapterInfo,
     cookie = "",
 ): Promise<string> {
     let promise: Promise<[string[], string | null]>;
-    const bookInfo = await web_book_info(bookId, cookie);
-    if (M278.isEpub(bookInfo)) {
+
+    const bookId = bookInfo.bookId
+
+    if (M278.isEPub(bookInfo)) {
         // epub 格式
         promise = Promise.all([
-            web_book_chapter_e0(bookId, chapterUid, cookie),
-            web_book_chapter_e1(bookId, chapterUid, cookie),
-            web_book_chapter_e2(bookId, chapterUid, cookie),
-            web_book_chapter_e3(bookId, chapterUid, cookie),
+            web_book_chapter_e0(bookId, chapter.chapterUid, cookie),
+            web_book_chapter_e1(bookId, chapter.chapterUid, cookie),
+            web_book_chapter_e2(bookId, chapter.chapterUid, cookie),
+            web_book_chapter_e3(bookId, chapter.chapterUid, cookie),
         ]).then((results) => {
             if (
                 "string" == typeof results[0] && results[0].length > 0 &&
@@ -383,8 +386,8 @@ export async function web_book_chapter_e(
     } else {
         // txt 格式
         promise = Promise.all([
-            web_book_chapter_t0(bookId, chapterUid, cookie),
-            web_book_chapter_t1(bookId, chapterUid, cookie),
+            web_book_chapter_t0(bookId, chapter.chapterUid, cookie),
+            web_book_chapter_t1(bookId, chapter.chapterUid, cookie),
         ]).then((results) => {
             if (
                 "string" === typeof results[0] && results[0].length > 0 &&
@@ -427,9 +430,13 @@ export async function web_book_chapter_e(
         return html;
     }).join("");
 
-    let html = `<section data-book-id="${bookId}" data-chapter-uid="${chapterUid}" class="readerChapterContent">`
+    let html = `<section data-book-id="${bookId}" data-chapter-uid="${chapter.chapterUid}" class="readerChapterContent">`
     if (styles) {
         html += `<style>${styles}</style>`
+    }
+    // 判断是否添加章节标题
+    if (showChapterTitle(bookInfo)) {
+        html += `<div class="chapterTitle">${chapterTitleText(bookInfo, chapter)}</div>`
     }
     html += `${sections}</section>`
 

@@ -1,22 +1,16 @@
 span.reader_footer_note {
-    text-indent: 0;
-    text-align: center;
     position: relative;
     display: inline-block;
     width: 19px;
     height: 19px;
     background-color: black;
-    vertical-align: super;
+    vertical-align: sub;
     border-radius: 50%;
     cursor: pointer;
-    margin: 0 5px 0 2px;
-}
-
-span.reader_footer_note:before {
-    content: "注";
-    color: white;
-    font-size: 0.75em;
-    font-family: "汉仪楷体", sans-serif;
+    margin: 0 3px;
+    background-image: url(https://weread-1258476243.file.myqcloud.com/web/wrwebnjlogic/image/zhu_white_2x.e40a42ed.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
 
 span.reader_footer_note:hover:after {
@@ -31,5 +25,5 @@ span.reader_footer_note:hover:after {
     padding: 0.5em;
     font-size: 1em;
     font-family: "汉仪楷体", sans-serif;
-    z-index: 1;
+    z-index: 10;
 }

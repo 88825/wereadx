@@ -13,7 +13,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.querySelector('.download_html_btn').addEventListener('click', async () => {
         const token = localStorage.getItem('token')
         const bookId = new URLSearchParams(location.search).get('bookId')
-        const chapterUids = Array.from(document.querySelectorAll('.chapter')).map(node => node.dataset.chapterUid)
 
         if (bookDetail && bookDetail.format === 'pdf' && !bookDetail.otherType) {
             // 只有 pdf 版本可用，下载 pdf 文件
@@ -27,7 +26,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
 
         document.querySelector('.download_html_btn').disabled = true
-        const resp = await getDownloadSecret(bookId, chapterUids, token).finally(() => {
+        const resp = await getDownloadSecret(bookId, token).finally(() => {
             document.querySelector('.download_html_btn').disabled = false
         })
         handleRespError(resp)
@@ -173,6 +172,8 @@ function fixImgSizeInHTML(html) {
     return new Promise((resolve, reject) => {
         const iframe = document.createElement('iframe')
         iframe.srcdoc = html
+        iframe.style.visibility = 'hidden'
+        iframe.style.display = 'none'
         iframe.style.width = '1000px'
         iframe.style.frameborder = '0'
         iframe.onload = function () {
@@ -254,12 +255,11 @@ ${script}
  * @param token
  * @return {Promise<any>}
  */
-function getDownloadSecret(bookId, chapterUids, token) {
+function getDownloadSecret(bookId, token) {
     return fetch('/api/book/download/secret', {
         headers: {
             token: token,
             bookId: bookId,
-            chapterUids: chapterUids.join('|'),
         }
     }).then(resp => resp.json())
 }
@@ -277,6 +277,8 @@ function downloadHtml(secret, token, bookId) {
     }
 
     const htmls = []
+    const styles = []
+    const scripts = []
 
     document.querySelector('.download_html_btn').disabled = true
 
@@ -295,7 +297,7 @@ function downloadHtml(secret, token, bookId) {
         document.querySelector('.download_html_btn').textContent = '开始下载'
 
         // 出错时将已经下载好的章节合并导出
-        await zipBookContent(bookDetail.title, htmls)
+        await zipBookContent(bookDetail.title, htmls, styles, scripts)
     })
     evtSource.addEventListener('progress', (event) => {
         const {total, current, content} = JSON.parse(event.data)
@@ -303,14 +305,18 @@ function downloadHtml(secret, token, bookId) {
         document.querySelector('.download_html_btn').textContent = `进度: ${current}/${total}`
     }, false)
     evtSource.addEventListener('complete', (event) => {
-        document.querySelector('.download_html_btn').textContent = '打包中'
+        document.querySelector('.download_html_btn').textContent = '正在打包'
         setTimeout(async () => {
-            const {styles, scripts} = JSON.parse(event.data)
             await zipBookContent(bookDetail.title, htmls, styles, scripts)
 
             document.querySelector('.download_html_btn').disabled = false
             document.querySelector('.download_html_btn').textContent = '开始下载'
         }, 0)
+    }, false)
+    evtSource.addEventListener('preface', (event) => {
+        const {styles: s1, scripts: s2} = JSON.parse(event.data)
+        styles.push(...s1)
+        scripts.push(...s2)
     }, false)
 }
 
