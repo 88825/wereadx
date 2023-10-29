@@ -18,6 +18,10 @@
 > 需要提前安装 deno，参考官方的[安装指南](https://docs.deno.com/runtime/manual/getting_started/installation)
 
 ```shell
+deno task dev
+```
+或者
+```shell
 npm run dev
 ```
 或者
