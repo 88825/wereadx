@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="style/reset.css">
     <link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/detail.css">
+
     <script src="lib/jszip.min.js" async></script>
     <script src="lib/FileSaver.min.js" async></script>
-    <script src="js/utils.js" async></script>
+    <script type="module" src="js/detail.js"></script>
 </head>
 <body class="wr_whiteTheme">
 
@@ -17,7 +18,7 @@
     <div class="navBar_inner">
         <h2 class="navBar_title">书籍详情</h2>
         <div class="navBar_menu">
-            <button class="btn_primary download"><span>开始下载</span></button>
+            <button class="btn_primary download_html_btn"><span>开始下载</span></button>
 
             <a href="/" class="navBar_link">我的书架</a>
             <span class="navBar_separator"></span>
@@ -70,7 +71,7 @@
                     <span class="introDialog_content_pub_title">原始格式</span>
                     <p>
                         <span class="format"></span>
-                        <a class="origin-download">下载</a>
+                        <a class="download_pdf_btn">下载</a>
                     </p>
                 </div>
                 <div class="introDialog_content_pub_line">
@@ -84,7 +85,7 @@
             </div>
             <div class="introDialog_content">
                 <h3 class="introDialog_content_title">章节信息</h3>
-                <ol class="chapters"></ol>
+                <ol class="toc"></ol>
             </div>
         </div>
     </div>
@@ -101,318 +102,5 @@
               fill="#1E80FF" stroke="#1E80FF" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>
 </a>
-
-<script>
-    function gotoLogin() {
-        localStorage.removeItem('token')
-        window.location.href = '/login.html'
-    }
-
-    function renderHtml(html) {
-        return new Promise((resolve, reject) => {
-            const iframe = document.createElement('iframe')
-            iframe.srcdoc = html
-            iframe.style.width = '702px'
-            iframe.style.frameborder = '0'
-            iframe.onload = function() {
-                fixImgSize(iframe.contentDocument.documentElement, 702)
-                const result = iframe.contentDocument.documentElement.innerHTML
-                resolve(result)
-                iframe.remove()
-            }
-            iframe.onerror = function (event) {
-                console.log(event)
-                reject(new Error('iframe加载失败'))
-            }
-            document.body.appendChild(iframe)
-        })
-    }
-
-    let bookDetail = null
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token')
-        if (!token) {
-            gotoLogin()
-            return
-        }
-
-        // 获取详情
-        const bookId = new URLSearchParams(location.search).get('bookId')
-        fetch('/api/book/detail', {
-            headers: {
-                token: token,
-                bookId: bookId,
-            }
-        }).then(resp => resp.json()).then(resp => {
-            const {code, data, msg} = resp
-            if (code === 2) {
-                gotoLogin()
-                return
-            } else if (code !== 0) {
-                alert(msg)
-                return
-            }
-            bookDetail = data
-            renderBookDetail(data)
-
-            // 获取章节
-            fetch('/api/book/chapters', {
-                headers: {
-                    token: token,
-                    bookId: bookId,
-                }
-            }).then(resp => resp.json()).then(resp => {
-                const {code, data, msg} = resp
-                if (code === 2) {
-                    gotoLogin()
-                    return
-                } else if (code !== 0) {
-                    alert(msg)
-                    return
-                }
-                const [book] = data.data
-                renderChapters(book.updated)
-            })
-        })
-    })
-
-    function formatDate(date) {
-        const year = date.slice(0, 4)
-        const month = date.slice(5, 7).replace(/^0+/, '')
-        return `${year}年${month}月`
-    }
-
-    function renderBookDetail(book) {
-        let {title, author, cover, intro, format, isbn, publishTime, publisher, otherType} = book
-        // 替换成高清图片
-        const re = /(.+)\/s_([^/]+)$/
-        if (re.test(cover)) {
-            cover = cover.replace(/(.+)\/s_([^/]+)$/, '$1/t6_$2')
-        }
-        document.querySelector('.wr_bookCover_img').src = cover
-        document.querySelector('.bookInfo_right_header_title_text').textContent = title
-        document.querySelector('.bookInfo_author').textContent = '作者：' + (author || '无')
-        document.querySelector('.format').textContent = format || '无'
-        if (format === 'pdf') {
-            document.querySelector('.origin-download').style.display = 'inline'
-        }
-        if (Array.isArray(otherType)) {
-            document.querySelector('.otherFormat').textContent = otherType.map(_ => _.type).join('/')
-        } else {
-            document.querySelector('.otherFormat').textContent = '无'
-        }
-        document.querySelector('.isbn').textContent = isbn || '无'
-        document.querySelector('.publishTime').textContent = publishTime ? formatDate(publishTime) : '无'
-        document.querySelector('.publisher').textContent = publisher || '无'
-        document.querySelector('.bookInfo_intro').textContent = '简介：' + (intro || '暂无')
-    }
-
-    function renderChapters(chapters) {
-        const fragment = document.createDocumentFragment()
-        for (const chapter of chapters) {
-            const {title, level, chapterUid} = chapter
-            const li = document.createElement('li')
-            li.textContent = title
-            li.className = 'chapter'
-            li.dataset.level = level
-            li.dataset.chapterUid = chapterUid
-            fragment.append(li)
-        }
-
-        document.querySelector('.chapters').append(fragment)
-    }
-
-    let evtSource
-
-    async function zip(bookId, html) {
-        const zip = new JSZip()
-        zip.file(`${bookId}.html`, html)
-        const blob = await zip.generateAsync({type: "blob"})
-        saveAs(blob, `${bookId}.zip`)
-    }
-
-    /**
-     * 合并章节及添加自定义内容，包括样式与脚本
-     */
-    function mergeBookContent(bookId, htmls, styles, scripts) {
-        const style = styles.map(style => `<style>${style}</style>`).join('\n')
-        const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
-        return `<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>${bookId}</title>
-    ${style}
-</head>
-<body>
-${htmls.join("\n")}
-${script}
-</body>
-</html>
-`
-}
-
-    // 获取下载凭证
-    function getDownloadSecret(bookId, chapterUids, token) {
-        document.querySelector('.download').disabled = true
-        return fetch('/api/book/download/secret', {
-            headers: {
-                token: token,
-                bookId: bookId,
-                chapterUids: chapterUids.join('|'),
-            }
-        }).then(resp => resp.json())
-    }
-
-    // 下载
-    function download(secret, token, bookId) {
-        if (evtSource) {
-            evtSource.close()
-        }
-
-        const query = new URLSearchParams({secret, token}).toString()
-        document.querySelector('.download').disabled = true
-        evtSource = new EventSource(new URL('/api/book/download?' + query, location.origin).toString())
-        evtSource.addEventListener('close', () => {
-            evtSource.close()
-        })
-        evtSource.addEventListener('error', (event) => {
-            console.error(event)
-            if (event.data) {
-                alert(event.data)
-            }
-            document.querySelector('.download').disabled = false
-            document.querySelector('.download').textContent = '开始下载'
-            evtSource.close()
-        })
-        const htmls = []
-        evtSource.addEventListener('progress', (event) => {
-            const {total, current, content} = JSON.parse(event.data)
-            htmls.push(content)
-            document.querySelector('.download').textContent = `进度: ${current}/${total}`
-        }, false)
-        evtSource.addEventListener('complete', (event) => {
-            document.querySelector('.download').textContent = '打包中'
-            setTimeout(async () => {
-                const {styles, scripts} = JSON.parse(event.data)
-                const html = mergeBookContent(bookId, htmls, styles, scripts)
-                const result = await renderHtml(html)
-                zip(bookId, result)
-                document.querySelector('.download').disabled = false
-                document.querySelector('.download').textContent = '开始下载'
-            }, 0)
-        }, false)
-    }
-
-    // 下载 pdf 版本
-    function downloadPDF(token, bookId) {
-        fetch('/api/book/getUrl', {
-            headers: {
-                token: token,
-                bookId: bookId,
-            }
-        }).then(resp => resp.json()).then(resp => {
-            const {code, data, msg} = resp
-            if (code === 0) {
-                window.open(data.url)
-            } else if (code === 2) {
-                gotoLogin()
-            } else {
-                alert(msg)
-            }
-        })
-    }
-
-    // 开始下载按钮
-    document.querySelector('.download').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-        const chapterUids = Array.from(document.querySelectorAll('.chapter')).map(node => node.dataset.chapterUid)
-
-        if (bookDetail && bookDetail.format === 'pdf' && !bookDetail.otherType) {
-            // 只有 pdf 版本可用，下载 pdf 文件
-            downloadPDF(token, bookId)
-            return
-        } else if (bookDetail && bookDetail.format === 'pdf') {
-            const ok = confirm('注意：这本书的原始格式为 pdf，本次下载的为 html 格式，如果想下载原始格式，可通过下方的详细信息中的链接进行下载。是否继续下载？')
-            if (!ok) {
-                return
-            }
-        }
-        const {code, data, msg} = await getDownloadSecret(bookId, chapterUids, token)
-        if (code === 0) {
-            download(data, token, bookId)
-        } else if (code === 2) {
-            gotoLogin()
-        } else {
-            alert(msg)
-            document.querySelector('.download').disabled = false
-        }
-    })
-
-    document.querySelector('.origin-download').addEventListener('click', (event) => {
-        event.preventDefault()
-
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-        downloadPDF(token, bookId)
-    })
-
-    // 添加阅读按钮
-    document.querySelector('.add_task').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-
-        document.querySelector('.add_task').disabled = true
-        fetch('/api/task/read/start', {
-            headers: {
-                token: token,
-                bookId: bookId,
-            }
-        }).then(resp => resp.json()).then(resp => {
-            const {code, data, msg} = resp
-            if (code === 2) {
-                gotoLogin()
-            } else if (code !== 0) {
-                alert(msg)
-            } else if (data.succ !== 1 || !data.synckey) {
-                alert('接口调用失败，请提交issue')
-            } else {
-                alert('添加成功')
-            }
-        }).finally(() => {
-            document.querySelector('.add_task').disabled = false
-        })
-    })
-
-    // 开始阅读
-    document.querySelector('.begin_read').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-
-        document.querySelector('.begin_read').disabled = true
-        fetch('/api/book/hash', {
-            headers: {
-                token: token,
-                bookId: bookId,
-            }
-        }).then(resp => resp.json()).then(resp => {
-            const {code, data, msg} = resp
-            if (code === 2) {
-                gotoLogin()
-            } else if (code !== 0) {
-                alert(msg)
-            } else {
-                window.open(`https://weread.qq.com/web/bookDetail/${data}`)
-            }
-        }).finally(() => {
-            document.querySelector('.begin_read').disabled = false
-        })
-    })
-</script>
 </body>
 </html>

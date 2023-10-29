@@ -1,5 +1,5 @@
 // 处理图片的尺寸
-function fixImgSize(preRenderContainerRef, containerWidth) {
+export function fixImgSize(preRenderContainerRef, containerWidth) {
     let imgs = preRenderContainerRef.getElementsByTagName('img'),
         imgCount = imgs.length;
     if (imgCount > 0) {
@@ -50,5 +50,38 @@ function fixImgSize(preRenderContainerRef, containerWidth) {
                 }
             }
         }
+    }
+}
+
+export function gotoLogin() {
+    localStorage.removeItem('token')
+    window.location.href = '/login.html'
+}
+
+/**
+ * 检查本地token是否存在，不存在跳转登录页，存在则返回
+ * @return {string}
+ */
+export function checkLogin() {
+    const token = localStorage.getItem('token')
+    if (!token) {
+        gotoLogin()
+        throw new Error('请先登录')
+    }
+    return token
+}
+
+/**
+ * 处理响应异常
+ * @param resp
+ */
+export function handleRespError(resp) {
+    const {code, msg} = resp
+    if (code === 2) {
+        gotoLogin()
+        throw new Error('token过期，跳转登录页')
+    } else if (code !== 0) {
+        alert(msg)
+        throw new Error('接口失败: ' + msg)
     }
 }

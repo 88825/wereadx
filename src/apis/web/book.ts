@@ -427,12 +427,11 @@ export async function web_book_chapter_e(
         return html;
     }).join("");
 
-    const html = `
-<section data-book-id="${bookId}" data-chapter-uid="${chapterUid}" class="readerChapterContent">
-<style>${styles}</style>
-${sections}
-</section>
-`;
+    let html = `<section data-book-id="${bookId}" data-chapter-uid="${chapterUid}" class="readerChapterContent">`
+    if (styles) {
+        html += `<style>${styles}</style>`
+    }
+    html += `${sections}</section>`
 
     return mergeSpanInHtml(html)
 }
