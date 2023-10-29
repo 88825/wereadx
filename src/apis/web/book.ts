@@ -4,7 +4,7 @@ import {UserAgentForWeb} from "../../config.ts";
 import {chk, dH, dS, dT} from "../../utils/decrypt.ts";
 import styleParser from "../../utils/style.ts";
 import htmlParser from "../../utils/html.ts";
-import {processHtmls, processStyles} from "../../utils/process.ts";
+import {mergeSpanInHtml, processHtmls, processStyles} from "../../utils/process.ts";
 import {sha256} from "../../utils/encode.ts";
 import {M278} from "./utils.ts";
 
@@ -427,10 +427,12 @@ export async function web_book_chapter_e(
         return html;
     }).join("");
 
-    return `
+    const html = `
 <section data-book-id="${bookId}" data-chapter-uid="${chapterUid}" class="readerChapterContent">
 <style>${styles}</style>
 ${sections}
 </section>
 `;
+
+    return mergeSpanInHtml(html)
 }
