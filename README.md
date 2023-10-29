@@ -17,20 +17,6 @@
 
 > 需要提前安装 deno，参考官方的[安装指南](https://docs.deno.com/runtime/manual/getting_started/installation)
 
-### 1. 配置环境变量
-请在项目根目录下新建`.env`文件，存放以下环境变量：
-```
-# Supabase 数据库连接字符串，这个数据库用于存放一些日志数据
-DATABASE_URL=
-
-# Deno KV Access Token
-DENO_KV_ACCESS_TOKEN=
-
-# Deno KV UUID
-DENO_KV_UUID=
-```
-
-### 2. 启动服务
 ```shell
 npm run dev
 ```
