@@ -1,3 +1,5 @@
+// @ts-nocheck: 使用 for of 遍历 node.attributes 会报错，实际上并没有问题
+
 import { parseHTML  } from "https://esm.sh/linkedom";
 
 /**

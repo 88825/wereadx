@@ -1,6 +1,6 @@
 import { MAX_DOWNLOAD_COUNT_PER_MONTH } from "../config.ts";
 import kv from "./db.ts"
-import {now} from "../utils/index.ts";
+import {now, runInDenoDeploy} from "../utils/index.ts";
 import {insertDownloadRecords} from "../database/download.ts";
 import type { Credential } from "./credential.ts";
 
@@ -27,12 +27,14 @@ export async function checkDownloadCount(credential: Credential) {
 export async function incrementDownloadCount(credential: Credential, bookId: string) {
   await kv.atomic().sum(["download", credential.vid], 1n).commit();
 
-  // 记录下载的书
-  await insertDownloadRecords([{
-    vid: credential.vid.toString(),
-    book_id: bookId,
-    timestamp: now(),
-  }])
+  // 如果是运行在 Deno Deploy 上面，则记录下载的书
+  if (runInDenoDeploy()) {
+    await insertDownloadRecords([{
+      vid: credential.vid.toString(),
+      book_id: bookId,
+      timestamp: now(),
+    }])
+  }
 }
 
 /**

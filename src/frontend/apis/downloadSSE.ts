@@ -1,23 +1,11 @@
 import * as credentialUtil from "../../kv/credential.ts";
-import {
-    web_book_chapter_e,
-    web_book_chapter_e0,
-    web_book_chapter_e1,
-    web_book_chapter_e2,
-    web_book_chapter_e3,
-    web_book_chapter_t0,
-    web_book_chapter_t1,
-    web_book_info
-} from "../../apis/web/book.ts";
-import {randomInteger, sleep} from "../../utils/index.ts";
+import {web_book_chapter_e} from "../../apis/web/book.ts";
+import {randomInteger, runInDenoDeploy, sleep} from "../../utils/index.ts";
 import {incrementDownloadCount} from "../../kv/download.ts";
 import {sendEvent} from "./common.ts";
 import {Credential} from "../../kv/credential.ts";
-import {processHtmls, processStyles} from "../../utils/process.ts";
-import styleParser from "../../utils/style.ts";
-import htmlParser from "../../utils/html.ts";
-import {dH, dS, dT} from "../../utils/decrypt.ts";
 
+const inDenoDeploy = runInDenoDeploy()
 
 /**
  * 下载
@@ -44,7 +32,12 @@ export function downloadSSE(
                     const data = {total: chapterUids.length, current: idx++, chapterUid, content: html};
                     sendEvent(isClosed, controller, "progress", data);
 
-                    await sleep(randomInteger(500, 1000));
+                    if (inDenoDeploy) {
+                        await sleep(randomInteger(500, 1000));
+                    } else {
+                        // 个人使用，可以降低间隔，加快下载进度
+                        await sleep(500);
+                    }
                 }
 
                 const fileRe = /^file:\/\//

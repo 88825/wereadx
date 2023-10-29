@@ -3,7 +3,7 @@ import {runInDenoDeploy} from "../utils/index.ts";
 
 let kv: Deno.Kv
 
-if (runInDenoDeploy()) {
+if (runInDenoDeploy() || Deno.args.includes("local")) {
     kv = await Deno.openKv()
 } else {
     const env = await dotenv.load()
