@@ -9,5 +9,6 @@
   "background": {
     "service_worker": "sw.js",
     "type": "module"
-  }
+  },
+  "host_permissions": ["*://*/*"]
 }
