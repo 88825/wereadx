@@ -1,4 +1,4 @@
-import {gotoLogin, fixImgSize, checkLogin, handleRespError} from "./utils.js"
+import {fixImgSize, checkLogin, handleRespError} from "./utils.js"
 
 let bookDetail = null
 let evtSource
@@ -165,34 +165,35 @@ async function fetchAndRenderBookInfo(token) {
 
 /**
  * 通过一个 iframe 渲染图片并调整图片大小
- * @param html
+ * @param chapterHtml
  * @return {Promise<string>}
  */
-function fixImgSizeInHTML(html) {
+function fixImgSizeInChapter(chapterHtml) {
     return new Promise((resolve, reject) => {
         const iframe = document.createElement('iframe')
-        iframe.srcdoc = html
+        iframe.srcdoc = chapterHtml
         iframe.style.visibility = 'hidden'
         iframe.style.position = 'absolute'
         iframe.style.left = '0'
         iframe.style.top = '0'
         iframe.style.zIndex = '-1'
-        iframe.style.width = '798px'
+        iframe.style.width = '800px'
         iframe.style.frameborder = '0'
         iframe.onload = function () {
-            fixImgSize(iframe.contentDocument.documentElement, 798)
-            const resultHtml = iframe.contentDocument.documentElement.outerHTML
-            resolve(`<!DOCTYPE html>\n${resultHtml}`)
+            fixImgSize(iframe.contentDocument.documentElement, 800)
+            const resultHtml = iframe.contentDocument.body.innerHTML
+            resolve(resultHtml)
             iframe.remove()
         }
         iframe.onerror = function (event) {
             console.error(event)
-            reject(new Error('iframe加载失败'))
+            reject(new Error('图片加载失败'))
             iframe.remove()
         }
         document.body.appendChild(iframe)
     })
 }
+
 
 /**
  * 格式化日期
@@ -246,15 +247,12 @@ ${script}
 </body>
 </html>
 `
-
-    html = await fixImgSizeInHTML(html)
     await zip(title, html)
 }
 
 /**
  * 获取下载凭证
  * @param bookId
- * @param chapterUids
  * @param token
  * @return {Promise<any>}
  */
@@ -271,9 +269,8 @@ function getDownloadSecret(bookId, token) {
  * 下载 html 版本
  * @param secret
  * @param token
- * @param bookId
  */
-function downloadHtml(secret, token, bookId) {
+function downloadHtml(secret, token) {
     if (evtSource) {
         // 关闭之前的下载通道
         evtSource.close()
@@ -282,6 +279,8 @@ function downloadHtml(secret, token, bookId) {
     const htmls = []
     const styles = []
     const scripts = []
+    let receivedChapterCount = 0
+    let hasDownloaded = false
 
     document.querySelector('.download_html_btn').disabled = true
 
@@ -290,36 +289,62 @@ function downloadHtml(secret, token, bookId) {
     evtSource.addEventListener('close', () => {
         evtSource.close()
     })
-    evtSource.addEventListener('error', async (event) => {
+    // 自定义样式与脚本
+    evtSource.addEventListener('preface', (event) => {
+        const {styles: s1, scripts: s2} = JSON.parse(event.data)
+        styles.push(...s1)
+        scripts.push(...s2)
+    }, false)
+
+    // 单章下载完成
+    evtSource.addEventListener('progress', (event) => {
+        const {total, current, content} = JSON.parse(event.data)
+        receivedChapterCount++
+        fixImgSizeInChapter(content).then(html => {
+            htmls.push({
+                idx: current,
+                html: html,
+            })
+        }).catch(err => {
+            alert(err.message)
+        })
+        document.querySelector('.download_html_btn').textContent = `进度: ${current}/${total}`
+    }, false)
+
+    function bundleBook() {
+        document.querySelector('.download_html_btn').textContent = '正在打包'
+        if (htmls.length === receivedChapterCount) {
+            setTimeout(async () => {
+                // 重新整理顺序
+                const sortedHtml = htmls.sort((a, b) => a.idx - b.idx).map(_ => _.html)
+                await zipBookContent(bookDetail.title, sortedHtml, styles, scripts)
+
+                document.querySelector('.download_html_btn').disabled = false
+                document.querySelector('.download_html_btn').textContent = '开始下载'
+            }, 0)
+        } else {
+            setTimeout(bundleBook, 500)
+        }
+    }
+
+    // 整本书下载完成
+    evtSource.addEventListener('complete', () => {
+        bundleBook()
+        hasDownloaded = true
+    }, false)
+
+    // 出错
+    evtSource.addEventListener('error', (event) => {
         evtSource.close()
         console.error(event)
         if (event.data) {
             alert(event.data)
         }
-        document.querySelector('.download_html_btn').disabled = false
-        document.querySelector('.download_html_btn').textContent = '开始下载'
 
         // 出错时将已经下载好的章节合并导出
-        await zipBookContent(bookDetail.title, htmls, styles, scripts)
-    })
-    evtSource.addEventListener('progress', (event) => {
-        const {total, current, content} = JSON.parse(event.data)
-        htmls.push(content)
-        document.querySelector('.download_html_btn').textContent = `进度: ${current}/${total}`
-    }, false)
-    evtSource.addEventListener('complete', (event) => {
-        document.querySelector('.download_html_btn').textContent = '正在打包'
-        setTimeout(async () => {
-            await zipBookContent(bookDetail.title, htmls, styles, scripts)
-
-            document.querySelector('.download_html_btn').disabled = false
-            document.querySelector('.download_html_btn').textContent = '开始下载'
-        }, 0)
-    }, false)
-    evtSource.addEventListener('preface', (event) => {
-        const {styles: s1, scripts: s2} = JSON.parse(event.data)
-        styles.push(...s1)
-        scripts.push(...s2)
+        if (!hasDownloaded) {
+            bundleBook()
+        }
     }, false)
 }
 
