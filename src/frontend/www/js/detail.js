@@ -1,6 +1,8 @@
 import {fixImgSize, checkLogin, handleRespError} from "./utils.js"
+import exportToEpub from "../epub/index.js"
 
 let bookDetail = null
+let bookChapters = []
 let evtSource
 
 
@@ -31,7 +33,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         })
         handleRespError(resp)
 
-        downloadHtml(resp.data, token, bookId)
+        downloadEBook(resp.data, token, 'html')
     })
     // 下载 pdf
     document.querySelector('.download_pdf_btn').addEventListener('click', async (event) => {
@@ -40,6 +42,25 @@ window.addEventListener('DOMContentLoaded', async () => {
         const token = localStorage.getItem('token')
         const bookId = new URLSearchParams(location.search).get('bookId')
         await downloadPDF(token, bookId)
+    })
+    // 下载 epub
+    document.querySelector('.download_epub_btn').addEventListener('click', async () => {
+        const token = localStorage.getItem('token')
+        const bookId = new URLSearchParams(location.search).get('bookId')
+
+        if (bookDetail && bookDetail.format === 'pdf') {
+            // 只有 pdf 版本可用，下载 pdf 文件
+            alert('本书为 pdf 格式，请通过下面的链接进行下载')
+            return
+        }
+
+        document.querySelector('.download_epub_btn').disabled = true
+        const resp = await getDownloadSecret(bookId, token).finally(() => {
+            document.querySelector('.download_epub_btn').disabled = false
+        })
+        handleRespError(resp)
+
+        downloadEBook(resp.data, token, 'epub')
     })
     // 添加阅读
     document.querySelector('.add_task').addEventListener('click', async () => {
@@ -159,6 +180,7 @@ async function fetchAndRenderBookInfo(token) {
     handleRespError(bookTocResp)
 
     const chapters = bookTocResp.data.data[0].updated
+    bookChapters = chapters
     renderToc(chapters)
 }
 
@@ -228,7 +250,7 @@ async function zip(filename, content) {
  * @param scripts
  * @return {Promise<void>}
  */
-async function zipBookContent(title, htmls, styles = [], scripts = []) {
+async function zipBookContent2HTML(title, htmls, styles = [], scripts = []) {
     const style = styles.map(style => `<style>${style}</style>`).join('\n')
     const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
     let html = `<!doctype html>
@@ -250,6 +272,14 @@ ${script}
     await zip(title, html)
 }
 
+async function zipBookContent2Epub(title, chapters) {
+    const epub = {
+        title: title,
+        items: chapters,
+    }
+    await exportToEpub(epub)
+}
+
 /**
  * 获取下载凭证
  * @param bookId
@@ -266,11 +296,12 @@ function getDownloadSecret(bookId, token) {
 }
 
 /**
- * 下载 html 版本
+ * 下载 html/epub 版本
  * @param secret
  * @param token
+ * @param format
  */
-function downloadHtml(secret, token) {
+function downloadEBook(secret, token, format = 'html') {
     if (evtSource) {
         // 关闭之前的下载通道
         evtSource.close()
@@ -282,7 +313,7 @@ function downloadHtml(secret, token) {
     let receivedChapterCount = 0
     let hasDownloaded = false
 
-    document.querySelector('.download_html_btn').disabled = true
+    document.querySelector(`.download_${format}_btn`).disabled = true
 
     const query = new URLSearchParams({secret, token}).toString()
     evtSource = new EventSource(new URL('/api/book/download?' + query, location.origin).toString())
@@ -298,29 +329,52 @@ function downloadHtml(secret, token) {
 
     // 单章下载完成
     evtSource.addEventListener('progress', (event) => {
-        const {total, current, content} = JSON.parse(event.data)
+        const {total, current, chapterUid, content} = JSON.parse(event.data)
         receivedChapterCount++
         fixImgSizeInChapter(content).then(html => {
             htmls.push({
                 idx: current,
+                chapterUid: chapterUid,
                 html: html,
             })
         }).catch(err => {
             alert(err.message)
         })
-        document.querySelector('.download_html_btn').textContent = `进度: ${current}/${total}`
+        document.querySelector(`.download_${format}_btn`).textContent = `进度: ${current}/${total}`
     }, false)
 
     function bundleBook() {
-        document.querySelector('.download_html_btn').textContent = '正在打包'
+        if (format === 'html') {
+            document.querySelector(`.download_${format}_btn`).textContent = '正在打包'
+        } else if (format === 'epub') {
+            document.querySelector(`.download_${format}_btn`).textContent = '正在打包图片'
+        }
         if (htmls.length === receivedChapterCount) {
             setTimeout(async () => {
                 // 重新整理顺序
-                const sortedHtml = htmls.sort((a, b) => a.idx - b.idx).map(_ => _.html)
-                await zipBookContent(bookDetail.title, sortedHtml, styles, scripts)
+                const sortedHtml = htmls.sort((a, b) => a.idx - b.idx)
+                if (format === 'html') {
+                    const htmls = sortedHtml.map(_ => _.html)
+                    await zipBookContent2HTML(bookDetail.title, htmls, styles, scripts)
+                } else if (format === 'epub') {
+                    const chapters = sortedHtml.map(_ => {
+                        const chapter = bookChapters.find(c => c.chapterUid === _.chapterUid)
+                        return {
+                            title: chapter ? chapter.title : '[Untitled]',
+                            content_html: _.html,
+                        }
+                    })
+                    await zipBookContent2Epub(bookDetail.title, chapters)
+                } else {
+                    alert('不支持的下载格式: ' + format)
+                }
 
-                document.querySelector('.download_html_btn').disabled = false
-                document.querySelector('.download_html_btn').textContent = '开始下载'
+                document.querySelector(`.download_${format}_btn`).disabled = false
+                if (format === 'html') {
+                    document.querySelector(`.download_${format}_btn`).textContent = '开始下载'
+                } else if (format === 'epub') {
+                    document.querySelector(`.download_${format}_btn`).textContent = '下载 epub (测试)'
+                }
             }, 0)
         } else {
             setTimeout(bundleBook, 500)

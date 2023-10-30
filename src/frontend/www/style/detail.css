@@ -137,6 +137,9 @@
     cursor: pointer;
     display: none;
 }
+.download_epub_btn {
+    background-image: linear-gradient(90deg, #4b00fc, #288bff);
+}
 
 .bookInfo_author_container {
     margin-top: 2px

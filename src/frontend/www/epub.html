@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>测试 EPub 生成工具</title>
+    <script src="lib/jszip.min.js" async></script>
+    <script src="lib/FileSaver.min.js" async></script>
+</head>
+<body>
+
+<button class="btn_primary download_epub_btn"><span>导出 EPub</span></button>
+
+<script type="module">
+    import exportToEpub from "./epub/index.js"
+
+    function download() {
+        exportToEpub({
+            title: '植物的战斗',
+            items: [
+                {
+                    title: '第1章 封面',
+                    content_html: `<section data-book-id="43168703" data-chapter-uid="1" class="readerChapterContent">
+  <style>
+    .readerChapterContent .frontCover{qrfullpage:1;text-align:center}.readerChapterContent .frontCover{qrfullpage:1;text-align:center}.readerChapterContent .copyRightTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.2em;text-align:center;text-indent:0;margin-bottom:0.9em}.readerChapterContent .contentCR{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0;text-align:center}.readerChapterContent .contentCR1{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .contentCR2{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .copyright-basemap{background-image:url(https://res.weread.qq.com/wrepub/web/43168703/copyright.jpg);background-size:cover;background-repeat:no-repeat;background-position:center}.readerChapterContent .content{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:2em;text-align:justify}.readerChapterContent .firstTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-align:left;text-indent:0;margin-top:2em;margin-bottom:1em}.readerChapterContent .secondTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;text-align:left;border-left:4px solid #004526;padding-left:8px;margin-top:2em;margin-bottom:1em;color:#004526}.readerChapterContent .thirdTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;text-align:left;margin-top:1.5em;margin-bottom:1em;color:#004526}.readerChapterContent .fourthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .fifthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .sixthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .subHead{text-align:right;font-family:"汉仪旗黑55S","ETrump-QiHei55","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.4em;margin-bottom:2em}.readerChapterContent .quotation-left{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:left}.readerChapterContent .quotation{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:2em;text-align:justify}.readerChapterContent .quotation-right{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:right}.readerChapterContent .title{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.4em;text-align:left;text-indent:0em}.readerChapterContent .right-info{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-align:right;line-height:1.3em;margin:0.3em 0 0.5em 0}.readerChapterContent .listStyle{list-style:square;list-style-position:outside}.readerChapterContent .border{border:2px solid #bbbbbb;border-radius:10px;padding:0.5em;margin:1em 0em}.readerChapterContent .textborder{border:1px solid #bbbbbb;border-radius:0.3em;padding:0.1em}.readerChapterContent .bgColor{background-color:#004526;padding:0.1em 0.2em;color:#ffffff}.readerChapterContent .bgColor-0{background-color:#efefef}.readerChapterContent .s-pic{width:1em;vertical-align:middle;margin-left:0.1em;margin-right:0.1em}.readerChapterContent .qrbodyPic{text-align:center;margin:1em 0}.readerChapterContent .imgtitle{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-align:center;text-indent:0em}.readerChapterContent .h-pic{height:1em;vertical-align:middle;margin-left:0.1em;margin-right:0.1em}.readerChapterContent .signImg{text-align:right;width:30%;margin-left:70%}.readerChapterContent .qqreader-fullimg{qrfullpage:1}.readerChapterContent .bodyPic{text-align:center;margin:1em 0}.readerChapterContent .bodyPic1{text-align:center;margin:0em 0em 2em 0em}.readerChapterContent .italic{font-style:italic}.readerChapterContent .bold{font-weight:bold}.readerChapterContent .kaiti{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;color:brown}.readerChapterContent .qqreader-footnote{width:1em;margin-left:0.2em}.readerChapterContent .content-right{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:right}.readerChapterContent .content-center{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .content3{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:justify}.readerChapterContent .underline{text-decoration:underline}.readerChapterContent .linethrough{text-decoration:line-through}.readerChapterContent .super{vertical-align:super}.readerChapterContent .sub{vertical-align:sub}.readerChapterContent .xz{}h1.preface{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;color:#004526;text-align:left;text-indent:0em;margin-top:2em;margin-bottom:2em;border-left:4px solid #004526;padding-left:0.5em}</style>
+  <div data-wr-bd="1" data-wr-co="321">
+  <h1 data-wr-co="331" class="frontCover"><img data-wr-co="365" alt="封面" src="https://res.weread.qq.com/wrepub/CB_43168703_cover.jpg" data-w="860px" data-ratio="1.381" data-w-new="1188px" style="max-width: 860px; max-height: 1188px; width: 765px; height: 1056.46px;"></h1>
+</div></section>`,
+                },
+                {
+                    title: '第2章 版权信息',
+                    content_html: `<section data-book-id="43168703" data-chapter-uid="34" class="readerChapterContent"><style>.readerChapterContent .frontCover{qrfullpage:1;text-align:center}.readerChapterContent .frontCover{qrfullpage:1;text-align:center}.readerChapterContent .copyRightTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.2em;text-align:center;text-indent:0;margin-bottom:0.9em}.readerChapterContent .contentCR{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0;text-align:center}.readerChapterContent .contentCR1{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .contentCR2{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .copyright-basemap{background-image:url(https://res.weread.qq.com/wrepub/web/43168703/copyright.jpg);background-size:cover;background-repeat:no-repeat;background-position:center}.readerChapterContent .content{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:2em;text-align:justify}.readerChapterContent .firstTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-align:left;text-indent:0;margin-top:2em;margin-bottom:1em}.readerChapterContent .secondTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;text-align:left;border-left:4px solid #004526;padding-left:8px;margin-top:2em;margin-bottom:1em;color:#004526}.readerChapterContent .thirdTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;text-align:left;margin-top:1.5em;margin-bottom:1em;color:#004526}.readerChapterContent .fourthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .fifthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .sixthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .subHead{text-align:right;font-family:"汉仪旗黑55S","ETrump-QiHei55","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.4em;margin-bottom:2em}.readerChapterContent .quotation-left{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:left}.readerChapterContent .quotation{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:2em;text-align:justify}.readerChapterContent .quotation-right{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:right}.readerChapterContent .title{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.4em;text-align:left;text-indent:0em}.readerChapterContent .right-info{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-align:right;line-height:1.3em;margin:0.3em 0 0.5em 0}.readerChapterContent .listStyle{list-style:square;list-style-position:outside}.readerChapterContent .border{border:2px solid #bbbbbb;border-radius:10px;padding:0.5em;margin:1em 0em}.readerChapterContent .textborder{border:1px solid #bbbbbb;border-radius:0.3em;padding:0.1em}.readerChapterContent .bgColor{background-color:#004526;padding:0.1em 0.2em;color:#ffffff}.readerChapterContent .bgColor-0{background-color:#efefef}.readerChapterContent .s-pic{width:1em;vertical-align:middle;margin-left:0.1em;margin-right:0.1em}.readerChapterContent .qrbodyPic{text-align:center;margin:1em 0}.readerChapterContent .imgtitle{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-align:center;text-indent:0em}.readerChapterContent .h-pic{height:1em;vertical-align:middle;margin-left:0.1em;margin-right:0.1em}.readerChapterContent .signImg{text-align:right;width:30%;margin-left:70%}.readerChapterContent .qqreader-fullimg{qrfullpage:1}.readerChapterContent .bodyPic{text-align:center;margin:1em 0}.readerChapterContent .bodyPic1{text-align:center;margin:0em 0em 2em 0em}.readerChapterContent .italic{font-style:italic}.readerChapterContent .bold{font-weight:bold}.readerChapterContent .kaiti{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;color:brown}.readerChapterContent .qqreader-footnote{width:1em;margin-left:0.2em}.readerChapterContent .content-right{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:right}.readerChapterContent .content-center{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .content3{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:justify}.readerChapterContent .underline{text-decoration:underline}.readerChapterContent .linethrough{text-decoration:line-through}.readerChapterContent .super{vertical-align:super}.readerChapterContent .sub{vertical-align:sub}.readerChapterContent .xz{}h1.preface{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;color:#004526;text-align:left;text-indent:0em;margin-top:2em;margin-bottom:2em;border-left:4px solid #004526;padding-left:0.5em}</style><div data-wr-bd="1" data-wr-inset="1" data-wr-co="321" class="copyright-basemap">
+  <h1 data-wr-co="357" class="copyRightTitle"><span data-wr-id="layout" data-wr-co="384">版权信息</span></h1>
+
+  <p data-wr-co="399" class="contentCR"><span data-wr-id="layout" data-wr-co="420">书名：植物的战斗</span></p>
+
+  <p data-wr-co="438" class="contentCR"><span data-wr-id="layout" data-wr-co="459">作者：汪诘·科学有故事团队</span></p>
+
+  <p data-wr-co="482" class="contentCR"><span data-wr-id="layout" data-wr-co="503">出版社：北京联合出版公司</span></p>
+
+  <p data-wr-co="525" class="contentCR"><span data-wr-id="layout" data-wr-co="546">出版时间：2022-01-01</span></p>
+
+  <p data-wr-co="571" class="contentCR"><span data-wr-id="layout" data-wr-co="592">ISBN：9787559657336</span></p>
+
+  <p data-wr-co="620" class="contentCR1"><span data-wr-id="layout" data-wr-co="642">品牌方：北京磨铁数盟信息技术有限公司</span></p>
+  <hr data-wr-co="668">
+
+  <p data-wr-co="680" class="contentCR2"><span data-wr-id="layout" data-wr-co="702">本书由北京磨铁数盟信息技术有限公司授权微信读书进行制作与发行</span></p>
+
+  <p data-wr-co="742" class="contentCR"><span data-wr-id="layout" data-wr-co="763">版权所有·侵权必究</span></p>
+</div></section>`,
+                },
+                {
+                    title: '第3章 它们不是植物，却选择当一株植物',
+                    content_html: `<section data-book-id="43168703" data-chapter-uid="36" class="readerChapterContent"><style>.readerChapterContent .frontCover{qrfullpage:1;text-align:center}.readerChapterContent .frontCover{qrfullpage:1;text-align:center}.readerChapterContent .copyRightTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.2em;text-align:center;text-indent:0;margin-bottom:0.9em}.readerChapterContent .contentCR{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0;text-align:center}.readerChapterContent .contentCR1{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .contentCR2{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .copyright-basemap{background-image:url(https://res.weread.qq.com/wrepub/web/43168703/copyright.jpg);background-size:cover;background-repeat:no-repeat;background-position:center}.readerChapterContent .content{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:2em;text-align:justify}.readerChapterContent .firstTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-align:left;text-indent:0;margin-top:2em;margin-bottom:1em}.readerChapterContent .secondTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;text-align:left;border-left:4px solid #004526;padding-left:8px;margin-top:2em;margin-bottom:1em;color:#004526}.readerChapterContent .thirdTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;text-align:left;margin-top:1.5em;margin-bottom:1em;color:#004526}.readerChapterContent .fourthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .fifthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .sixthTitle{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.3em;text-indent:0;margin-bottom:0.5em}.readerChapterContent .subHead{text-align:right;font-family:"汉仪旗黑55S","ETrump-QiHei55","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.4em;margin-bottom:2em}.readerChapterContent .quotation-left{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:left}.readerChapterContent .quotation{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:2em;text-align:justify}.readerChapterContent .quotation-right{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:right}.readerChapterContent .title{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;line-height:1.4em;text-align:left;text-indent:0em}.readerChapterContent .right-info{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-align:right;line-height:1.3em;margin:0.3em 0 0.5em 0}.readerChapterContent .listStyle{list-style:square;list-style-position:outside}.readerChapterContent .border{border:2px solid #bbbbbb;border-radius:10px;padding:0.5em;margin:1em 0em}.readerChapterContent .textborder{border:1px solid #bbbbbb;border-radius:0.3em;padding:0.1em}.readerChapterContent .bgColor{background-color:#004526;padding:0.1em 0.2em;color:#ffffff}.readerChapterContent .bgColor-0{background-color:#efefef}.readerChapterContent .s-pic{width:1em;vertical-align:middle;margin-left:0.1em;margin-right:0.1em}.readerChapterContent .qrbodyPic{text-align:center;margin:1em 0}.readerChapterContent .imgtitle{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-align:center;text-indent:0em}.readerChapterContent .h-pic{height:1em;vertical-align:middle;margin-left:0.1em;margin-right:0.1em}.readerChapterContent .signImg{text-align:right;width:30%;margin-left:70%}.readerChapterContent .qqreader-fullimg{qrfullpage:1}.readerChapterContent .bodyPic{text-align:center;margin:1em 0}.readerChapterContent .bodyPic1{text-align:center;margin:0em 0em 2em 0em}.readerChapterContent .italic{font-style:italic}.readerChapterContent .bold{font-weight:bold}.readerChapterContent .kaiti{font-family:"汉仪楷体","ETrump KaiTi","方正仿宋","FZFSJW--GB1-0","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;color:brown}.readerChapterContent .qqreader-footnote{width:1em;margin-left:0.2em}.readerChapterContent .content-right{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:right}.readerChapterContent .content-center{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:center}.readerChapterContent .content3{font-family:"汉仪旗黑50S","HYQiHei-50s","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;text-indent:0em;text-align:justify}.readerChapterContent .underline{text-decoration:underline}.readerChapterContent .linethrough{text-decoration:line-through}.readerChapterContent .super{vertical-align:super}.readerChapterContent .sub{vertical-align:sub}.readerChapterContent .xz{}h1.preface{font-family:"汉仪旗黑65S","HY-QiHei65","PingFang SC",-apple-system,"SF UI Text","Lucida Grande",STheiti,"Microsoft YaHei",sans-serif;color:#004526;text-align:left;text-indent:0em;margin-top:2em;margin-bottom:2em;border-left:4px solid #004526;padding-left:0.5em}</style><div data-wr-bd="1" data-wr-co="321">
+  <div data-wr-co="331" class="bodyPic1"><img data-wr-co="353" alt="" src="https://res.weread.qq.com/wrepub/CB_43168703_top.png" data-w="720px" data-ratio="0.214" data-w-new="154px" style="max-width: 720px; max-height: 154px; width: 719.626px; height: 154px;"></div>
+
+  <h1 data-wr-co="525" class="firstTitle"><span data-wr-co="548" class="bgColor"><span data-wr-id="layout" data-wr-co="570">第一章</span></span><br data-wr-co="580"><span data-wr-id="layout" data-wr-co="586">
+
+  它们不是植物，却选择当一株植物</span></h1>
+
+  <h2 data-wr-co="616" class="secondTitle" id="sigil_toc_id_1"><span data-wr-co="660" class="xz"><span data-wr-id="layout" data-wr-co="677">第一节</span></span><br data-wr-co="687"><span data-wr-id="layout" data-wr-co="693">
+
+  蓝细菌，最佳合伙人</span></h2>
+
+  <p data-wr-co="717" class="content"><span data-wr-id="layout" data-wr-co="736">意大利植物学家斯特凡诺·曼库索在他的书里估算过</span><span class="reader_footer_note js_readerFooterNote" data-wr-co="759" data-wr-footernote="［意］斯特凡诺·曼库索，亚历山德拉·维奥拉：它们没大脑，但它们有智能，北京：新星出版社，2017年。"></span><span data-wr-id="layout" data-wr-co="874">，地球上的生物总量，大约99.7%都是由植物构成的。曼库索没有公开他的推算方法，但是，对于99.7%都是植物这个数值，他显得信心满满。一些更保守的计算认为，地球上的植物大约占生物总量的82%，微生物、藻类和真菌大概占17%，剩下不足1%的生物是人类和各种动物。</span></p>
+
+  <p data-wr-co="1014" class="content"><span data-wr-id="layout" data-wr-co="1033">不管哪一种算法，植物正主宰着这个世界这件事情，肯定是不容置疑的，这与我们在前面提到的植物有着比动物高效得多的能量获取方式是完全吻合的。</span></p>
+
+  <p data-wr-co="1110" class="content"><span data-wr-id="layout" data-wr-co="1129">那么，到底是什么本领让植物获得了这种压倒性的生存力量呢？我估计你已经轻声说出答案了。没错，答案就是：光合作用。</span></p>
+
+  <p data-wr-co="1194" class="content"><span data-wr-id="layout" data-wr-co="1213">不过，植物可不是天生就具有光合作用能力的。是因为植物的远古祖先找到了一个非常靠谱的合伙人，才把植物这个小公司做成了大企业。这个合伙人就是蓝细菌。我们的故事，要从35亿年前开始讲起。</span></p>
+
+  <p data-wr-co="1313" class="content"><span data-wr-id="layout" data-wr-co="1332">35亿年前，一些原核生物在地球上出现了。如果你觉得原核生物这个名词缺乏熟悉感，那么你大可以直接把它们叫作细菌。细菌是一些细胞里连细胞核都没有的简单生命。它们结构简单、个体微小。它们身体的遗传物质被细胞膜包裹着，进行着很原始但是非常复杂的生命活动。在营养充足的时候，只需要短短的几分钟，它们的数量就能增加一倍。</span></p>
+
+  <p data-wr-co="1496" class="content"><span data-wr-id="layout" data-wr-co="1515">超快的繁殖速度意味着原核生物们可以在短时间内产生数量极其庞大的后代，这里面当然也包含大量发生变异的个体。你只需要想一想那些短时间里就能产生抗药性的超级细菌，就能理解原核生物对严酷环境的适应能力有多么强了。</span></p>
+
+  <p data-wr-co="1627" class="content"><span data-wr-id="layout" data-wr-co="1646">不过，超强的繁殖和变异能力只不过是细菌的常规武器，它们还有一种超级武器，能够以一种常人无法想象的方式传播基因。这种超级武器才是细菌在地球上长盛不衰的秘密。我们都知道，生物可以通过繁殖后代来传承自己的基因。但是，对于细菌这个层面的微生物来说，还有一种更厉害的传播基因的方法，叫作基因横向转移。</span></p>
+
+  <div data-wr-co="1801" class="qrbodyPic">
+    <img data-wr-co="1830" alt="" src="https://res.weread.qq.com/wrepub/CB_43168703_epub_43168703_2.jpg" data-w="1000px" data-ratio="1.004" data-w-new="1004px" style="max-width: 1000px; max-height: 1004px; width: 764.987px; height: 768.047px;">
+
+    <p data-wr-co="2012" class="imgtitle"><span data-wr-id="layout" data-wr-co="2032">蕨类植物和蓝细菌</span></p>
+  </div>
+
+  <p data-wr-co="2060" class="content"><span data-wr-id="layout" data-wr-co="2079">法国生物学温森特·道宾一直从事细菌基因组方面的相关研究。他发现，基因横向转移的现象在生物界无处不在，甚至随时随地都在发生。这种现象之所以在细菌身上很常见，是因为原核生物对外来基因缺乏防范机制，它们很容易接受外来基因并与其融为一体。但是，高等生物的细胞对于自身基因的保护机制就比较健全，接受了外来基因的细胞会被免疫机制摧毁或者清除。所以，高等动植物之中，很少会发生基因横向转移的事件。</span></p>
+
+  <p data-wr-co="2280" class="content"><span data-wr-id="layout" data-wr-co="2299">基因横向转移这件事，让演化的发生变得极其偶然和灵活。如果把一套完整的DNA看作一辆汽车，那么从亲代到子代的遗传和变异，大概就相当于今天洗洗车、明天吸吸尘这样的小改变，这样的改变肯定是非常缓慢的。但是，有了基因横向转移之后就不一样了。一次基因横向转移，就相当于换了一次轮胎，或者安装了一个新的雨刷器这么大的改变。只要一个细菌演化出一个成功的基因，这个基因就完全有可能通过横向转移的方法，被其他的细菌获得。</span></p>
+
+  <p data-wr-co="2510" class="content"><span data-wr-id="layout" data-wr-co="2529">这种跨物种的基因转移刚刚被实验观察到的时候，引起了很大的社会轰动。因为从人类的视角来看，一个基因从一个生物体身上跑出来，进入另外一个生物体的细胞中，这就是今天让很多人闻之色变的转基因。但是，在生物学家眼里，这些现象再正常不过了，所有的生命都在使用相同的机制来复制体内的遗传物质，使用相同的基本密码来“读取”它们的基因。这些相似之处可以从它们的DNA中看到。</span></p>
+
+  <p data-wr-co="2717" class="content"><span data-wr-id="layout" data-wr-co="2736">在最初的几亿年里，细菌几乎把所有可能有效的生存方式试了个遍。早期的地球上没有氧气，细菌就练成了在没有氧气的环境中生存的办法。有专门利用硫化物的硫细菌，有专门依靠氧化铁来生存的铁细菌，还有硝化细菌、固氮细菌、氢细菌等很多奇怪的细菌，每一种细菌，都把一种与众不同的生存方式发挥到了极致。</span></p>
+
+  <p data-wr-co="2887" class="content"><span data-wr-id="layout" data-wr-co="2906">上面说到的一部分细菌，在后面的章节中还会陆续出场。本章咱们重点要讲的，是一种名叫蓝细菌的微生物。这个蓝细菌干了几件非常重要的、改变了生物圈格局的大事。</span></p>
+
+  <p data-wr-co="2991" class="content"><span data-wr-id="layout" data-wr-co="3010">目前已知蓝细菌诞生在35亿年前，它擅长的生存方式，就是大名鼎鼎的光合作用。因为蓝细菌大部分生活在海里，所以我们以前也把它们叫作蓝藻。当然，蓝细菌并不是藻类，之所以过去我们叫它们蓝藻，是因为蓝细菌的个体比一般的细菌要大得多，而且它们能进行光合作用，这些特点与藻类很相似。但从本质上来说，蓝细菌没有细胞核，是一种原核生物，它是细菌的亲戚。</span></p>
+
+  <p data-wr-co="3187" class="content"><span data-wr-id="layout" data-wr-co="3206">有科学研究估算，地球上有50%～85%的氧气是蓝细菌这类可以光合作用的微生物制造的。全世界的森林、草原所产生的氧气，竟然还没有这些蓝细菌产生的氧气多，这是不是很让人吃惊？更让人吃惊的是，那些森林和草原产生的氧气，本质上也是蓝细菌的功劳。</span></p>
+
+  <p data-wr-co="3334" class="content"><span data-wr-id="layout" data-wr-co="3353">1883年春天的一个早晨，波恩大学的植物学家西姆珀早早地来到实验室，他想趁着实验室的其他同事上班之前完成一个实验。西姆珀要把叶绿体从燕麦的叶肉细胞中完整地分离出来，以便更好地观察它们的结构。在观察叶绿体的时候，西姆珀意外地发现，叶绿体与他前不久观察过的蓝藻的结构非常相似——这里说的蓝藻就是蓝细菌。那个时代的科学家还认为蓝藻是一种藻类植物，所以我也暂时使用“蓝藻”这个名字。一瞬间，西姆珀有一种内心被闪电击中的感觉。他意识到，叶绿体和蓝藻之间很可能存在着一些神秘的内在联系。他没办法解释这种相似性，但他相信自己的直觉。西姆珀平常有记日记的习惯，于是，他立即拿出日记本，把自己的发现记录了下来。</span></p>
+
+  <p data-wr-co="3659" class="content"><span data-wr-id="layout" data-wr-co="3678">下午茶的时候，西姆珀找到了与他一起工作的另外一名植物学家斯特拉斯堡。斯特拉斯堡是一位很有威望的植物学家，在当时的名气比西姆珀大得多。</span></p>
+
+  <p data-wr-co="3754" class="content"><span data-wr-id="layout" data-wr-co="3773">西姆珀说：“你有没有注意过，植物叶绿体的结构与蓝藻的结构很相似？这看起来不太像是偶然发生的事情。”</span></p>
+
+  <p data-wr-co="3832" class="content"><span data-wr-id="layout" data-wr-co="3851">斯特拉斯堡的反应有点儿让西姆珀失望，他回答说：“我以后会关注你说的这件事情。不过，既然都是用来进行光合作用的场所，结构相似就是一件再正常不过的事情了。”斯特拉斯堡举了举手里的咖啡杯，继续说，“生物的结构就好像这些杯子一样，如果目的都是用来装咖啡，那么它们的样子就一定会长得差不多。”</span></p>
+
+  <p data-wr-co="4002" class="content"><span data-wr-id="layout" data-wr-co="4021">但是西姆珀并没有就此放下这个观点，他日记中的文字记录了他后续的思考。西姆珀认为，植物细胞中的叶绿体和那些海水里漂流的蓝藻有着共同的祖先，不知道什么原因，导致蓝藻进入一个真核生物的体内，形成了现在的共生关系。虽然没有进一步的证据，但他坚定地认为，叶绿体就是活在其他细胞肚子里的蓝藻。</span></p>
+
+  <p data-wr-co="4171" class="content"><span data-wr-id="layout" data-wr-co="4190">与斯特拉斯堡的反应一样，其他的植物学同行也不太喜欢西姆珀的离奇说法。这就好像孙悟空钻进了铁扇公主的肚子，结果既不是铁扇公主消化了孙悟空，也不是孙悟空征服了铁扇公主，而是铁扇公主与孙悟空从此快快乐乐地生活在一起。即便是脑洞再大的读者，恐怕也很难接受这样的故事情节吧。</span></p>
+
+  <p data-wr-co="4332" class="content"><span data-wr-id="layout" data-wr-co="4351">但是，西姆珀对自己提出的假说深信不疑。他用了18年的时间去寻找证据，直到1901年他去世的那一天。不过，西姆珀的努力在他生前一直都没有得到学界的重视。主流观点认为，西姆珀的理论严重缺乏证据支持，这些观点甚至没有被严肃对待的必要。所以，西姆珀提出的理论甚至连论文都没能发表。</span></p>
+
+  <p data-wr-co="4497" class="content"><span data-wr-id="layout" data-wr-co="4516">我希望看到这里的读者不要把这件事又当作一个科学很傲慢、真理总是掌握在少数人手里的例子。在一些人看来，科学史上的这些故事总是能用来为一些民间科学家的遭遇鸣不平。其实，我们更应该看到的是，科学从来都是只认证据不认人的，科学共同体过去是这样，将来也必然还是这样。这没有什么错，这就是科学的最大特点，也就是宁可错杀，不能错放。因为错杀的后果是真相晚一点浮现，而错放的后果很可能是灾难性的。</span></p>
+
+  <p data-wr-co="4716" class="content"><span data-wr-id="layout" data-wr-co="4735">直到1905年，也就是西姆珀去世后的第四年，一位名叫康斯坦丁·梅列什科夫斯基的俄国科学家（后面我就直接叫他“梅列”了）在研究地衣的过程中注意到西姆珀留下的笔记，他被西姆珀的思考深深地折服了。如果蓝藻与叶绿体在本源上就是一回事，那么关于地衣的诸多问题就都可以迎刃而解了。梅列停下了手头正在进行的关于地衣的研究，开始专注于蓝藻与真菌的共生行为。1909年，梅列关于生物体内共生的论文终于得以发表。虽然梅列的论文几乎无人问津，但是，论文能够发表就意味着学术界正在逐渐承认，蓝藻以共生的形态生活在其他生物的体内，这是生命的一种可能。</span></p>
+
+  <p data-wr-co="5007" class="content"><span data-wr-id="layout" data-wr-co="5026">梅列的研究还不能证明蓝藻和叶绿体就是一回事，他也解释不了蓝藻为什么会跑到其他生物的体内去。但是，这些研究让我们知道，类似蓝藻这样的原始生命，完全有可能把其他生命的身体内部，当作它们自身的生存环境。梅列甚至认为，内共生事件在自然界应该是相当普遍的事情，只要细菌能够在其他生物的身体内部存活下来，就完全可能发生内共生事件。不过，梅列并没有找到除蓝藻以外的可能是内共生现象的例子。</span></p>
+
+  <div data-wr-co="5223" class="qrbodyPic">
+    <img data-wr-co="5252" alt="" src="https://res.weread.qq.com/wrepub/CB_43168703_epub_43168703_3.jpg" data-w="1000px" data-ratio="0.919" data-w-new="919px" style="max-width: 1000px; max-height: 919px; width: 764.996px; height: 703.031px;">
+
+    <p data-wr-co="5433" class="imgtitle"><span data-wr-id="layout" data-wr-co="5453">蓝细菌和叶绿体、好氧细菌和线粒体</span></p>
+  </div>
+
+  <p data-wr-co="5489" class="content"><span data-wr-id="layout" data-wr-co="5508">1922年，这个例子被一位美国解剖学家找到了。这位美国解剖学家名叫伊万·沃林。沃林教授当时在科罗拉多大学医学院做关于细胞线粒体的研究。为了研究方便，沃林把细胞里的线粒体小心地从细胞中剥离出来，然后放在培养皿里。</span></p>
+
+  <p data-wr-co="5623" class="content"><span data-wr-id="layout" data-wr-co="5642">一开始，沃林并没有想把细胞里的线粒体单独养活，只想把线粒体单独染色，以便在显微镜底下能够看得更清楚。为了不让细胞的线粒体坏掉，他就把准备染色的线粒体放进了培养皿里面。培养的结果让沃林大吃一惊，离开细胞的线粒体不仅没有死掉，而且活得不错。线粒体表现出来的行为，就像是某种细菌一样。</span></p>
+
+  <p data-wr-co="5791" class="content"><span data-wr-id="layout" data-wr-co="5810">沃林马上把这个实验写成了论文，发表在《美国解剖学杂志》上。沃林认为，线粒体是在远古时代就与真核生物细胞内部实现共生的细菌，而现代的高等生物，都是远古时代单细胞生命内共生的产物。这个大胆的结论让沃林兴奋不已，他全力投入线粒体内共生的研究当中。到1925年，沃林已经发表了9篇关于线粒体内共生现象的论文和1本专著。然而，学术界再次傲慢地对待了内共生理论。对于沃林的论文，最积极的回应是，沃林的培养基可能被污染了，实验没办法得到重现。更多的科学家在看了论文之后，选择了冷漠和遗忘。究其根本原因，还是证据太少。</span></p>
+
+  <p data-wr-co="6071" class="content"><span data-wr-id="layout" data-wr-co="6090">现在看来，内共生领域似乎变成了一个烫手的山芋，谁研究内共生，谁就会遭到同行的冷眼和非议。此后的整整40年时间中，再也没有人愿意去提这个话题，直到1965年，一位名叫林恩·马古利斯的女性生物学家再次提出了内共生假说。</span></p>
+
+  <p data-wr-co="6207" class="content"><span data-wr-id="layout" data-wr-co="6226">马古利斯在她的书中回忆说：我感觉我就是一个背叛了科学的人，我没办法申请到研究经费，他们在驳回我的申请时说，你的研究就是垃圾，你不要再申请了！我的论文被15个期刊连续拒稿，这让我几乎要放弃了。最后论文发表了，但我收获的只有嘲笑和否定。反对我的人对我说，进化论已经解释了一切，所有的生命都有共同的祖先，这是明摆着的事情，你为什么非要唱反调呢？</span></p>
+
+  <p data-wr-co="6405" class="content"><span data-wr-id="layout" data-wr-co="6424">比起前面几位对内共生现象展开研究的科学家，马古利斯提出的学说显然更加激进和反叛。她认为，内共生现象不仅非常普遍，而且是驱动演化的重要力量。一些好氧细菌变成了现在的线粒体，蓝细菌变成了现在的叶绿体，一些善于运动的螺旋体细菌变成了现在细胞上会运动的纤毛。细菌就像是生命的功能模块，它们先通过快速的变异实现一个复杂的生命功能，再通过内共生组合到其他生命当中去。这大大加快了演化的进程。可以用一个我们比较熟悉的比喻来形容马古利斯的观点，那就是——细菌就像一种活的插件，可以插来插去，给不同的生物带去新功能。</span></p>
+
+  <p data-wr-co="6683" class="content"><span data-wr-id="layout" data-wr-co="6702">英国进化生物学家理查德·道金斯回忆说，马古利斯就像是一个斗士，在到处都是反对声音的学术环境里，靠着惊人的勇气和毅力坚持着自己的学说。1970年，马古利斯在反对声中完成了自己的著作《真核细胞的起源》，系统地阐释了自己的学说。</span></p>
+
+  <p data-wr-co="6823" class="content"><span data-wr-id="layout" data-wr-co="6842">转机虽然会迟到，但终于还是来了。1978年，《科学》期刊上刊登了一篇论文，作者是生物信息学家戴霍夫和舒瓦茨，他们通过实验验证了叶绿体和线粒体与细菌的亲缘关系，这是内共生理论第一个重要的实验证据。虽然依然没有什么人愿意支持马古利斯，但冷嘲热讽少了很多，人们开始改变态度，也许马古利斯的奇谈怪论真的值得认真对待。</span></p>
+
+  <p data-wr-co="7006" class="content"><span data-wr-id="layout" data-wr-co="7025">1983年，科学家进一步发现，叶绿体和线粒体中保留着独立的DNA，这些DNA与细胞自身的DNA完全不同。这项铁证直接让内共生假说彻底走出了争议的阴霾，成为一个备受尊重且被广泛接受的理论。在科学史上，经常会出现一些判决性的证据，本来是充满争议的课题，但判决性的证据一出现，争议立即消除，所有人都服气了。在生物学上，分子生物学的证据往往就会充当这样的判决性证据。过去很多争议已久的问题，例如人类的多地区和单地区起源问题，都是以分子生物学的证据终结争议的。</span></p>
+
+  <p data-wr-co="7260" class="content"><span data-wr-id="layout" data-wr-co="7279">当DNA的证据支持了马古利斯的学说后，她也因此成为科学领域最重要的女性之一。</span></p>
+
+  <p data-wr-co="7327" class="content"><span data-wr-id="layout" data-wr-co="7346">植物永远也不会知道，在叶绿体的起源上，科学界有过这么多的纷纷扰扰。但这不妨碍植物施展出光合作用的本领，将看似牢不可破的水分子分解成氢气和氧气，而这魔法般的本领背后，则是内共生的蓝细菌提供的鼎力支持。</span></p>
+
+  <p data-wr-co="7455" class="content"><span data-wr-id="layout" data-wr-co="7474">内共生现象之所以听起来让人难以接受，主要原因在于，我们对生命本身存在着一些根深蒂固的误解。比如，当一个生物把另外一个生物一口吞进肚子里时，我们就会认为，被吞掉的那个生物，必然是死定了。那种被鲸鱼吞进肚子里还能活着出来的故事，只可能存在于童话世界里。</span></p>
+
+  <p data-wr-co="7608" class="content"><span data-wr-id="layout" data-wr-co="7627">但是，这一次童话并没有骗人。一只小鸟活吞下一条虫子，虫子肯定是活不了的。但一个细菌吞下另一个体形较小的细菌时，被吞下的细菌的确是有可能活下来的。对细菌来说，生活在海水里、土壤里或者其他生物的肚子里，其实并没有本质的区别，别人的肚子，只是一种不算特殊的生存环境而已。</span></p>
+
+  <p data-wr-co="7769" class="content"><span data-wr-id="layout" data-wr-co="7788">高等生命的细胞中都存在细胞核，这已经是一个常识了。但是，如果没有叶绿体、线粒体这些通过内共生进入细胞体内的细胞器，细胞核可能根本没有必要演化出来。现在有一种关于细胞核起源的观点就认为，细胞核是在内共生形成之后，为了保护自身的DNA而逐渐演化形成的。如果真相确实是这样，那么发生在远古时代的内共生，就是所有高等生命诞生的里程碑式的大事件。而在这个大事件中夺得头功的，就是化身为叶绿体的蓝细菌。</span></p>
+
+  <p data-wr-co="7993" class="content"><span data-wr-id="layout" data-wr-co="8012">如果我们把世界上的每一种生命都看作一家努力创业的公司，那么蓝细菌毫无疑问就是有史以来的最佳合伙人，没有之一。你可以想象一下，如果在世界上的绝大部分公司里，都活跃着同一个合伙人的身影，我们会何等地惊讶。蓝细菌在生物界就是这样的地位。</span></p>
+
+  <p data-wr-co="8137" class="content"><span data-wr-id="layout" data-wr-co="8156">蓝细菌的叶绿体化身跟随着植物征服了陆地。但蓝细菌自己也很不简单，它们凭着超强的适应能力，尾随植物到达了几乎所有的地方。现在，我们几乎可以在所有的陆地和水生环境里找到蓝细菌，甚至南极那些裸露的岩石上都有蓝细菌的身影。</span></p>
+
+  <p data-wr-co="8273" class="content"><span data-wr-id="layout" data-wr-co="8292">孙悟空如果想长期生活在铁扇公主的肚子里，我相信他是有这个本事的。蓝细菌也一样，它如此强大的适应力，才让内共生成为可能。</span></p>
+
+  <p data-wr-co="8361" class="content"><span data-wr-id="layout" data-wr-co="8380">对于动物来说，没有植物就没法生存。但对于植物来说，它们有了光合作用这个超能力后，就不仅能够适应环境，还可以亲自改造环境。甚至可以这么说，当它们放弃运动、把根系深深地扎入土壤的时候，它们就已经成了环境本身。</span></p>
+
+  <div data-wr-co="8492" class="qrbodyPic">
+    <img data-wr-co="8521" alt="" src="https://res.weread.qq.com/wrepub/CB_43168703_epub_43168703_4.jpg" data-w="1000px" data-ratio="0.382" data-w-new="382px" style="max-width: 1000px; max-height: 382px; width: 764.971px; height: 292.219px;">
+
+    <p data-wr-co="8702" class="imgtitle"><span data-wr-id="layout" data-wr-co="8722">大片蓝藻一直蔓延到岸边的岩石上</span></p>
+  </div>
+</div></section>`,
+                },
+            ]
+        })
+    }
+
+    document.querySelector('.download_epub_btn').addEventListener('click', () => {
+        download()
+    })
+</script>
+</body>
+</html>
