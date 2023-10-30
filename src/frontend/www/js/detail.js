@@ -173,11 +173,14 @@ function fixImgSizeInHTML(html) {
         const iframe = document.createElement('iframe')
         iframe.srcdoc = html
         iframe.style.visibility = 'hidden'
-        iframe.style.display = 'none'
-        iframe.style.width = '1000px'
+        iframe.style.position = 'absolute'
+        iframe.style.left = '0'
+        iframe.style.top = '0'
+        iframe.style.zIndex = '-1'
+        iframe.style.width = '798px'
         iframe.style.frameborder = '0'
         iframe.onload = function () {
-            fixImgSize(iframe.contentDocument.documentElement, 1000)
+            fixImgSize(iframe.contentDocument.documentElement, 798)
             const result = iframe.contentDocument.documentElement.innerHTML
             resolve(result)
             iframe.remove()

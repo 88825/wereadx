@@ -128,11 +128,11 @@
         background-image: none;
     }
 }
-.download {
+.download_html_btn {
     margin-right: 30px;
 }
 
-.origin-download {
+.download_pdf_btn {
     color: #0087fc;
     cursor: pointer;
     display: none;
