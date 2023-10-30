@@ -181,8 +181,8 @@ function fixImgSizeInHTML(html) {
         iframe.style.frameborder = '0'
         iframe.onload = function () {
             fixImgSize(iframe.contentDocument.documentElement, 798)
-            const result = iframe.contentDocument.documentElement.innerHTML
-            resolve(result)
+            const resultHtml = iframe.contentDocument.documentElement.outerHTML
+            resolve(`<!DOCTYPE html>\n${resultHtml}`)
             iframe.remove()
         }
         iframe.onerror = function (event) {
