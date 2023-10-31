@@ -11,8 +11,6 @@ export default function content(epub) {
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     ${/* @TODO figure out the ID stuff */ ""}
     <dc:identifier id="BookId">${Date.now()}</dc:identifier>
-    <meta refines="#BookId" property="identifier-type" scheme="onix:codelist5">22</meta>
-    <meta property="dcterms:identifier" id="meta-identifier">BookId</meta>
     <dc:title>${escapeXml(title)}</dc:title>
     <dc:language>en</dc:language>
     ${
@@ -22,23 +20,16 @@ export default function content(epub) {
     }
     <dc:creator id="creator">${author}</dc:creator>
     <dc:publisher>${publisher}</dc:publisher>
+    <meta refines="#BookId" property="identifier-type" scheme="onix:codelist5">22</meta>
+    <meta property="dcterms:identifier" id="meta-identifier">BookId</meta>
     <meta name="generator" content="weread.deno.dev" />    
     <meta property="dcterms:modified">${modified}</meta>
   </metadata>
   <manifest>
     <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav" />
+    ${chapters.map(chapter => `    <item id="chapter-${chapter.id}" href="${chapter.id}.xhtml" media-type="application/xhtml+xml" />`).join('\n')}
     <item id="chapter-image-placeholder" href="images/img-placeholder.png" media-type="image/png" />
-    ${chapters
-      .map(
-        (chapter) =>
-          `    <item id="chapter-${chapter.id}" href="${chapter.id}.xhtml" media-type="application/xhtml+xml" />\n` +
-          chapter.images
-            .map(
-              ([id, mimeType]) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" />`
-            )
-            .join("\n")
-      )
-      .join("\n")}
+    ${chapters.flatMap(chapter => chapter.images).map(([id, mimeType]) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" />`).join('\n')}
   </manifest>
   <spine>
     <itemref idref="toc"/>
