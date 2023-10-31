@@ -17,7 +17,7 @@ export default function content(epub) {
     <dc:language>en</dc:language>
     ${
       description
-        ? `<dc:description>${escapeXml(description)}</dc:description>`
+        ? `    <dc:description>${escapeXml(description)}</dc:description>`
         : ""
     }
     <dc:creator id="creator">${author}</dc:creator>
@@ -31,15 +31,10 @@ export default function content(epub) {
     ${chapters
       .map(
         (chapter) =>
-          `<item
-            id="chapter-${chapter.id}"
-            href="${chapter.id}.xhtml"
-            media-type="application/xhtml+xml"
-          />` +
+          `    <item id="chapter-${chapter.id}" href="${chapter.id}.xhtml" media-type="application/xhtml+xml" />\n` +
           chapter.images
             .map(
-              ([id, mimeType]) =>
-                `<item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" />`
+              ([id, mimeType]) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" />`
             )
             .join("\n")
       )
@@ -47,9 +42,7 @@ export default function content(epub) {
   </manifest>
   <spine>
     <itemref idref="toc"/>
-    ${chapters
-      .map((chapter) => `<itemref idref="chapter-${chapter.id}" />`)
-      .join("\n")}
+    ${chapters.map((chapter) => `    <itemref idref="chapter-${chapter.id}" />`).join("\n")}
   </spine>
   <guide>
     <reference title="Table of content" type="toc" href="toc.xhtml"/>

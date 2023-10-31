@@ -120,7 +120,7 @@ export default async function exportToEpub(book) {
 
     // 下载缺失图片占位符
     const placeholderImg = await fetch("/epub/img-placeholder.png").then(
-      (res) => res.blob()
+        (res) => res.blob()
     );
     zip.file("OEBPS/images/img-placeholder.png", placeholderImg);
 
