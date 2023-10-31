@@ -30,6 +30,8 @@ export default function content(epub) {
     ${chapters.map(chapter => `    <item id="chapter-${chapter.id}" href="${chapter.id}.xhtml" media-type="application/xhtml+xml" />`).join('\n')}
     <item id="chapter-image-placeholder" href="images/img-placeholder.png" media-type="image/png" />
     ${chapters.flatMap(chapter => chapter.images).map(([id, mimeType]) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" />`).join('\n')}
+    <item id="common-style" href="styles/common.css" media-type="text/css" />
+    <item id="common-script" href="scripts/common.js" media-type="application/javascript" />
   </manifest>
   <spine>
     <itemref idref="toc"/>

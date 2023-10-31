@@ -231,8 +231,8 @@ function formatDate(date) {
 
 /**
  * 打包 zip 文件
- * @param filename
- * @param content
+ * @param {string} filename
+ * @param {string} content
  * @return {Promise<void>}
  */
 async function zip(filename, content) {
@@ -245,9 +245,9 @@ async function zip(filename, content) {
 /**
  * 合并章节及添加自定义内容，包括样式与脚本
  * @param title
- * @param htmls
- * @param styles
- * @param scripts
+ * @param {string[]} htmls
+ * @param {string[]} styles
+ * @param {string[]} scripts
  * @return {Promise<void>}
  */
 async function zipBookContent2HTML(title, htmls, styles = [], scripts = []) {
@@ -274,13 +274,16 @@ ${script}
 
 /**
  * 打包epub
- * @param title
- * @param chapters
- * @param styles
- * @param scripts
+ * @param {string} title
+ * @param {{title: string, content_html: string}[]} chapters
+ * @param {string[]} styles
+ * @param {string[]} scripts
  * @return {Promise<void>}
  */
 async function zipBookContent2Epub(title, chapters, styles = [], scripts = []) {
+    /**
+     * @type {import('../epub/index.js').Book}
+     */
     const book = {
         title: title,
         chapters: chapters,
@@ -317,9 +320,16 @@ function downloadEBook(secret, token, format = 'html') {
         evtSource.close()
     }
 
+    /**
+     *
+     * @type {{idx: number, chapterUid: number, html: string}[]}
+     */
     const htmls = []
+    /** @type {string[]} */
     const styles = []
+    /** @type {string[]} */
     const scripts = []
+
     let receivedChapterCount = 0
     let hasDownloaded = false
 
@@ -367,6 +377,9 @@ function downloadEBook(secret, token, format = 'html') {
                     const htmls = sortedHtml.map(_ => _.html)
                     await zipBookContent2HTML(bookDetail.title, htmls, styles, scripts)
                 } else if (format === 'epub') {
+                    /**
+                     * @type {{title: string, content_html: string}[]}
+                     */
                     const chapters = sortedHtml.map(_ => {
                         const chapter = bookChapters.find(c => c.chapterUid === _.chapterUid)
                         return {

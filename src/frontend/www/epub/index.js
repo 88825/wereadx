@@ -1,4 +1,13 @@
 /**
+ * @typedef Book
+ * @property {string} title
+ * @property {string} description
+ * @property {{title: string, content_html: string}[]} chapters
+ * @property {string[]} styles
+ * @property {string[]} scripts
+ */
+
+/**
  * 需要打包的 epub 数据结构
  * @typedef Epub
  * @property {string} title
@@ -8,8 +17,6 @@
  * @property {string} chapters.title
  * @property {string} chapters.content
  * @property {Array} chapters.images [["1830-1923.png", "image/png", blob], [...]]
- * @property {Array} chapters.styles
- * @property {Array} chapters.scripts
  */
 
 import getContent from "./templates/content.js";
@@ -19,7 +26,7 @@ import getToc from "./templates/toc.js";
 import {getImgExt, getUid, slugify, CORS_PROXY} from "./utils.js";
 
 /**
- * @param book
+ * @param {Book} book
  * @returns {Promise} - downloads a file in the browser
  */
 export default async function exportToEpub(book) {
@@ -69,28 +76,13 @@ export default async function exportToEpub(book) {
                     })
                 ).then((imgs) => imgs.filter((img) => img)); // don't keep anything returned as null
 
-                // Remove things that throw errors and that you wouldn't expect to have
-                // in an epub file.
-                // @TODO SVGs should probably be included as images
-                Array.from(
-                    $html.querySelectorAll("template, picture > source")
-                ).forEach(($node) => {
-                    $node.remove();
-                });
-
                 return {
-                    // id for the file name, i.e. 001
+                    // id for the file name, i.e., 001
                     id: String(index).padStart(3, "0"),
                     title: chapter.title || "[Untitled]",
                     // Turn HTML into xhtml
-                    content: new XMLSerializer().serializeToString(
-                        // @TODO remove xmlns?
-                        // results in <section xmlns="http://www.w3.org/1999/xhtml">content</section>"
-                        $html.querySelector("body > section")
-                    ),
+                    content: new XMLSerializer().serializeToString($html.querySelector("body > section")),
                     images,
-                    styles: book.styles,
-                    scripts: book.scripts,
                 };
             })
         ),
@@ -110,6 +102,8 @@ export default async function exportToEpub(book) {
     zip.file("META-INF/container.xml", getContainer());
     zip.file("OEBPS/content.opf", getContent(epub));
     zip.file("OEBPS/toc.xhtml", getToc(epub));
+    zip.file("OEBPS/styles/common.css", book.styles.join('\n'))
+    zip.file("OEBPS/scripts/common.js", book.scripts.join('\n'))
     epub.chapters.forEach((chapter) => {
         zip.file(`OEBPS/${chapter.id}.xhtml`, getChapter(chapter));
 

@@ -1,7 +1,5 @@
 export default function chapter(chapter) {
-    const {title, content, styles, scripts} = chapter;
-    const style = styles.map(style => `<style>${style}</style>`).join('\n')
-    const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
+    const {title, content} = chapter;
 
     return `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
@@ -11,11 +9,12 @@ export default function chapter(chapter) {
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>${title}</title>
-    ${style}
+    <link rel="stylesheet" href="styles/common.css" />
   </head>
   <body>
     ${content}
-    ${script}
+    
+    <script src="scripts/common.js"></script>
   </body>
 </html>
 `;
