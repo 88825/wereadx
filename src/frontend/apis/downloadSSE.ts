@@ -50,6 +50,11 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                         // 个人使用，可以降低间隔，加快下载进度
                         await sleep(500);
                     }
+
+                    // 本地测试
+                    // if (idx === 3) {
+                    //     break
+                    // }
                 }
 
                 sendEvent(isClosed, controller, "complete", null);

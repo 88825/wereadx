@@ -1,6 +1,6 @@
 import {escapeXml} from "../utils.js";
 
-export default function toc(epub) {
+export default function getToc(epub) {
     const {chapters} = epub;
 
     return `<?xml version='1.0' encoding='utf-8'?>

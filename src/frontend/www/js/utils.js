@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from "https://esm.sh/uuid@latest";
+
 // 处理图片的尺寸
 export function fixImgSize(rootElement, containerWidth) {
     const imgs = rootElement.getElementsByTagName('img')
@@ -80,4 +82,8 @@ export function handleRespError(resp) {
         alert(msg)
         throw new Error('接口失败: ' + msg)
     }
+}
+
+export function uuid() {
+    return uuidv4()
 }

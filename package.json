@@ -19,6 +19,7 @@
     "husky": "^8.0.0"
   },
   "dependencies": {
-    "crypto-js": "^4.2.0"
+    "crypto-js": "^4.2.0",
+    "uuid": "^9.0.1"
   }
 }

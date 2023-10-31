@@ -1,4 +1,4 @@
-import {fixImgSize, checkLogin, handleRespError} from "./utils.js"
+import {fixImgSize, checkLogin, handleRespError, uuid} from "./utils.js"
 import exportToEpub from "../epub/index.js"
 
 let bookDetail = null
@@ -111,11 +111,7 @@ window.addEventListener('DOMContentLoaded', async () => {
  */
 function renderBookMetaInfo(book) {
     let {title, author, cover, intro, format, isbn, publishTime, publisher, otherType} = book
-    // 替换成高清图片
-    const re = /(.+)\/s_([^/]+)$/
-    if (re.test(cover)) {
-        cover = cover.replace(/(.+)\/s_([^/]+)$/, '$1/t6_$2')
-    }
+
     document.querySelector('.wr_bookCover_img').src = cover
     document.querySelector('.bookInfo_right_header_title_text').textContent = title
     document.querySelector('.bookInfo_author').textContent = '作者：' + (author || '无')
@@ -168,6 +164,11 @@ async function fetchAndRenderBookInfo(token) {
     handleRespError(bookDetailResp)
 
     bookDetail = bookDetailResp.data
+    // 封面图替换成高清图片
+    const re = /(.+)\/s_([^/]+)$/
+    if (re.test(bookDetail.cover)) {
+        bookDetail.cover = bookDetail.cover.replace(/(.+)\/s_([^/]+)$/, '$1/t6_$2')
+    }
     renderBookMetaInfo(bookDetail)
 
     // 获取目录
@@ -244,13 +245,14 @@ async function zip(filename, content) {
 
 /**
  * 合并章节及添加自定义内容，包括样式与脚本
- * @param title
+ * @param bookDetail
  * @param {string[]} htmls
  * @param {string[]} styles
  * @param {string[]} scripts
  * @return {Promise<void>}
  */
-async function zipBookContent2HTML(title, htmls, styles = [], scripts = []) {
+async function zipBookContent2HTML(bookDetail, htmls, styles = [], scripts = []) {
+    const {title} = bookDetail
     const style = styles.map(style => `<style>${style}</style>`).join('\n')
     const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
     let html = `<!doctype html>
@@ -274,17 +276,26 @@ ${script}
 
 /**
  * 打包epub
- * @param {string} title
+ * @param bookDetail
  * @param {{title: string, content_html: string}[]} chapters
  * @param {string[]} styles
  * @param {string[]} scripts
  * @return {Promise<void>}
  */
-async function zipBookContent2Epub(title, chapters, styles = [], scripts = []) {
+async function zipBookContent2Epub(bookDetail, chapters, styles = [], scripts = []) {
+    let {title, author, cover, intro, isbn, publishTime, publisher} = bookDetail
+
     /**
      * @type {import('../epub/index.js').Book}
      */
     const book = {
+        id: uuid(),
+        cover: cover,
+        isbn: isbn,
+        author: author.replace(/\s+著$/i, ''),
+        description: intro,
+        publisher: publisher,
+        publishTime: publishTime,
         title: title,
         chapters: chapters,
         styles: styles,
@@ -375,7 +386,7 @@ function downloadEBook(secret, token, format = 'html') {
                 const sortedHtml = htmls.sort((a, b) => a.idx - b.idx)
                 if (format === 'html') {
                     const htmls = sortedHtml.map(_ => _.html)
-                    await zipBookContent2HTML(bookDetail.title, htmls, styles, scripts)
+                    await zipBookContent2HTML(bookDetail, htmls, styles, scripts)
                 } else if (format === 'epub') {
                     /**
                      * @type {{title: string, content_html: string}[]}
@@ -387,7 +398,7 @@ function downloadEBook(secret, token, format = 'html') {
                             content_html: _.html,
                         }
                     })
-                    await zipBookContent2Epub(bookDetail.title, chapters, styles, scripts)
+                    await zipBookContent2Epub(bookDetail, chapters, styles, scripts)
                 } else {
                     alert('不支持的下载格式: ' + format)
                 }

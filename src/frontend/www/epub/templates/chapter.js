@@ -1,4 +1,4 @@
-export default function chapter(chapter) {
+export default function getChapter(chapter) {
     const {title, content} = chapter;
 
     return `<?xml version="1.0" encoding="utf-8"?>
