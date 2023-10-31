@@ -272,12 +272,22 @@ ${script}
     await zip(title, html)
 }
 
-async function zipBookContent2Epub(title, chapters) {
-    const epub = {
+/**
+ * 打包epub
+ * @param title
+ * @param chapters
+ * @param styles
+ * @param scripts
+ * @return {Promise<void>}
+ */
+async function zipBookContent2Epub(title, chapters, styles = [], scripts = []) {
+    const book = {
         title: title,
-        items: chapters,
+        chapters: chapters,
+        styles: styles,
+        scripts: scripts,
     }
-    await exportToEpub(epub)
+    await exportToEpub(book)
 }
 
 /**
@@ -364,7 +374,7 @@ function downloadEBook(secret, token, format = 'html') {
                             content_html: _.html,
                         }
                     })
-                    await zipBookContent2Epub(bookDetail.title, chapters)
+                    await zipBookContent2Epub(bookDetail.title, chapters, styles, scripts)
                 } else {
                     alert('不支持的下载格式: ' + format)
                 }

@@ -2,7 +2,7 @@ import { escapeXml } from "../utils.js";
 
 export default function toc(epub) {
   const { chapters } = epub;
-  return `<?xml version='1.0' encoding='UTF-8'?>
+  return `<?xml version='1.0' encoding='utf-8'?>
     <!DOCTYPE html>
     <html xmlns:epub="http://www.idpf.org/2007/ops" xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -17,7 +17,6 @@ export default function toc(epub) {
           ${chapters
             .map(
               (chapter) =>
-                // prettier-ignore
                 `<li id="chapter-${chapter.id}"><a epub:type="bodymatter" href="${chapter.id}.xhtml">${escapeXml(chapter.title)}</a></li>`
             )
             .join("\n")}
