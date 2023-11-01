@@ -4,6 +4,7 @@ import {randomInteger, runInDenoDeploy, sleep} from "../../utils/index.ts";
 import {incrementDownloadCount} from "../../kv/download.ts";
 import {sendEvent} from "./common.ts";
 import {Credential} from "../../kv/credential.ts";
+import {os} from "../../deps.ts"
 
 const inDenoDeploy = runInDenoDeploy()
 
@@ -21,8 +22,16 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                 const chapterInfos = await web_book_chapterInfos([bookId], cookie)
                 const chapters = chapterInfos.data[0].updated
 
+                // Windows 环境下通过 `import.meta.resolve()` 函数获取到的路径为 'file:///C:/Users/...'，而 `Deno.readTextFileSync()` 函数
+                // 在读取 '/C:/Users/...' 文件会出错，需要去掉开头的 '/' 字符，变为 'C:/Users/...' 才可以正确读取。
+                // 详情查看 https://github.com/champkeh/wereadx/issues/17
+                let fileRe = /^file:\/\//
+                const platform = os.platform()
+                if (platform === "win32") {
+                    fileRe = /^file:\/\/\//
+                }
+
                 // 开始下载前，先发送自定义样式及脚本
-                const fileRe = /^file:\/\//
                 const resetStyle = Deno.readTextFileSync(import.meta.resolve("../assets/styles/reset.css").replace(fileRe, ''))
                 const footerNoteStyle = Deno.readTextFileSync(
                     import.meta.resolve("../assets/styles/footer_note.css").replace(fileRe, ""),

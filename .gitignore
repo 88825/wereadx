@@ -3,3 +3,5 @@
 .husky/pre-push
 .DS_Store
 node_modules
+download
+test
