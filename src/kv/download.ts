@@ -28,11 +28,16 @@ export async function incrementDownloadCount(credential: Credential, bookId: str
 
   // 如果是运行在 Deno Deploy 上面，则记录下载的书
   if (runInDenoDeploy()) {
-    await insertDownloadRecords([{
-      vid: credential.vid.toString(),
-      book_id: bookId,
-      timestamp: now(),
-    }])
+    // 可能没有配置，所以包在 try catch 里面执行
+    try {
+      await insertDownloadRecords([{
+        vid: credential.vid.toString(),
+        book_id: bookId,
+        timestamp: now(),
+      }])
+    } catch (_) {
+      console.log('没有配置 DATABASE_URL 环境变量，下载记录保存失败')
+    }
   }
 }
 

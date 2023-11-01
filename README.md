@@ -40,8 +40,33 @@ yarn dev
 ### 2. 新建 Deno Deploy 项目，配置如下:
 ![项目配置](assets/setup.png)
 
-### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量
+### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量 (可选)
 ![环境变量配置](assets/env.png)
+
+> 环境变量说明:
+> 
+> 目前只需要配置一个环境变量: `DATABASE_URL`，作用是为了在下载成功之后记录一下书籍下载记录，相关代码可以在`src/kv/download.ts`中查看。
+>
+
+<details>
+<summary>获取 DATABASE_URL</summary>
+
+#### 关于这个环境变量的获取：
+注册 https://supabase.com/ 账号，创建一个新的项目，如下图：
+
+![创建一个数据库项目](assets/new-database-project.png)
+
+> **保存这个数据库密码，后面连接字符串需要使用**
+
+等待项目创建成功后，进入**Project Settings**里面的**Database**：
+
+![数据库配置入口](assets/database-entry.png)
+
+找到 **连接字符串** 面板，切换到`URI`，这个就是`DATABASE_URL`。注意需要用上面保存的数据库密码替换里面的`[YOUR-PASSWORD]`部分。
+
+![连接字符串](assets/connect-string.png)
+</details>
+
 
 ### 4. 设置定时任务
 自动阅读和兑换体验卡都需要定时任务来触发执行，目前deno deploy自己的消息队列不太好用，所以采用 cloudflare 的 worker 来作为定时任务的触发器。
