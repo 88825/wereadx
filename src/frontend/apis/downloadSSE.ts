@@ -31,7 +31,7 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                     fileRe = /^file:\/\/\//
                 }
 
-                // 开始下载前，先发送自定义样式及脚本
+                // 开始下载前，先发送公共样式及脚本
                 const resetStyle = Deno.readTextFileSync(import.meta.resolve("../assets/styles/reset.css").replace(fileRe, ''))
                 const footerNoteStyle = Deno.readTextFileSync(
                     import.meta.resolve("../assets/styles/footer_note.css").replace(fileRe, ""),
@@ -49,8 +49,15 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                     }
 
                     // 单章下载
-                    const html = await web_book_chapter_e(bookInfo, chapter, cookie);
-                    const data = {total: chapters.length, current: idx++, chapterUid: chapter.chapterUid, content: html};
+                    const [title, html, style] = await web_book_chapter_e(bookInfo, chapter, cookie);
+                    const data = {
+                        total: chapters.length,
+                        current: idx++,
+                        chapterUid: chapter.chapterUid,
+                        title: title,
+                        html: html,
+                        style: style,
+                    };
                     sendEvent(isClosed, controller, "progress", data);
 
                     if (inDenoDeploy) {

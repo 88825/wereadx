@@ -1,5 +1,5 @@
 export default function getChapter(chapter) {
-    const {title, content} = chapter;
+    const {title, html, style} = chapter;
 
     return `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
@@ -10,9 +10,10 @@ export default function getChapter(chapter) {
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>${title}</title>
     <link rel="stylesheet" href="styles/common.css" />
+    <style>${style}</style>
   </head>
   <body>
-    ${content}
+    ${html}
     
     <script src="scripts/common.js"></script>
   </body>

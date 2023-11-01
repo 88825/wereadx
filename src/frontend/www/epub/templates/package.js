@@ -33,16 +33,15 @@ export default function getPackage(epub) {
     <meta name="generator" content="weread.deno.dev" />
   </metadata>
   <manifest>
+    <item id="chapter-image-placeholder" href="images/img-placeholder.png" media-type="image/png" />
     ${cover && coverMineType ? '<item id="cover-image" href="' + cover + '" media-type="' + coverMineType + '" properties="cover-image" />' : ''}
     <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav" />
 ${chapters.map(chapter => `    <item id="chapter-${chapter.id}" href="${chapter.id}.xhtml" media-type="application/xhtml+xml" properties="scripted" />`).join('\n')}
-    <item id="chapter-image-placeholder" href="images/img-placeholder.png" media-type="image/png" />
 ${chapters.flatMap(chapter => chapter.images).map(([id, mimeType]) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" fallback="chapter-image-placeholder" />`).join('\n')}
     <item id="common-style" href="styles/common.css" media-type="text/css" />
-    <item id="common-script" href="scripts/common.js" media-type="application/javascript" properties="scripted" />
+    <item id="common-script" href="scripts/common.js" media-type="application/javascript" />
   </manifest>
   <spine>
-    ${cover && coverMineType ? '<itemref idref="cover-image"/>' : '<!-- cover-image -->'}
     <itemref idref="toc"/>
 ${chapters.map((chapter) => `    <itemref idref="chapter-${chapter.id}" />`).join("\n")}
   </spine>

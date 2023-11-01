@@ -246,15 +246,17 @@ async function zip(filename, content) {
 /**
  * 合并章节及添加自定义内容，包括样式与脚本
  * @param bookDetail
- * @param {string[]} htmls
+ * @param {{title: string, html: string, style: string}[]} chapters
  * @param {string[]} styles
  * @param {string[]} scripts
  * @return {Promise<void>}
  */
-async function zipBookContent2HTML(bookDetail, htmls, styles = [], scripts = []) {
+async function zipBookContent2HTML(bookDetail, chapters, styles = [], scripts = []) {
     const {title} = bookDetail
     const style = styles.map(style => `<style>${style}</style>`).join('\n')
     const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
+    const contentHtml = chapters.map(chapter => `<!-- ${chapter.title} -->\n${chapter.style}\n${chapter.html}`)
+
     let html = `<!doctype html>
 <html lang="en">
 <head>
@@ -266,7 +268,7 @@ async function zipBookContent2HTML(bookDetail, htmls, styles = [], scripts = [])
     ${style}
 </head>
 <body>
-${htmls.join("\n")}
+${contentHtml.join("\n")}
 ${script}
 </body>
 </html>
@@ -277,7 +279,7 @@ ${script}
 /**
  * 打包epub
  * @param bookDetail
- * @param {{title: string, content_html: string}[]} chapters
+ * @param {{title: string, html: string, style: string}[]} chapters
  * @param {string[]} styles
  * @param {string[]} scripts
  * @return {Promise<void>}
@@ -333,13 +335,13 @@ function downloadEBook(secret, token, format = 'html') {
 
     /**
      *
-     * @type {{idx: number, chapterUid: number, html: string}[]}
+     * @type {{idx: number, chapterUid: number, title: string, html: string, style: string}[]}
      */
-    const htmls = []
+    const chapters = []
     /** @type {string[]} */
-    const styles = []
+    const commonStyles = []
     /** @type {string[]} */
-    const scripts = []
+    const commonScripts = []
 
     let receivedChapterCount = 0
     let hasDownloaded = false
@@ -353,20 +355,22 @@ function downloadEBook(secret, token, format = 'html') {
     })
     // 自定义样式与脚本
     evtSource.addEventListener('preface', (event) => {
-        const {styles: s1, scripts: s2} = JSON.parse(event.data)
-        styles.push(...s1)
-        scripts.push(...s2)
+        const {styles: styles, scripts: scripts} = JSON.parse(event.data)
+        commonStyles.push(...styles)
+        commonScripts.push(...scripts)
     }, false)
 
     // 单章下载完成
     evtSource.addEventListener('progress', (event) => {
-        const {total, current, chapterUid, content} = JSON.parse(event.data)
+        const {total, current, chapterUid, title, html, style} = JSON.parse(event.data)
         receivedChapterCount++
-        fixImgSizeInChapter(content).then(html => {
-            htmls.push({
+        fixImgSizeInChapter(html).then(html => {
+            chapters.push({
                 idx: current,
                 chapterUid: chapterUid,
+                title: title,
                 html: html,
+                style: style,
             })
         }).catch(err => {
             alert(err.message)
@@ -380,25 +384,14 @@ function downloadEBook(secret, token, format = 'html') {
         } else if (format === 'epub') {
             document.querySelector(`.download_${format}_btn`).textContent = '正在打包图片'
         }
-        if (htmls.length === receivedChapterCount) {
+        if (chapters.length === receivedChapterCount) {
             setTimeout(async () => {
-                // 重新整理顺序
-                const sortedHtml = htmls.sort((a, b) => a.idx - b.idx)
+                // 重新整理章节顺序
+                const sortedChapters = chapters.sort((a, b) => a.idx - b.idx)
                 if (format === 'html') {
-                    const htmls = sortedHtml.map(_ => _.html)
-                    await zipBookContent2HTML(bookDetail, htmls, styles, scripts)
+                    await zipBookContent2HTML(bookDetail, sortedChapters, commonStyles, commonScripts)
                 } else if (format === 'epub') {
-                    /**
-                     * @type {{title: string, content_html: string}[]}
-                     */
-                    const chapters = sortedHtml.map(_ => {
-                        const chapter = bookChapters.find(c => c.chapterUid === _.chapterUid)
-                        return {
-                            title: chapter ? chapter.title : '[Untitled]',
-                            content_html: _.html,
-                        }
-                    })
-                    await zipBookContent2Epub(bookDetail, chapters, styles, scripts)
+                    await zipBookContent2Epub(bookDetail, sortedChapters, commonStyles, commonScripts)
                 } else {
                     alert('不支持的下载格式: ' + format)
                 }

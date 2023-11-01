@@ -351,8 +351,8 @@ export async function web_book_chapter_e(
     bookInfo: BookInfo,
     chapter: ChapterInfo,
     cookie = "",
-): Promise<string> {
-    let promise: Promise<[string[], string | null]>;
+): Promise<[string, string, string]> {
+    let promise: Promise<[string[], string]>;
 
     const bookId = bookInfo.bookId
 
@@ -369,15 +369,15 @@ export async function web_book_chapter_e(
                 "string" == typeof results[1] && results[1].length > 0 &&
                 "string" == typeof results[3] && results[3].length > 0
             ) {
-                let styles = dS(results[2]);
-                styles = styleParser.parse(styles, {
+                let style = dS(results[2]);
+                style = styleParser.parse(style, {
                     removeFontSizes: true,
                     enableTranslate: false,
                 });
 
                 const html = dH(results[0] + results[1] + results[3]);
-                const htmls = htmlParser.parse(html, styles, 10000);
-                return [htmls, styles];
+                const htmls = htmlParser.parse(html, style, 10000);
+                return [htmls, style];
             } else {
                 console.log(results);
                 throw Error(`下载失败(${bookId})`);
@@ -395,7 +395,7 @@ export async function web_book_chapter_e(
             ) {
                 const html = dT(results[0] + results[1]);
                 const htmls = htmlParser.parseTxt(html, 10000);
-                return [htmls, null];
+                return [htmls, ''];
             } else {
                 console.log(results);
                 throw Error(`下载失败(${bookId})`);
@@ -403,11 +403,11 @@ export async function web_book_chapter_e(
         });
     }
 
-    let [htmls, styles] = await promise;
+    let [htmls, style] = await promise;
 
     // 处理style
-    if (styles) {
-        styles = processStyles(styles, bookId);
+    if (style) {
+        style = processStyles(style, bookId);
     }
 
     // 处理html
@@ -431,14 +431,13 @@ export async function web_book_chapter_e(
     }).join("");
 
     let html = `<section data-book-id="${bookId}" data-chapter-uid="${chapter.chapterUid}" class="readerChapterContent">`
-    if (styles) {
-        html += `<style>${styles}</style>`
-    }
     // 判断是否添加章节标题
     if (showChapterTitle(bookInfo)) {
         html += `<div class="chapterTitle">${chapterTitleText(bookInfo, chapter)}</div>`
     }
     html += `${sections}</section>`
+    html = mergeSpanInHtml(html)
+    const title = chapterTitleText(bookInfo, chapter) || chapter.title
 
-    return mergeSpanInHtml(html)
+    return [title, html, style]
 }

@@ -9,7 +9,7 @@
  * @property {string} isbn ISBN
  * @property {string} publisher 出版公司
  * @property {string} publishTime 出版时间
- * @property {{title: string, content_html: string}[]} chapters
+ * @property {{title: string, html: string, style: string}[]} chapters
  * @property {string[]} styles
  * @property {string[]} scripts
  */
@@ -30,7 +30,8 @@
  * @property {Object} chapters 章节数据
  * @property {string} chapters.id 章节id
  * @property {string} chapters.title 章节标题
- * @property {string} chapters.content 章节内容
+ * @property {string} chapters.html 章节内容
+ * @property {string} chapters.style 章节样式
  * @property {Array} chapters.images [["1830-1923.png", "image/png", blob], [...]]
  */
 
@@ -62,7 +63,7 @@ export default async function exportToEpub(book) {
         chapters: await Promise.all(
             book.chapters.map(async (chapter, index) => {
                 const $html = new DOMParser().parseFromString(
-                    chapter.content_html,
+                    chapter.html,
                     "text/html"
                 );
 
@@ -97,7 +98,8 @@ export default async function exportToEpub(book) {
                 return {
                     id: String(index).padStart(3, "0"),
                     title: chapter.title || "[Untitled]",
-                    content: new XMLSerializer().serializeToString($html.querySelector("body > section")),
+                    html: new XMLSerializer().serializeToString($html.querySelector("body > section")),
+                    style: chapter.style,
                     images,
                 };
             })
