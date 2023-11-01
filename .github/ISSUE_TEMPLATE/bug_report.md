@@ -2,16 +2,15 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: bug
+labels: ''
 assignees: ''
 
 ---
 
-**详细描述一下遇到的问题**
-A clear and concise description of what the bug is.
+**请详细描述一下遇到的问题**
 
 **期望的结果**
-A clear and concise description of what you expected to happen.
 
 **书籍BookID**
-如果涉及到特定书籍，请提供书籍的 bookId
+如果涉及到特定书籍，请提供书籍的 bookId；
+如果下载的书有格式错误，请提供一份有问题的文件方便调试
