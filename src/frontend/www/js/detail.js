@@ -1,8 +1,8 @@
-import {fixImgSize, checkLogin, handleRespError, uuid} from "./utils.js"
+import {checkLogin, fixImgSize, handleRespError, transformChaptersToToc, uuid} from "./utils.js"
 import exportToEpub from "../epub/index.js"
 
 let bookDetail = null
-let bookChapters = []
+let bookToc = []
 let evtSource
 
 
@@ -132,21 +132,20 @@ function renderBookMetaInfo(book) {
 
 /**
  * 渲染目录
- * @param chapters
+ * @param toc
  */
-function renderToc(chapters) {
-    const fragment = document.createDocumentFragment()
-    for (const chapter of chapters) {
-        const {title, level, chapterUid} = chapter
-        const li = document.createElement('li')
-        li.textContent = title
-        li.className = 'chapter'
-        li.dataset.level = level
-        li.dataset.chapterUid = chapterUid
-        fragment.append(li)
+function renderToc(toc) {
+    let html = '<ol>'
+    for (let i = 0; i < toc.length; i++) {
+        const {title, children} = toc[i]
+        html += `<li><a>${title}</a>`
+        if (Array.isArray(children) && children.length > 0) {
+            html += renderToc(children)
+        }
+        html += '</li>'
     }
-
-    document.querySelector('.toc').append(fragment)
+    html += '</ol>'
+    return html
 }
 
 /**
@@ -181,8 +180,32 @@ async function fetchAndRenderBookInfo(token) {
     handleRespError(bookTocResp)
 
     const chapters = bookTocResp.data.data[0].updated
-    bookChapters = chapters
-    renderToc(chapters)
+
+    // 处理 anchors
+    for (let i = 0; i < chapters.length; i++) {
+        const chapter = chapters[i]
+
+        chapter.level = chapter.level || 1
+
+        if (Array.isArray(chapter.anchors) && chapter.anchors.length > 0) {
+            const anchors = chapter.anchors
+            delete chapter['anchors']
+            const anchorChapters = anchors.map((anchor) => ({
+                ...chapter,
+                title: anchor.title,
+                level: anchor.level,
+                anchor: anchor.anchor,
+                isAnchor: true,
+            }))
+
+            chapters.splice(i+1, 0, ...anchorChapters)
+        }
+    }
+
+    // 构造成树形结构
+    bookToc = transformChaptersToToc(chapters)
+
+    document.querySelector('#toc').innerHTML = renderToc(bookToc)
 }
 
 
@@ -246,12 +269,13 @@ async function zip(filename, content) {
 /**
  * 合并章节及添加自定义内容，包括样式与脚本
  * @param bookDetail
- * @param {{title: string, html: string, style: string}[]} chapters
+ * @param {{chapterIdx: number, chapterUid: number, title: string, level: number, anchor: string, children: {}[]}[]} bookToc
+ * @param {{chapterIdx: number, chapterUid: number, title: string, html: string, style: string}[]} chapters
  * @param {string[]} styles
  * @param {string[]} scripts
  * @return {Promise<void>}
  */
-async function zipBookContent2HTML(bookDetail, chapters, styles = [], scripts = []) {
+async function zipBookContent2HTML(bookDetail, bookToc, chapters, styles = [], scripts = []) {
     const {title} = bookDetail
     const style = styles.map(style => `<style>${style}</style>`).join('\n')
     const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
@@ -268,6 +292,7 @@ async function zipBookContent2HTML(bookDetail, chapters, styles = [], scripts = 
     ${style}
 </head>
 <body>
+<!-- todo: toc -->
 ${contentHtml.join("\n")}
 ${script}
 </body>
@@ -279,12 +304,13 @@ ${script}
 /**
  * 打包epub
  * @param bookDetail
- * @param {{title: string, html: string, style: string}[]} chapters
+ * @param {{chapterIdx: number, chapterUid: number, title: string, level: number, anchor: string, children: {}[]}[]} bookToc
+ * @param {{chapterIdx: number, chapterUid: number, title: string, html: string, style: string}[]} chapters
  * @param {string[]} styles
  * @param {string[]} scripts
  * @return {Promise<void>}
  */
-async function zipBookContent2Epub(bookDetail, chapters, styles = [], scripts = []) {
+async function zipBookContent2Epub(bookDetail, bookToc, chapters, styles = [], scripts = []) {
     let {title, author, cover, intro, isbn, publishTime, publisher} = bookDetail
 
     /**
@@ -299,6 +325,7 @@ async function zipBookContent2Epub(bookDetail, chapters, styles = [], scripts = 
         publisher: publisher,
         publishTime: publishTime,
         title: title,
+        toc: bookToc,
         chapters: chapters,
         styles: styles,
         scripts: scripts,
@@ -335,7 +362,7 @@ function downloadEBook(secret, token, format = 'html') {
 
     /**
      *
-     * @type {{idx: number, chapterUid: number, title: string, html: string, style: string}[]}
+     * @type {{chapterIdx: number, chapterUid: number, title: string, html: string, style: string}[]}
      */
     const chapters = []
     /** @type {string[]} */
@@ -366,7 +393,7 @@ function downloadEBook(secret, token, format = 'html') {
         receivedChapterCount++
         fixImgSizeInChapter(html).then(html => {
             chapters.push({
-                idx: current,
+                chapterIdx: current,
                 chapterUid: chapterUid,
                 title: title,
                 html: html,
@@ -387,11 +414,11 @@ function downloadEBook(secret, token, format = 'html') {
         if (chapters.length === receivedChapterCount) {
             setTimeout(async () => {
                 // 重新整理章节顺序
-                const sortedChapters = chapters.sort((a, b) => a.idx - b.idx)
+                const sortedChapters = chapters.sort((a, b) => a.chapterIdx - b.chapterIdx)
                 if (format === 'html') {
-                    await zipBookContent2HTML(bookDetail, sortedChapters, commonStyles, commonScripts)
+                    await zipBookContent2HTML(bookDetail, bookToc, sortedChapters, commonStyles, commonScripts)
                 } else if (format === 'epub') {
-                    await zipBookContent2Epub(bookDetail, sortedChapters, commonStyles, commonScripts)
+                    await zipBookContent2Epub(bookDetail, bookToc, sortedChapters, commonStyles, commonScripts)
                 } else {
                     alert('不支持的下载格式: ' + format)
                 }
