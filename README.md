@@ -120,8 +120,7 @@ export default {
 
 - 优化网站；
 - 添加更多微信读书API，比如导出自己的笔记与想法等；
-- 支持下载更多电子书格式，包括 epub/azw3 等，[可以关注这个issue。](https://github.com/champkeh/wereadx/issues/2)
-
+- 支持下载 azw3 电子书格式，[可以关注这个issue。](https://github.com/champkeh/wereadx/issues/2)
 
 
 ## Stargazers over time
