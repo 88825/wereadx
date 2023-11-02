@@ -1,7 +1,8 @@
 {
-  "name": "weread",
+  "name": "wereadx",
   "version": "1.0.1",
-  "repository": "git@github.com:champkeh/weread.git",
+  "description": "微信读书辅助工具，可用于书籍下载及自动阅读、自动兑换体验卡等",
+  "repository": "git@github.com:champkeh/wereadx.git",
   "author": "champkeh <champion.ge@gmail.com>",
   "license": "MIT",
   "scripts": {
