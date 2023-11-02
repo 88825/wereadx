@@ -42,7 +42,6 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                 const preface = {styles: [resetStyle, footerNoteStyle], scripts: [footerNoteScript]}
                 sendEvent(isClosed, controller, "preface", preface);
 
-                let idx = 1
                 for (const chapter of chapters) {
                     if (isClosed) {
                         return;
@@ -52,8 +51,8 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                     const [title, html, style] = await web_book_chapter_e(bookInfo, chapter, cookie);
                     const data = {
                         total: chapters.length,
-                        current: idx++,
-                        chapterUid: chapter.chapterUid,
+                        current: chapter.chapterIdx, // 从1开始的递增序列
+                        chapterUid: chapter.chapterUid, // 可能不连续
                         title: title,
                         html: html,
                         style: style,

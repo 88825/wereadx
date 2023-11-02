@@ -87,3 +87,30 @@ export function handleRespError(resp) {
 export function uuid() {
     return uuidv4()
 }
+
+export function transformChaptersToToc(chapters) {
+    const toc = [];
+    const stack = [];
+
+    for (const chapter of chapters) {
+        const { level } = chapter;
+
+        while (stack.length >= level) {
+            stack.pop();
+        }
+
+        if (stack.length > 0) {
+            const parent = stack[stack.length - 1];
+            if (!parent.children) {
+                parent.children = [];
+            }
+            parent.children.push(chapter);
+        } else {
+            toc.push(chapter);
+        }
+
+        stack.push(chapter);
+    }
+
+    return toc;
+}

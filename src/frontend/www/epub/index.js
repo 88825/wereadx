@@ -2,14 +2,15 @@
  * @typedef Book
  * @property {string} id
  * @property {string} cover 封面
- * @property {string} title 书名
+ * @property {string} isbn ISBN
+ * @property {string} author 作者
  * @property {string} description 简介
  * @property {string} lang 语言
- * @property {string} author 作者
- * @property {string} isbn ISBN
  * @property {string} publisher 出版公司
  * @property {string} publishTime 出版时间
- * @property {{title: string, html: string, style: string}[]} chapters
+ * @property {string} title 书名
+ * @property {{chapterIdx: number, chapterUid: number, title: string, level: number, anchor: string, children: {}[]}[]} toc
+ * @property {{chapterIdx: number, chapterUid: number, title: string, html: string, style: string}[]} chapters
  * @property {string[]} styles
  * @property {string[]} scripts
  */
@@ -27,8 +28,10 @@
  * @property {string} isbn ISBN
  * @property {string} publisher 出版公司
  * @property {string} publishTime 出版时间
+ * @property {{chapterIdx: number, chapterUid: number, title: string, level: number, anchor: string, children: {}[]}[]} toc
  * @property {Object} chapters 章节数据
- * @property {string} chapters.id 章节id
+ * @property {string} chapters.chapterIdx 章节索引
+ * @property {string} chapters.chapterUid 章节uid
  * @property {string} chapters.title 章节标题
  * @property {string} chapters.html 章节内容
  * @property {string} chapters.style 章节样式
@@ -60,15 +63,16 @@ export default async function exportToEpub(book) {
         isbn: book.isbn || "",
         publisher: book.publisher || "anonymous",
         publishTime: book.publishTime || "",
+        toc: book.toc,
         chapters: await Promise.all(
-            book.chapters.map(async (chapter, index) => {
-                const $html = new DOMParser().parseFromString(
+            book.chapters.map(async (chapter) => {
+                const $htmlDom = new DOMParser().parseFromString(
                     chapter.html,
                     "text/html"
                 );
 
                 const images = await Promise.all(
-                    Array.from($html.querySelectorAll("img")).map(async ($img) => {
+                    Array.from($htmlDom.querySelectorAll("img")).map(async ($img) => {
                         const src = $img.getAttribute("src");
 
                         if ($img.hasAttribute("srcset")) {
@@ -96,9 +100,10 @@ export default async function exportToEpub(book) {
                 ).then((imgs) => imgs.filter((img) => img));
 
                 return {
-                    id: String(index).padStart(3, "0"),
+                    chapterIdx: String(chapter.chapterIdx).padStart(3, "0"),
+                    chapterUid: String(chapter.chapterUid).padStart(3, "0"),
                     title: chapter.title || "[Untitled]",
-                    html: new XMLSerializer().serializeToString($html.querySelector("body > section")),
+                    html: new XMLSerializer().serializeToString($htmlDom.querySelector("body > section")),
                     style: chapter.style,
                     images,
                 };
@@ -140,7 +145,7 @@ export default async function exportToEpub(book) {
     zip.file("OEBPS/styles/common.css", book.styles.join('\n'))
     zip.file("OEBPS/scripts/common.js", book.scripts.join('\n'))
     epub.chapters.forEach((chapter) => {
-        zip.file(`OEBPS/${chapter.id}.xhtml`, getChapter(chapter));
+        zip.file(`OEBPS/${chapter.chapterIdx}.xhtml`, getChapter(chapter));
 
         chapter.images.forEach(([id, type, blob]) => {
             zip.file(`OEBPS/images/${id}`, blob);

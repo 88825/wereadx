@@ -63,3 +63,22 @@ export async function book_chapter_download(vid: number | string, skey: string) 
     console.log(resp.headers)
     return resp.text()
 }
+
+/**
+ * 获取书籍章节
+ * @param bookId
+ * @param vid
+ * @param skey
+ */
+export async function book_chapterInfos(bookId: string, vid: number | string, skey: string) {
+    const resp = await postJSON("https://i.weread.qq.com/book/chapterInfos", {
+        bookIds: [bookId],
+        synckeys: [0],
+    }, {
+        vid: vid.toString(),
+        skey: skey,
+        "User-Agent": UserAgentForApp,
+        v: '7.4.2.23'
+    })
+    return resp.json()
+}
