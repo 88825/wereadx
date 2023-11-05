@@ -80,7 +80,7 @@ yarn dev
 export default {
     async scheduled(event, env, ctx) {
         // 注意：此处的域名替换成你自己部署的域名
-        const resp = await fetch('https://weread.deno.dev/cron/read/v2')
+        const resp = await fetch('https://[your.domain.com]/cron/read/v2')
         console.log(await resp.text())
     },
 };
@@ -94,7 +94,7 @@ worker代码如下：
 export default {
     async scheduled(event, env, ctx) {
         // 注意：此处的域名替换成你自己部署的域名
-        const resp = await fetch('https://weread.deno.dev/cron/exchange-awards')
+        const resp = await fetch('https://[your.domain.com]/cron/exchange-awards')
         console.log(await resp.text())
     },
 };
