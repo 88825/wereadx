@@ -29,10 +29,7 @@ export interface ErrLogRecord {
  * @param records
  */
 export async function insertErrLogRecords(records: ErrLogRecord[]): Promise<void> {
-    console.log('开始创建表')
     await createTable()
-
-    console.log('开始插入数据')
 
     for (const record of records) {
         try {
