@@ -1,5 +1,6 @@
 import {postJSON, get} from "../../utils/request.ts";
 import {UserAgentForApp} from "../../config.ts";
+import {checkErrCode} from "../err-code.ts";
 
 enum ReadingStatus {
     /**
@@ -37,6 +38,7 @@ export async function book_markstatus(bookId: string, status: ReadingStatus, isC
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 
@@ -61,6 +63,7 @@ export async function book_chapter_download(vid: number | string, skey: string) 
         v: '7.4.2.23'
     })
     console.log(resp.headers)
+    await checkErrCode(resp, vid)
     return resp.text()
 }
 
@@ -80,5 +83,6 @@ export async function book_chapterInfos(bookId: string, vid: number | string, sk
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }

@@ -8,6 +8,7 @@ import {mergeSpanInHtml, processHtmls, processStyles} from "../../utils/process.
 import {sha256} from "../../utils/encode.ts";
 import {chapterTitleText, M278, showChapterTitle} from "./utils.ts";
 import type {BookInfo, ChapterInfo} from "./utils.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 获取图书详情
@@ -20,6 +21,7 @@ export async function web_book_info(bookId: string, cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 
@@ -31,6 +33,7 @@ export async function web_book_publicinfos(bookIds: string[]) {
     const resp = await postJSON("https://weread.qq.com/web/book/publicinfos", {
         bookIds,
     })
+    await checkErrCode(resp, "anonymous")
     try {
         return resp.json()
     } catch (e) {
@@ -42,6 +45,7 @@ export async function web_book_publicinfos(bookIds: string[]) {
 
 export async function web_book_search(cookie = "") {
     const resp = await get("https://weread.qq.com/web/book/search", {}, {cookie})
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -56,6 +60,7 @@ export async function web_book_chapterInfos(bookIds: string[], cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 
@@ -70,6 +75,7 @@ export async function web_book_getProgress(bookId: string, cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 
@@ -113,6 +119,7 @@ export async function web_book_read_init(
     const resp = await postJSON("https://weread.qq.com/web/book/read", payload, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -167,6 +174,7 @@ export async function web_book_read(
     const resp = await postJSON("https://weread.qq.com/web/book/read", payload, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -176,6 +184,7 @@ export async function web_book_bookmarklist(bookId: string, cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 
@@ -202,6 +211,7 @@ export async function web_book_chapter_e0(
             cookie: cookie,
         },
     );
+    await checkErrCode(resp, cookie)
     const data = await resp.text();
     return data && "string" === typeof data ? chk(data) : "";
 }
@@ -229,6 +239,7 @@ export async function web_book_chapter_e1(
             cookie: cookie,
         },
     );
+    await checkErrCode(resp, cookie)
     const data = await resp.text();
     return data && "string" === typeof data ? chk(data) : "";
 }
@@ -256,6 +267,7 @@ export async function web_book_chapter_e2(
             cookie: cookie,
         },
     );
+    await checkErrCode(resp, cookie)
     const data = await resp.text();
     return data && "string" === typeof data ? chk(data) : "";
 }
@@ -283,6 +295,7 @@ export async function web_book_chapter_e3(
             cookie: cookie,
         },
     );
+    await checkErrCode(resp, cookie)
     const data = await resp.text();
     return data && "string" === typeof data ? chk(data) : "";
 }
@@ -310,6 +323,7 @@ export async function web_book_chapter_t0(
             cookie: cookie,
         },
     );
+    await checkErrCode(resp, cookie)
     const data = await resp.text();
     return data && "string" === typeof data ? chk(data) : "";
 }
@@ -337,6 +351,7 @@ export async function web_book_chapter_t1(
             cookie: cookie,
         },
     );
+    await checkErrCode(resp, cookie)
     const data = await resp.text();
     return data && "string" === typeof data ? chk(data) : "";
 }

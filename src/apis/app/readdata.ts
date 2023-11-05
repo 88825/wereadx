@@ -1,5 +1,6 @@
 import {get} from "../../utils/request.ts";
 import {UserAgentForApp} from "../../config.ts";
+import {checkErrCode} from "../err-code.ts";
 
 type ReadDataMode = "weekly" | "monthly" | "anually" | "overall"
 
@@ -14,6 +15,7 @@ export async function readdata_detail(vid: number | string, skey: string, mode =
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 
@@ -26,5 +28,6 @@ export async function challenge_detail(vid: number | string, skey: string) {
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }

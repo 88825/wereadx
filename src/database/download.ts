@@ -33,7 +33,7 @@ export async function insertDownloadRecords(records: DownloadRecord[]): Promise<
         try {
             await sql`insert into download ${sql(record)}`;
         } catch (e) {
-            if (e.message === 'duplicate key value violates unique constraint "bookid_pkey"') {
+            if (e.message === 'duplicate key value violates unique constraint "download_id_pkey"') {
                 // 重复插入
             } else {
                 console.warn(e)

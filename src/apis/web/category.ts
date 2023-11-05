@@ -1,4 +1,5 @@
 import {get} from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 图书分类
@@ -56,6 +57,7 @@ export async function bookListInCategory(
         `https://weread.qq.com/web/bookListInCategory/${categoryId}`,
         query,
     );
+    await checkErrCode(resp, "anonymous")
     return resp.json();
 }
 
@@ -75,6 +77,7 @@ export async function categoryinfo(categoryId: BookCategory, cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 
@@ -83,6 +86,7 @@ export async function categoryinfo(categoryId: BookCategory, cookie = "") {
  */
 export async function categories() {
     const resp = await get("https://weread.qq.com/web/categories", {synckey: 0});
+    await checkErrCode(resp, "anonymous")
     return resp.json();
 }
 
@@ -93,6 +97,7 @@ export async function recommendBooks(cookie = "") {
     const resp = await get("https://weread.qq.com/web/recommend_books", {}, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 

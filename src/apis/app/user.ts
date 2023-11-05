@@ -1,5 +1,6 @@
 import {get, postJSON} from "../../utils/request.ts";
 import {UserAgentForApp} from "../../config.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * @example 返回示例
@@ -13,6 +14,7 @@ export async function login(refreshToken: string) {
     }, {
         "User-Agent": UserAgentForApp,
     })
+    await checkErrCode(resp, refreshToken)
     return resp.json()
 }
 
@@ -64,6 +66,7 @@ export async function profile(vid: number | string, skey: string) {
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 
@@ -77,6 +80,7 @@ export async function device_sessionlist(deviceId: string, vid: number | string,
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 
@@ -90,6 +94,7 @@ export async function device_sessionremove(currentDeviceId: string, removeDevice
         "User-Agent": UserAgentForApp,
         v: '7.4.2.23'
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 
@@ -99,5 +104,6 @@ export async function phoneCheck(phone: string) {
     }, {
 
     })
+    await checkErrCode(resp, phone)
     return resp.json()
 }

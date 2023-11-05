@@ -1,5 +1,6 @@
 import {get} from "../../utils/request.ts";
 import {UserAgentForApp} from "../../config.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 查询阅读排名
@@ -16,5 +17,6 @@ export async function friend_ranking(vid: string | number, skey: string) {
         skey: skey,
         "User-Agent": UserAgentForApp,
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }

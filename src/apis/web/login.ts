@@ -1,4 +1,5 @@
 import {get, postJSON} from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 获取uid
@@ -71,6 +72,8 @@ export async function web_login_renewal(url: string, cookie = "") {
     cookie,
   });
 
+  await checkErrCode(resp, cookie)
+
   const data = await resp.json();
   if (data.succ === 1) {
     return resp.headers.getSetCookie().reduce(
@@ -103,5 +106,6 @@ export async function web_login_renewal(url: string, cookie = "") {
  */
 export async function web_login_notify(cookie = "") {
   const resp = await get("https://weread.qq.com/web/login/notify", {}, {cookie})
+  await checkErrCode(resp, cookie)
   return resp.json()
 }

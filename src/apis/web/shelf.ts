@@ -1,4 +1,5 @@
 import { get, postJSON } from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 获取书架上的书
@@ -14,6 +15,7 @@ export async function web_shelf_sync(
   const resp = await get("https://weread.qq.com/web/shelf/sync", query, {
     cookie: cookie,
   });
+  await checkErrCode(resp, cookie)
   return resp.json();
 }
 
@@ -28,6 +30,7 @@ export async function web_shelf_syncBook(bookIds: string[] = [], cookie = "") {
   }, {
     cookie: cookie,
   });
+  await checkErrCode(resp, cookie)
   return resp.json();
 }
 
@@ -42,6 +45,7 @@ export async function web_shelf_bookIds(bookIds: string[] = [], cookie = "") {
   }, {
     cookie: cookie,
   })
+  await checkErrCode(resp, cookie)
   return resp.json()
 }
 
@@ -56,6 +60,7 @@ export async function web_shelf_addToShelf(bookIds: string[] = [], cookie = "") 
   }, {
     cookie: cookie,
   })
+  await checkErrCode(resp, cookie)
   return resp.json()
 }
 
@@ -70,5 +75,6 @@ export async function web_shelf_add(bookIds: string[] = [], cookie = "") {
   }, {
     cookie,
   })
+  await checkErrCode(resp, cookie)
   return resp.json()
 }
