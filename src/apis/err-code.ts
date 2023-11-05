@@ -85,6 +85,7 @@ export async function checkErrCode(resp: Response, user: number | string) {
                     try {
                         await insertErrLogRecords([errlog])
                     } catch (e) {
+                        console.log(errlog)
                         console.warn(e.message)
                     }
                 } else {
