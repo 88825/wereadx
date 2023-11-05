@@ -21,10 +21,12 @@ export async function runReadTask(_: Request) {
     const tasks = await taskManager.getAllReadingTask()
     const readerToken = await taskManager.getReaderToken() || ''
 
+    let taskRunCount = 0
     for (const task of tasks) {
         if (!task.isActive) {
             continue
         }
+        taskRunCount++
 
         const taskStartTime = Date.now()
 
@@ -98,7 +100,7 @@ export async function runReadTask(_: Request) {
         await taskManager.updateReadingTask(credential, totalSeconds)
     }
 
-    console.log(`全部任务(${tasks.length})执行完毕，耗时: %c${((Date.now() - start) / 1000).toFixed(1)}s`, 'color: red; font-weight: bold;')
+    console.log(`全部任务(${taskRunCount}/${tasks.length})执行完毕，耗时: %c${((Date.now() - start) / 1000).toFixed(1)}s`, 'color: red; font-weight: bold;')
     return jsonResponse({code: ResponseCode.Success, msg: '阅读任务执行完成'})
 }
 
