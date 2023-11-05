@@ -121,8 +121,9 @@ export default {
 
 ## 后续计划
 
+- 解决 issue 中的 bug 及提出的优化点；
 - 优化网站样式；
-- 添加更多微信读书API，比如导出自己的笔记；
+- 导出书籍中的的笔记/划线；
 
 
 ## Stargazers over time
