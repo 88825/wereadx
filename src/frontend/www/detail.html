@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>图书详情</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="style/reset.css">
     <link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/detail.css">
@@ -18,8 +19,6 @@
     <div class="navBar_inner">
         <h2 class="navBar_title">书籍详情</h2>
         <div class="navBar_menu">
-            <button class="btn_primary download_html_btn"><span>开始下载</span></button>
-
             <a href="/" class="navBar_link">我的书架</a>
             <span class="navBar_separator"></span>
             <a href="/read.html" class="navBar_link">自动阅读</a>
@@ -33,25 +32,40 @@
     <div class="readerBookInfo">
         <div class="readerBookInfo_head">
             <div class="wr_bookCover bookInfo_cover">
-                <img src="" alt="书籍封面" class="wr_bookCover_img">
-                <div class="wr_bookCover_border"></div>
-                <span class="wr_bookCover_decor wr_bookCover_gradientDecor wr_bookCover_borderDecor"></span>
+                <img src="" alt="书籍封面" class="cover_img">
             </div>
             <div class="bookInfo_right">
                 <div class="bookInfo_right_header">
                     <div class="bookInfo_right_header_title">
                         <h2 class="bookInfo_right_header_title_text">---</h2>
                         <div class="bookInfo_author_container">
-                            <a class="bookInfo_author">作者：---</a>
+                            <span class="bookInfo_author">作者：---</span>
                         </div>
                     </div>
-                    <div style="display: flex;gap: 10px">
-                        <button class="btn_primary begin_read"><span>去微信读书阅读</span></button>
-                        <button class="btn_primary add_task"><span>加入自动阅读</span></button>
+
+                    <div class="actions">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                阅读
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item add_task" href="#">添加到自动阅读</a></li>
+                                <li><a class="dropdown-item begin_read" href="#">去微信读书阅读</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-dark dropdown-toggle download_btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                下载
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item download_html_btn" href="#">HTML</a></li>
+                                <li><a class="dropdown-item download_epub_btn" href="#">EPUB</a></li>
+                                <li><a class="dropdown-item download_pdf_btn" href="#">PDF</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="bookInfo_intro">简介：---</div>
-                <button class="btn_primary download_epub_btn"><span>下载 epub (测试)</span></button>
             </div>
         </div>
 
@@ -59,24 +73,21 @@
             <div class="introDialog_content">
                 <h3 class="introDialog_content_title">详细信息</h3>
                 <div class="introDialog_content_pub_line">
-                    <span class="introDialog_content_pub_title">出版社</span>
+                    <span>出版社</span>
                     <span class="publisher"></span></div>
                 <div class="introDialog_content_pub_line">
-                    <span class="introDialog_content_pub_title">出版时间</span>
+                    <span>出版时间</span>
                     <span class="publishTime"></span></div>
                 <div class="introDialog_content_pub_line">
-                    <span class="introDialog_content_pub_title">原始格式</span>
-                    <p>
-                        <span class="format"></span>
-                        <a class="download_pdf_btn">下载</a>
-                    </p>
+                    <span>原始格式</span>
+                    <span class="format"></span>
                 </div>
                 <div class="introDialog_content_pub_line">
-                    <span class="introDialog_content_pub_title">其他可用格式</span>
+                    <span>其他可用格式</span>
                     <span class="otherFormat"></span>
                 </div>
                 <div class="introDialog_content_pub_line">
-                    <span class="introDialog_content_pub_title">ISBN</span>
+                    <span>ISBN</span>
                     <span class="isbn"></span>
                 </div>
             </div>
@@ -88,16 +99,6 @@
     </div>
 </div>
 
-<a title="建议反馈" class="feedback" href="https://github.com/champkeh/weread-download/issues/new" target="_blank">
-    <svg data-v-98989b36="" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
-         class="">
-        <path data-v-98989b36=""
-              d="M3.26628 5.18082C3.26628 4.35104 3.94716 3.67545 4.7907 3.67545H15.2093C16.0528 3.67545 16.7337 4.35104 16.7337 5.18082V12.538C16.7337 13.3678 16.0528 14.0434 15.2093 14.0434H11.6358C11.4624 14.0434 11.2948 14.1064 11.165 14.221L8.28954 16.7575V14.7452C8.28954 14.356 7.97087 14.0434 7.5814 14.0434H4.7907C3.94716 14.0434 3.26628 13.3678 3.26628 12.538V5.18082ZM4.7907 2.27187C3.16822 2.27187 1.85 3.57264 1.85 5.18082V12.538C1.85 14.1462 3.16822 15.447 4.7907 15.447H6.87326V17.5004C6.87326 18.4274 7.97825 18.9111 8.67204 18.2991L11.9053 15.447H15.2093C16.8318 15.447 18.15 14.1462 18.15 12.538V5.18082C18.15 3.57264 16.8318 2.27187 15.2093 2.27187H4.7907Z"
-              fill="#1E80FF" stroke="#1E80FF" stroke-width="0.3" stroke-linejoin="round"></path>
-        <path data-v-98989b36=""
-              d="M7.00132 9.49204C6.79163 9.17668 6.366 9.09101 6.05063 9.3007C5.73527 9.51038 5.6496 9.93602 5.85929 10.2514C6.74878 11.5891 8.27183 12.4732 10.0017 12.4732C11.7316 12.4732 13.2546 11.5891 14.1441 10.2514C14.3538 9.93602 14.2681 9.51038 13.9528 9.3007C13.6374 9.09101 13.2118 9.17668 13.0021 9.49204C12.356 10.4637 11.2532 11.1018 10.0017 11.1018C8.75017 11.1018 7.64741 10.4637 7.00132 9.49204Z"
-              fill="#1E80FF" stroke="#1E80FF" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-</a>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

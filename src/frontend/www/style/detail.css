@@ -107,40 +107,6 @@
     }
 }
 
-.btn_primary {
-    flex-shrink: 0;
-    display: flex;
-    padding: 0 25px;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    background-image: linear-gradient(90deg, #0087fc, #28b7ff);
-    color: #fff;
-
-    &[disabled] {
-        background-color: rgba(13, 20, 30, .04);
-        color: #717882;
-        cursor: not-allowed;
-        background-image: none;
-    }
-}
-.download_html_btn {
-    margin-right: 30px;
-}
-
-.download_pdf_btn {
-    color: #0087fc;
-    cursor: pointer;
-    display: none;
-}
-.download_epub_btn {
-    background-image: linear-gradient(90deg, #4b00fc, #288bff);
-}
-
 .bookInfo_author_container {
     margin-top: 2px
 }
@@ -193,16 +159,8 @@
 .introDialog_content_title {
     font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
     font-size: 18px;
-    color: #eef0f4;
+    color: #212832;
     margin-bottom: 16px
-}
-
-.wr_whiteTheme .introDialog_content_title {
-    color: #212832
-}
-
-.introDialog_content_title:not(:first-child) {
-    margin-top: 32px
 }
 
 .introDialog_content_intro_para {
@@ -227,20 +185,12 @@
     max-width: 100%
 }
 
-.introDialog_content_pub_title {
-    color: #8a8c90
-}
-
-.wr_whiteTheme .introDialog_content_pub_title {
-    color: #858c96
-}
-
-button {
-    background: none;
-    border: 0;
-    padding: 0;
-    text-decoration: none;
-    cursor: pointer
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    min-width: 200px;
+    gap: 10px;
 }
 
 #toc ol,

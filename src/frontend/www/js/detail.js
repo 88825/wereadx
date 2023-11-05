@@ -1,4 +1,4 @@
-import {checkLogin, fixImgSize, handleRespError, transformChaptersToToc, uuid} from "./utils.js"
+import {checkLogin, fixImgSize, handleRespError, transformChaptersToToc, uuid, sleep} from "./utils.js"
 import exportToEpub from "../epub/index.js"
 
 let bookDetail = null
@@ -8,73 +8,52 @@ let evtSource
 
 window.addEventListener('DOMContentLoaded', async () => {
     const token = checkLogin()
+    const bookId = new URLSearchParams(location.search).get('bookId')
 
     await fetchAndRenderBookInfo(token)
 
     // 下载 html
     document.querySelector('.download_html_btn').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
+        await sleep(100)
 
-        if (bookDetail && bookDetail.format === 'pdf' && !bookDetail.otherType) {
-            // 只有 pdf 版本可用，下载 pdf 文件
-            await downloadPDF(token, bookId)
-            return
-        } else if (bookDetail && bookDetail.format === 'pdf') {
-            const ok = confirm('注意：这本书的原始格式为 pdf，本次下载的为 html 格式，如果想下载原始格式，可通过下方的详细信息中的链接进行下载。是否继续下载 html 版本？')
-            if (!ok) {
-                return
-            }
-        }
-
-        document.querySelector('.download_html_btn').disabled = true
+        document.querySelector('.download_btn').classList.add('disabled')
         const resp = await getDownloadSecret(bookId, token).finally(() => {
-            document.querySelector('.download_html_btn').disabled = false
+            document.querySelector('.download_btn').classList.remove('disabled')
         })
         handleRespError(resp)
 
         downloadEBook(resp.data, token, 'html')
     })
-    // 下载 pdf
-    document.querySelector('.download_pdf_btn').addEventListener('click', async (event) => {
-        event.preventDefault()
-
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-        await downloadPDF(token, bookId)
-    })
     // 下载 epub
     document.querySelector('.download_epub_btn').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
+        await sleep(100)
 
-        if (bookDetail && bookDetail.format === 'pdf') {
-            // 只有 pdf 版本可用，下载 pdf 文件
-            alert('本书为 pdf 格式，请通过下面的链接进行下载')
-            return
-        }
-
-        document.querySelector('.download_epub_btn').disabled = true
+        document.querySelector('.download_btn').classList.add('disabled')
         const resp = await getDownloadSecret(bookId, token).finally(() => {
-            document.querySelector('.download_epub_btn').disabled = false
+            document.querySelector('.download_btn').classList.remove('disabled')
         })
         handleRespError(resp)
 
         downloadEBook(resp.data, token, 'epub')
     })
+    // 下载 pdf
+    document.querySelector('.download_pdf_btn').addEventListener('click', async (event) => {
+        await sleep(100)
+
+        document.querySelector('.download_btn').classList.add('disabled')
+        await downloadPDF(token, bookId)
+        document.querySelector('.download_btn').classList.remove('disabled')
+    })
     // 添加阅读
     document.querySelector('.add_task').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-
-        document.querySelector('.add_task').disabled = true
+        document.querySelector('.add_task').classList.add('disabled')
         const resp = await fetch('/api/task/read/start', {
             headers: {
                 token: token,
                 bookId: bookId,
             }
         }).then(resp => resp.json()).finally(() => {
-            document.querySelector('.add_task').disabled = false
+            document.querySelector('.add_task').classList.remove('disabled')
         })
 
         handleRespError(resp)
@@ -86,17 +65,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     })
     // 去微信读书阅读
     document.querySelector('.begin_read').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const bookId = new URLSearchParams(location.search).get('bookId')
-
-        document.querySelector('.begin_read').disabled = true
+        document.querySelector('.begin_read').classList.add('disabled')
         const resp = await fetch('/api/book/hash', {
             headers: {
                 token: token,
                 bookId: bookId,
             }
         }).then(resp => resp.json()).finally(() => {
-            document.querySelector('.begin_read').disabled = false
+            document.querySelector('.begin_read').classList.remove('disabled')
         })
 
         handleRespError(resp)
@@ -112,12 +88,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 function renderBookMetaInfo(book) {
     let {title, author, cover, intro, format, isbn, publishTime, publisher, otherType} = book
 
-    document.querySelector('.wr_bookCover_img').src = cover
+    document.querySelector('.cover_img').src = cover
     document.querySelector('.bookInfo_right_header_title_text').textContent = title
     document.querySelector('.bookInfo_author').textContent = '作者：' + (author || '无')
     document.querySelector('.format').textContent = format || '无'
-    if (format === 'pdf') {
-        document.querySelector('.download_pdf_btn').style.display = 'inline'
+    if (format !== 'pdf') {
+        // 显示 pdf 下载按钮
+        document.querySelector('.download_pdf_btn').parentElement.hidden = true
     }
     if (Array.isArray(otherType)) {
         document.querySelector('.otherFormat').textContent = otherType.map(_ => _.type).join('/')
@@ -279,7 +256,7 @@ async function zipBookContent2HTML(bookDetail, bookToc, chapters, styles = [], s
     const {title} = bookDetail
     const style = styles.map(style => `<style>${style}</style>`).join('\n')
     const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
-    const contentHtml = chapters.map(chapter => `<!-- ${chapter.title} -->\n${chapter.style}\n${chapter.html}`)
+    const contentHtml = chapters.map(chapter => `<!-- ${chapter.title} -->\n<style>${chapter.style}</style>\n${chapter.html}`)
 
     let html = `<!doctype html>
 <html lang="en">
@@ -373,7 +350,7 @@ function downloadEBook(secret, token, format = 'html') {
     let receivedChapterCount = 0
     let hasDownloaded = false
 
-    document.querySelector(`.download_${format}_btn`).disabled = true
+    document.querySelector('.download_btn').classList.add('disabled')
 
     const query = new URLSearchParams({secret, token}).toString()
     evtSource = new EventSource(new URL('/api/book/download?' + query, location.origin).toString())
@@ -402,14 +379,14 @@ function downloadEBook(secret, token, format = 'html') {
         }).catch(err => {
             alert(err.message)
         })
-        document.querySelector(`.download_${format}_btn`).textContent = `进度: ${current}/${total}`
+        document.querySelector('.download_btn').textContent = `进度: ${current}/${total}`
     }, false)
 
     function bundleBook() {
         if (format === 'html') {
-            document.querySelector(`.download_${format}_btn`).textContent = '正在打包'
+            document.querySelector('.download_btn').textContent = '正在打包'
         } else if (format === 'epub') {
-            document.querySelector(`.download_${format}_btn`).textContent = '正在打包图片'
+            document.querySelector('.download_btn').textContent = '正在打包图片'
         }
         if (chapters.length === receivedChapterCount) {
             setTimeout(async () => {
@@ -423,12 +400,8 @@ function downloadEBook(secret, token, format = 'html') {
                     alert('不支持的下载格式: ' + format)
                 }
 
-                document.querySelector(`.download_${format}_btn`).disabled = false
-                if (format === 'html') {
-                    document.querySelector(`.download_${format}_btn`).textContent = '开始下载'
-                } else if (format === 'epub') {
-                    document.querySelector(`.download_${format}_btn`).textContent = '下载 epub (测试)'
-                }
+                document.querySelector('.download_btn').classList.remove('disabled')
+                document.querySelector('.download_btn').textContent = '下载'
             }, 0)
         } else {
             setTimeout(bundleBook, 500)
