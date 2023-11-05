@@ -7,6 +7,7 @@ import {web_book_read} from "../apis/web/book.ts";
 import {friend_ranking} from "../apis/app/friend.ts";
 import {ErrCode} from "../apis/err-code.ts";
 import {web_login_renewal} from "../apis/web/login.ts";
+import {pauseReadTask} from "../kv/task.ts";
 
 
 /**
@@ -21,6 +22,10 @@ export async function runReadTask(_: Request) {
     const readerToken = await taskManager.getReaderToken() || ''
 
     for (const task of tasks) {
+        if (!task.isActive) {
+            continue
+        }
+
         const taskStartTime = Date.now()
 
         // 准备这个任务的相关参数
@@ -35,6 +40,8 @@ export async function runReadTask(_: Request) {
             if (!refreshCookieSuccess) {
                 // 刷新失败，就没必要执行下去了
                 console.log(`cookie刷新失败，跳过任务(${task.credential.name}:${task.credential.vid}:${task.book.title})`)
+                await pauseReadTask(task)
+                // todo: 发送通知
                 continue
             }
             // 刷新之后获取最新的 cookie
