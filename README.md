@@ -123,7 +123,6 @@ export default {
 
 - 优化网站样式；
 - 添加更多微信读书API，比如导出自己的笔记；
-- 支持下载 azw3 电子书格式，[可以关注这个issue。](https://github.com/champkeh/wereadx/issues/2)
 
 
 ## Stargazers over time
