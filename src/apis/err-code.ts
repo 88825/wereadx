@@ -84,8 +84,8 @@ export async function checkErrCode(resp: Response, user: number | string) {
                     // 可能没有配置，所以包在 try catch 里面执行
                     try {
                         await insertErrLogRecords([errlog])
-                    } catch (_) {
-                        console.log('没有配置 DATABASE_URL 环境变量，下载日志失败')
+                    } catch (e) {
+                        console.warn(e.message)
                     }
                 } else {
                     console.warn(errlog)
