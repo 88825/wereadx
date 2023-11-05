@@ -243,36 +243,7 @@ button {
     cursor: pointer
 }
 
-.toc {
+#toc ol,
+#toc ul {
     list-style-type: none;
-    padding-left: 0;
-    .chapter {
-        &[data-level="1"] {
-            padding-left: 0;
-        }
-        &[data-level="2"] {
-            padding-left: 2rem;
-        }
-        &[data-level="3"] {
-            padding-left: 4rem;
-        }
-        &[data-level="4"] {
-            padding-left: 6rem;
-        }
-        &[data-level="5"] {
-            padding-left: 8rem;
-        }
-        &[data-level="6"] {
-            padding-left: 10rem;
-        }
-        &[data-level="7"] {
-            padding-left: 10rem;
-        }
-        &[data-level="8"] {
-            padding-left: 10rem;
-        }
-        &[data-level="9"] {
-            padding-left: 10rem;
-        }
-    }
 }
