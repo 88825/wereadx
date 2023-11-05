@@ -8,9 +8,9 @@ export async function createTable(): Promise<void> {
     await sql`
         CREATE TABLE IF NOT EXISTS errlog (
             id serial PRIMARY KEY,
-            user text NOT NULL,
-            errCode text NOT NULL,
-            errMsg text NOT NULL,
+            user_info text NOT NULL,
+            err_code int4 NOT NULL,
+            err_msg text NOT NULL,
             timestamp timestamp NOT NULL
         )
     `;
@@ -18,9 +18,9 @@ export async function createTable(): Promise<void> {
 
 
 export interface ErrLogRecord {
-    user: string
-    errCode: number
-    errMsg: string
+    user_info: string
+    err_code: number
+    err_msg: string
     timestamp: string
 }
 
@@ -29,7 +29,10 @@ export interface ErrLogRecord {
  * @param records
  */
 export async function insertErrLogRecords(records: ErrLogRecord[]): Promise<void> {
+    console.log('开始创建表')
     await createTable()
+
+    console.log('开始插入数据')
 
     for (const record of records) {
         try {

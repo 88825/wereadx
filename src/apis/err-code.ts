@@ -1,4 +1,4 @@
-import {insertErrLogRecords} from "../database/errlog.ts";
+import {ErrLogRecord, insertErrLogRecords} from "../database/errlog.ts";
 import {now, runInDenoDeploy} from "../utils/index.ts";
 
 export enum ErrCode {
@@ -71,10 +71,10 @@ export async function checkErrCode(resp: Response, user: number | string) {
                     break
             }
 
-            const errlog = {
-                user: user.toString(),
-                errCode: errCode,
-                errMsg: errMsg,
+            const errlog: ErrLogRecord = {
+                user_info: user.toString(),
+                err_code: errCode,
+                err_msg: errMsg,
                 timestamp: now(),
             }
 
@@ -85,7 +85,6 @@ export async function checkErrCode(resp: Response, user: number | string) {
                     try {
                         await insertErrLogRecords([errlog])
                     } catch (e) {
-                        console.log(errlog)
                         console.warn(e.message)
                     }
                 } else {
