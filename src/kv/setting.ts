@@ -1,6 +1,6 @@
-import kv from "./db.ts"
 import type {Credential} from "./credential.ts";
 import {getUlid, timestamp} from "../utils/index.ts";
+import runtime from "../runtime.ts";
 
 interface EmailPreSetting {
     vid: number
@@ -16,6 +16,7 @@ interface NotifyMethod {
     created: number
 }
 
+const kv = runtime.kv
 
 /**
  * 检查该用户是否已经发送了验证邮件
@@ -28,6 +29,20 @@ export async function hasAlreadySend(credential: Credential) {
         }
     }
     return false
+}
+
+/**
+ * 检查该邮箱是否已被绑定
+ * @param credential
+ * @param email
+ */
+export async function hasAlreadyBind(credential: Credential, email: string) {
+    const setting = await kv.get(["setting", credential.vid])
+    if (setting.value) {
+        return (setting.value as NotifyMethod[]).some(_ => _.type === 'email' && _.value === email)
+    } else {
+        return false
+    }
 }
 
 /**
@@ -91,4 +106,20 @@ export async function confirmEmailBind(vid: number, secret: string) {
 export async function getNotifies(credential: Credential) {
     const entry = await kv.get(["setting", credential.vid])
     return (entry.value as NotifyMethod[]) || []
+}
+
+/**
+ * 删除配置
+ * @param credential
+ * @param id
+ */
+export async function deleteNotify(credential: Credential, id: string) {
+    const entry = await kv.get(["setting", credential.vid])
+    if (entry.value) {
+        const list = (entry.value as NotifyMethod[]).filter(_ => _.id !== id)
+        await kv.set(entry.key, list)
+        return [true, list]
+    } else {
+        return [false, []]
+    }
 }

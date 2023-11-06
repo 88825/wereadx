@@ -25,9 +25,35 @@ const template1 = `<!DOCTYPE html>
 </body>
 </html>
 `
+const template2 = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>通知</title>
+    <style>
+        a {
+            color: black;
+        }
+        .link {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+<h2>自动阅读任务已被暂停</h2>
+<p>由于 cookie 失效，自动阅读任务已被暂停，请重新扫码登录即可重启任务</p>
+<a class="link" href="__NOTIFY_URL__">__NOTIFY_URL__</a>
+</body>
+</html>
+`
 
 export function getEmailVerifyHtml(notifyUrl: string) {
     return template1.replace(/__NOTIFY_URL__/g, notifyUrl)
+}
+
+export function getTaskPauseHtml(notifyUrl: string) {
+    return template2.replace(/__NOTIFY_URL__/g, notifyUrl)
 }
 
 /**

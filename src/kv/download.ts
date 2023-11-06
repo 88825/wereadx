@@ -1,9 +1,10 @@
 import { MAX_DOWNLOAD_COUNT_PER_MONTH } from "../config.ts";
-import kv from "./db.ts"
 import {now, runInDenoDeploy} from "../utils/index.ts";
 import {insertDownloadRecords} from "../database/download.ts";
 import type { Credential } from "./credential.ts";
+import runtime from "../runtime.ts";
 
+const kv = runtime.kv
 
 interface DownloadSecret {
   bookId: string;

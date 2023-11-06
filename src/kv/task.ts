@@ -1,5 +1,9 @@
-import kv from "./db.ts"
 import type {Credential} from "./credential.ts";
+import {getNotifies} from "./setting.ts";
+import {getTaskPauseHtml, sendEmail} from "../utils/email.ts";
+import runtime from "../runtime.ts";
+
+const kv = runtime.kv
 
 // 自动阅读的书籍信息
 export interface BookInfo {
@@ -100,6 +104,19 @@ export async function updateReadingTask(credential: Credential, seconds = 0) {
 export async function pauseReadTask(task: ReadingTask) {
     task.isActive = false
     await kv.set(["task", "read", task.credential.vid], task)
+
+    // 发送提醒通知
+    const notifies = await getNotifies(task.credential)
+    for (const notifyMethod of notifies) {
+        if (notifyMethod.type === 'email') {
+            // 发送邮件通知
+            const result = await sendEmail(notifyMethod.value, "任务暂停通知", getTaskPauseHtml(runtime.domain))
+            console.log(`发送任务暂停提醒邮件${notifyMethod.value}`)
+            if (!result) {
+                console.warn('通知邮件发送失败')
+            }
+        }
+    }
 }
 
 /**

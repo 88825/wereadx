@@ -1,4 +1,6 @@
-import kv from "./db.ts"
+import runtime from "../runtime.ts";
+
+const kv = runtime.kv
 
 /**
  * 用户凭证
