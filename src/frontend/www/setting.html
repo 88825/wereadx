@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>设置</title>
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/common.css">
+    <script type="module" src="js/setting.js"></script>
+    <style>
+        main#main {
+            background: white;
+            min-height: 200px;
+            padding: 1em 2em;
+        }
+        form {
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navBar">
+    <div class="navBar_inner">
+        <h2 class="navBar_title">设置</h2>
+        <div class="navBar_menu">
+            <a href="/" class="navBar_link">我的书架</a>
+            <span class="navBar_separator"></span>
+            <a href="/read.html" class="navBar_link">自动阅读</a>
+            <span class="navBar_separator"></span>
+            <a class="navBar_link current">设置</a>
+            <span class="navBar_separator"></span>
+            <a href="https://github.com/champkeh/wereadx" target="_blank" class="navBar_link">GitHub</a>
+        </div>
+    </div>
+</div>
+
+<div class="page_container">
+    <main id="main">
+        <h3>已有的通知方式</h3>
+        <ul class="list-group" id="notifies"></ul>
+
+        <form>
+            <div class="mb-3">
+                <label for="email" class="form-label">绑定邮箱</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">我们绝不会与其他人分享您的电子邮件。</div>
+            </div>
+            <button type="submit" class="btn btn-primary send_btn">提交</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>

@@ -19,6 +19,7 @@ import {runExchangeTask} from "./cron/exchange.ts";
 import {runReadTask} from "./cron/read.ts";
 import {getPdfUrl} from "./frontend/apis/misc.ts";
 import {downloadAsset} from "./frontend/apis/epub.ts";
+import {bindEmail, getSettings, sendVerifyEmail} from "./frontend/apis/notify.ts";
 
 type APIHandler = (req: Request) => Response | Promise<Response>
 
@@ -45,6 +46,10 @@ const config: Record<string, APIHandler> = {
     '/cron/read/v2': runReadTask,               // 自动阅读任务
 
     '/api/asset/download': downloadAsset,       // 代理前端进行资源下载
+
+    '/api/getSettings': getSettings,            // 获取用户设置
+    '/api/notify/sendVerifyEmail': sendVerifyEmail,
+    '/api/bind/email': bindEmail,                   // 绑定邮箱
 }
 
 /**

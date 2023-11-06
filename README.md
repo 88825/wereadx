@@ -43,12 +43,34 @@ yarn dev
 ### 2. 新建 Deno Deploy 项目，配置如下:
 ![项目配置](assets/setup.png)
 
-### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量 (可选)
+### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量 (推荐)
 ![环境变量配置](assets/env.png)
+
+#### DEPLOY_DOMAIN
+
+> 环境变量说明:
+>
+> 最终部署的域名，格式为: `https://xxx.deno.dev`，与邮箱绑定有关
+>
+
+#### RESEND_API_KEY
+
+> 环境变量说明:
+>
+> 用于发送邮件，与邮箱绑定有关
+>
+
+<details>
+<summary>获取 RESEND_API_KEY</summary>
+
+todo
+</details>
+
+#### DATABASE_URL
 
 > 环境变量说明:
 > 
-> 目前只需要配置一个环境变量: `DATABASE_URL`，作用是为了在下载成功之后记录一下书籍下载记录，相关代码可以在`src/kv/download.ts`中查看。
+> 作用是为了在下载成功之后记录一下书籍下载记录，相关代码可以在`src/kv/download.ts`中查看。
 >
 
 <details>
