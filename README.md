@@ -43,40 +43,38 @@ yarn dev
 ### 2. 新建 Deno Deploy 项目，配置如下:
 ![项目配置](assets/setup.png)
 
-### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量 (推荐)
+### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量
 ![环境变量配置](assets/env.png)
 
-#### DEPLOY_DOMAIN
+| 变量名            | 功能                                            |
+|----------------|-----------------------------------------------|
+| DEPLOY_DOMAIN  | 最终部署的域名，格式为: `https://xxx.deno.dev`，与发送提醒邮件有关 |
+| RESEND_API_KEY | 用于发送邮件，格式为: `re_xxx`                          |
+| RESEND_DOMAIN  | Resend 配置的域名，不含`https://`前缀                   |
+| DATABASE_URL   | 记录日志，格式为: `postgresql://xxx`                  |
 
-> 环境变量说明:
->
-> 最终部署的域名，格式为: `https://xxx.deno.dev`，与邮箱绑定有关
->
-
-#### RESEND_API_KEY
-
-> 环境变量说明:
->
-> 用于发送邮件，与邮箱绑定有关
->
 
 <details>
-<summary>获取 RESEND_API_KEY</summary>
+<summary>获取 RESEND_API_KEY 和 RESEND_DOMAIN</summary>
 
-todo
+注册 https://resend.com/ 账号，然后添加一个 API key，如下图：
+
+![resend api key](assets/resend-api-key1.png)
+![resend api key](assets/resend-api-key2.png)
+
+
+想要正常发送邮件，还需要配置域名
+![resend domain](assets/resend-domain1.png)
+![resend domain](assets/resend-domain2.png)
+
+按照这个配置你的域名，最终效果如下：
+![resend domain result](assets/resend-domain-result.png)
 </details>
 
-#### DATABASE_URL
-
-> 环境变量说明:
-> 
-> 作用是为了在下载成功之后记录一下书籍下载记录，相关代码可以在`src/kv/download.ts`中查看。
->
 
 <details>
 <summary>获取 DATABASE_URL</summary>
 
-#### 关于这个环境变量的获取：
 注册 https://supabase.com/ 账号，创建一个新的项目，如下图：
 
 ![创建一个数据库项目](assets/new-database-project.png)

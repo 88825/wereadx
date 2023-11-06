@@ -44,7 +44,7 @@ export async function sendVerifyEmail(req: Request) {
 
         // 生成一个secret
         const secret = crypto.randomUUID();
-        const notifyUrl = `${runtime.domain}/api/bind/email?token=${credential.token}&secret=${secret}`
+        const notifyUrl = `${runtime.deployDomain}/api/bind/email?token=${credential.token}&secret=${secret}`
 
         const result = await sendEmail(email, "绑定邮箱通知", getEmailVerifyHtml(notifyUrl))
         console.log(`${credential.name}发送邮箱绑定邮件${email}`)

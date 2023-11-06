@@ -1,3 +1,5 @@
+import runtime from "../runtime.ts";
+
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!
 
 const template1 = `<!DOCTYPE html>
@@ -70,7 +72,7 @@ export async function sendEmail(receiver: string, subject: string, html: string)
             'Authorization': `Bearer ${RESEND_API_KEY}`
         },
         body: JSON.stringify({
-            from: 'WeReadX提醒 <wereadx@notify.champ.design>',
+            from: `WeReadX提醒 <noreply@${runtime.resendDomain}>`,
             to: receiver,
             subject: subject,
             html: html,

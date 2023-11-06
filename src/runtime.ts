@@ -3,18 +3,25 @@ import {runInDenoDeploy} from "./utils/index.ts";
 
 const env = await dotenv.load()
 
-let domain: string
-
+let deployDomain: string
 if (runInDenoDeploy()) {
-    domain = Deno.env.get("DEPLOY_DOMAIN")! || '';
+    deployDomain = Deno.env.get("DEPLOY_DOMAIN")! || '';
 } else {
-    domain = env["DEPLOY_DOMAIN"];
+    deployDomain = env["DEPLOY_DOMAIN"];
 }
-domain = domain.replace(/\/$/g, '')
+deployDomain = deployDomain.replace(/\/$/g, '')
+
+
+let resendDomain: string
+if (runInDenoDeploy()) {
+    resendDomain = Deno.env.get("RESEND_DOMAIN")!
+} else {
+    resendDomain = env["RESEND_DOMAIN"]
+}
+resendDomain = resendDomain.replace(/\/$/g, '').replace(/^https?:\/\//i, '')
 
 
 let kv: Deno.Kv
-
 if (runInDenoDeploy() || Deno.args.includes("local")) {
     kv = await Deno.openKv()
 } else {
@@ -26,7 +33,6 @@ if (runInDenoDeploy() || Deno.args.includes("local")) {
 
 
 let databaseUrl: string
-
 if (runInDenoDeploy()) {
     databaseUrl = Deno.env.get("DATABASE_URL")!;
 } else {
@@ -34,7 +40,8 @@ if (runInDenoDeploy()) {
 }
 
 export default {
-    domain,
+    deployDomain,
+    resendDomain,
     kv,
     databaseUrl,
 }
