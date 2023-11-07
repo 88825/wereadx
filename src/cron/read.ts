@@ -12,18 +12,19 @@ import {web_book_read} from "../apis/web/book.ts";
 import {friend_ranking} from "../apis/app/friend.ts";
 import {ErrCode} from "../apis/err-code.ts";
 import {web_login_renewal} from "../apis/web/login.ts";
-import {clearReadTaskState, pauseReadTask, runningReadTask, setReadTaskState} from "../kv/task.ts";
+import {pauseReadTask} from "../kv/task.ts";
+import runtime from "../runtime.ts";
 
 /**
  * 执行自动阅读任务
  * 由外部的 cron 触发，每 **30分钟** 触发一次
  */
 export async function runReadTask(_: Request) {
-    if (await runningReadTask()) {
-        console.warn('重复执行 cron::runReadTask 任务')
+    const key = new URL(_.url).searchParams.get("key");
+    if (key !== runtime.readTaskKey) {
+        console.warn(`外部触发 cron::runReadTask 任务，已忽略(${_.url})`)
         return
     }
-    await setReadTaskState()
 
     console.debug("%c触发 cron::runReadTask 任务", "color: green");
     const start = Date.now();
@@ -135,7 +136,6 @@ export async function runReadTask(_: Request) {
         "color: red; font-weight: bold;",
     );
 
-    await clearReadTaskState()
     return jsonResponse({code: ResponseCode.Success, msg: "阅读任务执行完成"});
 }
 

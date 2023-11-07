@@ -39,9 +39,17 @@ if (runInDenoDeploy()) {
     databaseUrl = env["DATABASE_URL"];
 }
 
+let readTaskKey: string
+if (runInDenoDeploy()) {
+    readTaskKey = Deno.env.get("READ_TASK_KEY")!
+} else {
+    readTaskKey = env["READ_TASK_KEY"]
+}
+
 export default {
     deployDomain,
     resendDomain,
     kv,
     databaseUrl,
+    readTaskKey,
 }

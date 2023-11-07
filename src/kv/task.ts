@@ -2,6 +2,7 @@ import type { Credential } from "./credential.ts";
 import { getNotifies } from "./setting.ts";
 import { getTaskPauseHtml, sendEmail } from "../utils/email.ts";
 import runtime from "../runtime.ts";
+import {timestamp} from "../utils/index.ts";
 
 const kv = runtime.kv;
 
@@ -185,7 +186,10 @@ export async function runningReadTask() {
   return entry.value === "running";
 }
 export async function setReadTaskState() {
-  await kv.set(["state", "cron::runReadTask"], "running");
+  await kv.set(["state", "cron::runReadTask"], {
+    state: "running",
+    timestamp: timestamp(),
+  });
 }
 export async function clearReadTaskState() {
   await kv.delete(["state", "cron::runReadTask"]);
