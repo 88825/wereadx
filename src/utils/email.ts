@@ -1,6 +1,6 @@
 import runtime from "../runtime.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 
 const template1 = `<!DOCTYPE html>
 <html lang="en">
@@ -26,7 +26,7 @@ const template1 = `<!DOCTYPE html>
 <p>若不是您发起的请求，请忽略该邮件。</p>
 </body>
 </html>
-`
+`;
 const template2 = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,14 +48,14 @@ const template2 = `<!DOCTYPE html>
 <a class="link" href="__NOTIFY_URL__">__NOTIFY_URL__</a>
 </body>
 </html>
-`
+`;
 
 export function getEmailVerifyHtml(notifyUrl: string) {
-    return template1.replace(/__NOTIFY_URL__/g, notifyUrl)
+  return template1.replace(/__NOTIFY_URL__/g, notifyUrl);
 }
 
 export function getTaskPauseHtml(notifyUrl: string) {
-    return template2.replace(/__NOTIFY_URL__/g, notifyUrl)
+  return template2.replace(/__NOTIFY_URL__/g, notifyUrl);
 }
 
 /**
@@ -64,25 +64,29 @@ export function getTaskPauseHtml(notifyUrl: string) {
  * @param subject 主题
  * @param html 邮件内容
  */
-export async function sendEmail(receiver: string, subject: string, html: string) {
-    const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RESEND_API_KEY}`
-        },
-        body: JSON.stringify({
-            from: `WeReadX提醒 <noreply@${runtime.resendDomain}>`,
-            to: receiver,
-            subject: subject,
-            html: html,
-        })
-    });
+export async function sendEmail(
+  receiver: string,
+  subject: string,
+  html: string,
+) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${RESEND_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: `WeReadX提醒 <noreply@${runtime.resendDomain}>`,
+      to: receiver,
+      subject: subject,
+      html: html,
+    }),
+  });
 
-    if (res.ok) {
-        return await res.json()
-    } else {
-        console.warn(`邮件发送失败: (${receiver}:${subject}:${res.status})`)
-        return false
-    }
+  if (res.ok) {
+    return await res.json();
+  } else {
+    console.warn(`邮件发送失败: (${receiver}:${subject}:${res.status})`);
+    return false;
+  }
 }

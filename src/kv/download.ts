@@ -1,10 +1,10 @@
 import { MAX_DOWNLOAD_COUNT_PER_MONTH } from "../config.ts";
-import {now, runInDenoDeploy} from "../utils/index.ts";
-import {insertDownloadRecords} from "../database/download.ts";
+import { now, runInDenoDeploy } from "../utils/index.ts";
+import { insertDownloadRecords } from "../database/download.ts";
 import type { Credential } from "./credential.ts";
 import runtime from "../runtime.ts";
 
-const kv = runtime.kv
+const kv = runtime.kv;
 
 interface DownloadSecret {
   bookId: string;
@@ -24,7 +24,10 @@ export async function checkDownloadCount(credential: Credential) {
  * @param credential
  * @param bookId
  */
-export async function incrementDownloadCount(credential: Credential, bookId: string) {
+export async function incrementDownloadCount(
+  credential: Credential,
+  bookId: string,
+) {
   await kv.atomic().sum(["download", credential.vid], 1n).commit();
 
   // 如果是运行在 Deno Deploy 上面，则记录下载的书
@@ -35,9 +38,9 @@ export async function incrementDownloadCount(credential: Credential, bookId: str
         vid: credential.vid.toString(),
         book_id: bookId,
         timestamp: now(),
-      }])
+      }]);
     } catch (_) {
-      console.log('没有配置 DATABASE_URL 环境变量，下载记录保存失败')
+      console.log("没有配置 DATABASE_URL 环境变量，下载记录保存失败");
     }
   }
 }
@@ -55,14 +58,12 @@ export async function newDownloadSecret(
   const secret = crypto.randomUUID();
   const payload: DownloadSecret = {
     bookId: bookId,
-  }
+  };
   await kv.set(["download", credential.token, secret], payload, {
     expireIn: 1000 * 60 * 5, // 5分钟有效
   });
   return secret;
 }
-
-
 
 /**
  * 使用下载凭证，有效期内(5分钟)可重复使用
@@ -73,7 +74,11 @@ export async function useSecret(
   credential: Credential,
   secret: string,
 ): Promise<[boolean, string]> {
-  const entry = await kv.get<DownloadSecret>(["download", credential.token, secret]);
+  const entry = await kv.get<DownloadSecret>([
+    "download",
+    credential.token,
+    secret,
+  ]);
   if (entry.value) {
     return [true, entry.value.bookId];
   }

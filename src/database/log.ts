@@ -1,11 +1,10 @@
 import sql from "./db.ts";
 
-
 /**
  * 创建 log 表
  */
 export async function createTable(): Promise<void> {
-    await sql`
+  await sql`
         CREATE TABLE IF NOT EXISTS log (
             id serial PRIMARY KEY,
             subhoster_id text,
@@ -21,16 +20,15 @@ export async function createTable(): Promise<void> {
     `;
 }
 
-
 interface LogRecord {
-    subhoster_id: string
-    deployment_id: string
-    isolate_id: string
-    region: string
-    level: string
-    timestamp: string
-    message: string
-    hash: string
+  subhoster_id: string;
+  deployment_id: string;
+  isolate_id: string;
+  region: string;
+  level: string;
+  timestamp: string;
+  message: string;
+  hash: string;
 }
 
 /**
@@ -38,17 +36,20 @@ interface LogRecord {
  * @param records
  */
 export async function insertLogRecords(records: LogRecord[]): Promise<void> {
-    await createTable()
+  await createTable();
 
-    for (const record of records) {
-        try {
-            await sql`insert into log ${sql(record)}`;
-        } catch (e) {
-            if (e.message === 'duplicate key value violates unique constraint "log_hash_key"') {
-                // 重复插入
-            } else {
-                console.warn(e)
-            }
-        }
+  for (const record of records) {
+    try {
+      await sql`insert into log ${sql(record)}`;
+    } catch (e) {
+      if (
+        e.message ===
+          'duplicate key value violates unique constraint "log_hash_key"'
+      ) {
+        // 重复插入
+      } else {
+        console.warn(e);
+      }
     }
+  }
 }

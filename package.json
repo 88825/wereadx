@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "deno run -A --unstable --env src/server.ts local",
     "serve": "deno run -A --unstable --env src/server.ts",
-    "check:type": "deno check --unstable --env src/**/*.ts",
+    "check:type": "deno check --unstable src/**/*.ts",
     "lint": "deno lint src/**/*.ts",
     "fmt": "deno fmt src/**/*.ts",
     "compile:pre-push": "deno compile -A --output .husky/pre-push scripts/pre-push.ts",

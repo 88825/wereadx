@@ -1,9 +1,9 @@
+// deno-lint-ignore-file no-explicit-any
+
 import { ulid } from "../deps.ts";
 import { md5 } from "./encode.ts";
 
-
 export const getUlid = ulid.monotonicFactory();
-
 
 /**
  * 根据 ua 生成 appid
@@ -134,7 +134,7 @@ export function currentTime() {
  * 当前时间戳，单位是毫秒
  */
 export function timestamp() {
-  return new Date().getTime()
+  return new Date().getTime();
 }
 
 export function generateQRCode(data: string) {
@@ -150,8 +150,8 @@ export function generateQRCode(data: string) {
  * 是否在deploy中运行代码
  */
 export function runInDenoDeploy() {
-  const deploymentId = Deno.env.get("DENO_DEPLOYMENT_ID")
-  return !!deploymentId
+  const deploymentId = Deno.env.get("DENO_DEPLOYMENT_ID");
+  return !!deploymentId;
 }
 
 /**
@@ -164,7 +164,6 @@ export function sleep(duration: number) {
   });
 }
 
-
 export function now(): string {
   return new Intl.DateTimeFormat("zh-CN", {
     dateStyle: "short",
@@ -174,17 +173,17 @@ export function now(): string {
 }
 
 function stringify(data: unknown) {
-  return JSON.stringify(data)
+  return JSON.stringify(data);
 }
 
 export function jsonResponse(data: unknown) {
   return new Response(
-      stringify(data),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    stringify(data),
+    {
+      headers: {
+        "Content-Type": "application/json",
       },
+    },
   );
 }
 
@@ -204,18 +203,18 @@ export function randomInteger(min: number, max: number) {
  * @param seconds
  */
 export function formatSeconds(seconds: number) {
-  if (typeof seconds !== 'number') {
-    return seconds
+  if (typeof seconds !== "number") {
+    return seconds;
   }
   if (seconds < 60) {
-    return `${seconds}s`
+    return `${seconds}s`;
   }
-  const minutes = Math.floor(seconds / 60)
-  const second = seconds % 60
+  const minutes = Math.floor(seconds / 60);
+  const second = seconds % 60;
   if (minutes < 60) {
-    return `${minutes}m${second}s`
+    return `${minutes}m${second}s`;
   }
-  const hours = Math.floor(minutes / 60)
-  const minute = minutes % 60
-  return `${hours}h${minute}m${second}s`
+  const hours = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+  return `${hours}h${minute}m${second}s`;
 }

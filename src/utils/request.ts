@@ -1,3 +1,5 @@
+// deno-lint-ignore-file no-explicit-any
+
 import { UserAgentForWeb } from "../config.ts";
 
 function stringifyQuery(

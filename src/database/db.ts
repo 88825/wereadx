@@ -1,9 +1,8 @@
-import {postgres} from "../deps.ts"
+import { postgres } from "../deps.ts";
 import runtime from "../runtime.ts";
 
-
 const sql = postgres.default(runtime.databaseUrl, {
-    onnotice: () => {},
-})
+  onnotice: () => {},
+});
 
-export default sql
+export default sql;

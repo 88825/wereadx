@@ -1,6 +1,6 @@
 // @ts-nocheck: 使用 for of 遍历 node.attributes 会报错，实际上并没有问题
 
-import { parseHTML  } from "https://esm.sh/linkedom";
+import { parseHTML } from "https://esm.sh/linkedom";
 
 /**
  * 8.js中的 UPDATE_READER_CONTENT_HTML 和 UPDATE_READER_CONTENT_STYLES 这两个 mutation
@@ -85,20 +85,20 @@ export function processHtmls(sections: string[], bookId: string) {
  */
 function hasSameAttributes(node1: Element, node2: Element) {
   if (node1.attributes.length !== node2.attributes.length) {
-    return false
+    return false;
   }
 
   for (const attr of node2.attributes) {
-    if (attr.name === 'data-wr-co') {
-      continue
+    if (attr.name === "data-wr-co") {
+      continue;
     }
-    const node1Attr = node1.attributes.getNamedItem(attr.name)
+    const node1Attr = node1.attributes.getNamedItem(attr.name);
     if (!node1Attr || node1Attr.value !== attr.value) {
-      return false
+      return false;
     }
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -106,34 +106,34 @@ function hasSameAttributes(node1: Element, node2: Element) {
  * @param html
  */
 export function mergeSpanInHtml(html: string): string {
-  const {document} = parseHTML(html)
+  const { document } = parseHTML(html);
 
-  const spanElements = Array.from(document.querySelectorAll('span'))
+  const spanElements = Array.from(document.querySelectorAll("span"));
   while (spanElements.length > 0) {
-    const current = spanElements.shift()
-    let next
+    const current = spanElements.shift();
+    let next;
     while ((next = current!.nextSibling)) {
       if (next.nodeType === 1) {
         // 确认是否与前一个span样式相同
         if (hasSameAttributes(current!, next as Element)) {
           // 合并span内容
-          current!.innerHTML += (next as Element).innerHTML
-          next.remove()
-          spanElements.shift()
+          current!.innerHTML += (next as Element).innerHTML;
+          next.remove();
+          spanElements.shift();
         } else {
           // attributes 不相同，不合并
-          break
+          break;
         }
       } else if (next.nodeType === 3) {
-        if ((next as Text).wholeText.replace(/\s/g, '')) {
+        if ((next as Text).wholeText.replace(/\s/g, "")) {
           // span后面有文本内容，不合并
-          break
+          break;
         } else {
-          next.remove()
+          next.remove();
         }
       }
     }
   }
 
-  return document.toString()
+  return document.toString();
 }
