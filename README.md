@@ -52,6 +52,7 @@ yarn dev
 | RESEND_API_KEY | 用于发送邮件，格式为: `re_xxx`                          |
 | RESEND_DOMAIN  | Resend 配置的域名，不含`https://`前缀                   |
 | DATABASE_URL   | 记录日志，格式为: `postgresql://xxx`                  |
+| CRON_KEY       | cron任务的key                                    |
 
 
 <details>
@@ -99,8 +100,8 @@ yarn dev
 ```js
 export default {
     async scheduled(event, env, ctx) {
-        // 注意：此处的域名替换成你自己部署的域名
-        const resp = await fetch('https://[your.domain.com]/cron/read/v2')
+        // 注意：此处的域名替换成你自己部署的域名，CRON_KEY 替换成上面环境变量配置的 CRON_KEY
+        const resp = await fetch('https://[your.domain.com]/cron/read/v2?key=[CRON_KEY]')
         console.log(await resp.text())
     },
 };
@@ -113,8 +114,8 @@ worker代码如下：
 ```js
 export default {
     async scheduled(event, env, ctx) {
-        // 注意：此处的域名替换成你自己部署的域名
-        const resp = await fetch('https://[your.domain.com]/cron/exchange-awards')
+        // 注意：此处的域名替换成你自己部署的域名，CRON_KEY 替换成上面环境变量配置的 CRON_KEY
+        const resp = await fetch('https://[your.domain.com]/cron/exchange-awards?key=[CRON_KEY]')
         console.log(await resp.text())
     },
 };

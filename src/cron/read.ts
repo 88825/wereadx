@@ -21,7 +21,7 @@ import runtime from "../runtime.ts";
  */
 export async function runReadTask(_: Request) {
     const key = new URL(_.url).searchParams.get("key");
-    if (key !== runtime.readTaskKey) {
+    if (key !== runtime.cronKey) {
         console.warn(`外部触发 cron::runReadTask 任务，已忽略(${_.url} <- ${_.headers.get('referer')})`)
         return jsonResponse({code: ResponseCode.Error, msg: '非正常触发，已忽略'})
     }

@@ -39,11 +39,11 @@ if (runInDenoDeploy()) {
     databaseUrl = env["DATABASE_URL"];
 }
 
-let readTaskKey: string
+let cronKey: string
 if (runInDenoDeploy()) {
-    readTaskKey = Deno.env.get("READ_TASK_KEY")!
+    cronKey = Deno.env.get("CRON_KEY")!
 } else {
-    readTaskKey = env["READ_TASK_KEY"]
+    cronKey = env["CRON_KEY"]
 }
 
 export default {
@@ -51,5 +51,5 @@ export default {
     resendDomain,
     kv,
     databaseUrl,
-    readTaskKey,
+    cronKey,
 }
