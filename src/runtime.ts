@@ -40,7 +40,7 @@ if (runInDenoDeploy() || Deno.args.includes("local")) {
 
 let databaseUrl: string
 if (runInDenoDeploy()) {
-    databaseUrl = Deno.env.get("DATABASE_URL")! || '';
+    databaseUrl = Deno.env.get("DATABASE_URL")! || env["DATABASE_URL"] || '';
 } else {
     databaseUrl = env["DATABASE_URL"] || '';
 }
