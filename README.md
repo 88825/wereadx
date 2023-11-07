@@ -143,7 +143,8 @@ export default {
 
 - 解决 issue 中的 bug 及提出的优化点；
 - 优化网站样式；
-- 导出书籍中的的笔记/划线；
+- 优化 epub 格式；
+- <del>导出书籍中的的笔记/划线；</del>
 
 
 ## Stargazers over time
