@@ -44,7 +44,6 @@ yarn dev
 ![项目配置](assets/setup.png)
 
 ### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量
-![环境变量配置](assets/env.png)
 
 | 变量名            | 功能                                            |
 |----------------|-----------------------------------------------|
@@ -91,6 +90,9 @@ yarn dev
 ![连接字符串](assets/connect-string.png)
 </details>
 
+完整的环境变量配置如下：
+
+![环境变量配置](assets/env.png)
 
 ### 4. 设置定时任务
 自动阅读和兑换体验卡都需要定时任务来触发执行，目前deno deploy自己的消息队列不太好用，所以采用 cloudflare 的 worker 来作为定时任务的触发器。
