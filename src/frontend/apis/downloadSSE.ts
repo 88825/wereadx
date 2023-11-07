@@ -1,12 +1,11 @@
 import * as credentialUtil from "../../kv/credential.ts";
 import {web_book_chapter_e, web_book_chapterInfos, web_book_info} from "../../apis/web/book.ts";
-import {randomInteger, runInDenoDeploy, sleep} from "../../utils/index.ts";
+import {randomInteger, sleep} from "../../utils/index.ts";
 import {incrementDownloadCount} from "../../kv/download.ts";
 import {sendEvent} from "./common.ts";
 import {Credential} from "../../kv/credential.ts";
 import {os} from "../../deps.ts"
 
-const inDenoDeploy = runInDenoDeploy()
 
 /**
  * 下载
