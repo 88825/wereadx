@@ -6,15 +6,15 @@
   "author": "champkeh <champion.ge@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "deno run -A --unstable --env src/server.ts local",
-    "serve": "deno run -A --unstable --env src/server.ts",
+    "dev": "deno run -A --unstable src/server.ts local",
+    "serve": "deno run -A --unstable src/server.ts",
     "check:type": "deno check --unstable src/**/*.ts",
     "lint": "deno lint src/**/*.ts",
     "fmt": "deno fmt src/**/*.ts",
     "compile:pre-push": "deno compile -A --output .husky/pre-push scripts/pre-push.ts",
     "prepare": "husky install",
-    "log": "deno run -A --unstable --env scripts/pre-push.ts",
-    "example:jdread": "deno run -A --unstable --env examples/jdread/index.ts"
+    "log": "deno run -A --unstable scripts/pre-push.ts",
+    "example:jdread": "deno run -A --unstable examples/jdread/index.ts"
   },
   "devDependencies": {
     "husky": "^8.0.0"

@@ -87,8 +87,6 @@ export async function checkErrCode(resp: Response, user: number | string) {
           } catch (e) {
             console.warn(e.message);
           }
-        } else {
-          console.warn(errlog);
         }
       }
     }
