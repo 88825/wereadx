@@ -1,5 +1,6 @@
 import {apiCallWithRetry, ParamCheckEntity, ResponseCode} from "./common.ts";
 import {Credential} from "../../kv/credential.ts";
+import {get} from "../../utils/request.ts";
 
 export async function downloadAsset(req: Request) {
     const params: ParamCheckEntity[] = [
@@ -18,12 +19,6 @@ export async function downloadAsset(req: Request) {
     ];
 
     return await apiCallWithRetry(req, params, ({url}, _: Credential) => {
-        // 下载资源
-        // console.log(`用户${credential.name}(${credential.vid}) 下载了资源: ${url}`)
-        return fetch(url, {
-            method: 'GET',
-            cache: 'no-store',
-            redirect: 'follow',
-        })
+        return get(decodeURIComponent(url))
     })
 }

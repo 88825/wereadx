@@ -23,6 +23,8 @@ export function get(
   }
   const headers: Record<string, string> = {
     "User-Agent": UserAgentForWeb,
+    "Referer": "https://weread.qq.com/",
+    "Origin": "https://weread.qq.com",
     ...header,
   };
   return fetch(url, {
@@ -41,6 +43,8 @@ function post(
   let body;
   const headers: Record<string, string> | undefined = {
     "User-Agent": UserAgentForWeb,
+    "Referer": "https://weread.qq.com/",
+    "Origin": "https://weread.qq.com",
     ...header,
   };
 

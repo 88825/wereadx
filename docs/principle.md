@@ -6,7 +6,7 @@
 
 ![目录结构](assets/book-toc.png)
 
-每一个可点击的部分都是一个章节，总的章节数据可以通过下面这个接口获取：
+每一行都是一个章节，总的章节数据可以通过下面这个接口获取：
 ```http request
 POST /web/book/publicchapterInfos
 Host: https://weread.qq.com
@@ -31,7 +31,11 @@ Content-Type: application/json;charset=UTF-8
   ]
 }
 ```
-第一章通常是封面，但是一般不显示在 web 版的目录里面，其中里面的`tar`字段即为封面图片，只不过打包到了tar包里面了。
+
+> 注意里面有一个`tar`字段，是指向一个文件，打包了这一章里面的所有图片资源。
+> 这个`tar`包文件的下载，是需要登录信息的。
+
+第一章通常是封面，但是一般不显示在 web 版的目录里面，这一章的图片资源通常只有一张，也就是封面图。
 
 有的章节比较特殊，比如下面这个：
 ```json
@@ -63,16 +67,19 @@ Content-Type: application/json;charset=UTF-8
 
 前面已经说了，不同格式的书需要用不同接口进行下载，其中`epub`格式的书下载接口如下：
 ```
-https://weread.qq.com/web/book/chapter/e_0 (html)
-https://weread.qq.com/web/book/chapter/e_1 (html)
+https://weread.qq.com/web/book/chapter/e_0 (html 片段)
+https://weread.qq.com/web/book/chapter/e_1 (html 片段)
 https://weread.qq.com/web/book/chapter/e_2 (style)
-https://weread.qq.com/web/book/chapter/e_3 (html)
+https://weread.qq.com/web/book/chapter/e_3 (html 片段)
 ```
 `txt`格式的书的下载接口如下：
 ```
-https://weread.qq.com/web/book/chapter/t_0 (text)
-https://weread.qq.com/web/book/chapter/t_1 (text)
+https://weread.qq.com/web/book/chapter/t_0 (text 片段)
+https://weread.qq.com/web/book/chapter/t_1 (text 片段)
 ```
+
+每一本`epub`格式的书的章节都分成了 4 部分，其中 0、1、3 是`html`片段，下载完之后需要拼起来才是完整的`html`数据，2 是`style`。
+`txt`格式的书分2个部分，都是`html`数据，没有样式。
 
 每一章的下载参数如下：
 ```json5
@@ -93,4 +100,5 @@ https://weread.qq.com/web/book/chapter/t_1 (text)
 下载的数据是加密的，经过解密拼接之后，就是这个章节的 html 文档和 style 样式了，如下图所示：
 ![解密后的html和style](assets/html-style.png)
 
-通过遍历章节列表，把所有的章节数据都下载下来，我们把 style 部分内嵌到 html 中，这样每一个章节都是一个单独的 html 文档，然后我们在把 html 文档合并成一个 html 文档，这就是下载 html 格式的原理。我们把 html 格式里面的图片单独下载下来，然后替换图片的 src 属性，并把所有内容打包到 epub 里面，这就是下载 epub 格式的原理。
+通过遍历章节列表，把所有的章节数据都下载下来，我们把 style 部分内嵌到 html 中，这样每一个章节都是一个单独的 html 文档，然后我们再把 html 文档合并成一个 html 文档，这就是下载 html 格式的原理。
+我们把 html 格式里面的图片单独下载下来，然后替换图片的 src 属性，并把所有内容打包到 epub 里面，这就是下载 epub 格式的原理。

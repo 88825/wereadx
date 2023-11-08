@@ -428,6 +428,12 @@ export async function web_book_chapter_e(
     // 处理html
     htmls = processHtmls(htmls, bookId);
 
+    // 封面图替换成高清图片
+    const re = /(.+)\/s_([^/]+)$/
+    if (re.test(bookInfo.cover)) {
+        bookInfo.cover = bookInfo.cover.replace(/(.+)\/s_([^/]+)$/, '$1/t9_$2')
+    }
+
     // 对 html 进行一些处理
     const sections = htmls.map((html) => {
         // 图片的处理
@@ -435,6 +441,11 @@ export async function web_book_chapter_e(
         html = html.replaceAll(/(<img[^>]+?)(src="data:[^"]+")/gs, "$1");
         // 将 data-src 替换成 src
         html = html.replaceAll(/(<img[^>]+?)data-src="/gs, '$1src="');
+
+        // 替换不存在的封面图
+        // https://res.weread.qq.com/wrepub/web/908872/device_phone_frontcover.jpg
+        // https://wfqqreader-1252317822.image.myqcloud.com/cover/872/908872/t9_908872.jpg (bookInfo.cover)
+        html = html.replaceAll(/(<img[^>]+?src=")([^"]+?device_phone_frontcover.jpg)("[^>]*?>)/gs, `$1${bookInfo.cover}$3`)
 
         // 剥离body外壳
         const bodyRe = /^<html><head><\/head><body>(?<body>.*)<\/body><\/html>$/s;

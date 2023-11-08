@@ -24,6 +24,7 @@ export interface BookInfo {
     soldout: number
     paperBook: PaperBook
     paid: number
+    cover: string
 }
 
 export interface ChapterInfo {

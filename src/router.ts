@@ -18,7 +18,7 @@ import {
 import {runExchangeTask} from "./cron/exchange.ts";
 import {runReadTask} from "./cron/read.ts";
 import {getPdfUrl} from "./frontend/apis/misc.ts";
-import {downloadAsset} from "./frontend/apis/epub.ts";
+import {downloadAsset} from "./frontend/apis/assets.ts";
 import {bindEmail, deleteNotifyMethod, getSettings, sendVerifyEmail} from "./frontend/apis/notify.ts";
 
 type APIHandler = (req: Request) => Response | Promise<Response>

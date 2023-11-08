@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from "https://esm.sh/uuid@latest";
 
 // 处理图片的尺寸
-export function fixImgSize(rootElement, containerWidth) {
+function fixImgSize(rootElement, containerWidth) {
     const imgs = rootElement.getElementsByTagName('img')
     for (const img of imgs) {
         const imgHtml = img.outerHTML
@@ -51,6 +51,37 @@ export function fixImgSize(rootElement, containerWidth) {
     }
 }
 
+/**
+ * 通过一个 iframe 渲染图片并调整图片大小
+ * @param chapterHtml
+ * @return {Promise<string>}
+ */
+export function adjustImgSizeInChapter(chapterHtml) {
+    return new Promise((resolve, reject) => {
+        const iframe = document.createElement('iframe')
+        iframe.srcdoc = chapterHtml
+        iframe.style.visibility = 'hidden'
+        iframe.style.position = 'absolute'
+        iframe.style.left = '0'
+        iframe.style.top = '0'
+        iframe.style.zIndex = '-1'
+        iframe.style.width = '800px'
+        iframe.style.frameborder = '0'
+        iframe.onload = function () {
+            fixImgSize(iframe.contentDocument.documentElement, 800)
+            const resultHtml = iframe.contentDocument.body.innerHTML
+            resolve(resultHtml)
+            iframe.remove()
+        }
+        iframe.onerror = function (event) {
+            console.error(event)
+            reject(new Error('图片加载失败'))
+            iframe.remove()
+        }
+        document.body.appendChild(iframe)
+    })
+}
+
 export function gotoLogin() {
     localStorage.removeItem('token')
     window.location.href = '/login.html'
@@ -96,7 +127,12 @@ export function formatDate(date) {
     }).format(date);
 }
 
-export function transformChaptersToToc(chapters) {
+/**
+ * 把 flat 结构的章节数据转换成 tree 结构的目录
+ * @param chapters
+ * @return {*[]}
+ */
+export function convertChaptersToToc(chapters) {
     const toc = [];
     const stack = [];
 
@@ -127,4 +163,18 @@ export function sleep(duration) {
     return new Promise((resolve) => {
         setTimeout(resolve, duration)
     })
+}
+
+
+/**
+ * 打包 zip 文件
+ * @param {string} filename
+ * @param {string} content
+ * @return {Promise<void>}
+ */
+export async function zipFile(filename, content) {
+    const zip = new JSZip()
+    zip.file(filename, content)
+    const blob = await zip.generateAsync({type: "blob"})
+    saveAs(blob, `${filename}.zip`)
 }

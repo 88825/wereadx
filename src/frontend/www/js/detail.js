@@ -1,5 +1,5 @@
-import {checkLogin, fixImgSize, handleRespError, transformChaptersToToc, uuid, sleep} from "./utils.js"
-import exportToEpub from "../epub/index.js"
+import {checkLogin, adjustImgSizeInChapter, handleRespError, convertChaptersToToc, uuid, sleep} from "./utils.js"
+import {Book} from "../epub/epub.js";
 
 let bookDetail = null
 let bookToc = []
@@ -82,7 +82,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 
 /**
- * 渲染书籍元数据
+ * 渲染书籍的元数据
  * @param book
  */
 function renderBookMetaInfo(book) {
@@ -102,13 +102,13 @@ function renderBookMetaInfo(book) {
         document.querySelector('.otherFormat').textContent = '无'
     }
     document.querySelector('.isbn').textContent = isbn || '无'
-    document.querySelector('.publishTime').textContent = publishTime ? formatDate(publishTime) : '无'
+    document.querySelector('.publishTime').textContent = publishTime ? formatDateString(publishTime) : '无'
     document.querySelector('.publisher').textContent = publisher || '无'
     document.querySelector('.bookInfo_intro').textContent = '简介：' + (intro || '暂无')
 }
 
 /**
- * 渲染目录
+ * 渲染书籍的目录
  * @param toc
  */
 function renderToc(toc) {
@@ -126,7 +126,7 @@ function renderToc(toc) {
 }
 
 /**
- * 渲染详情数据
+ * 渲染书籍详情页
  * @return {Promise<void>}
  */
 async function fetchAndRenderBookInfo(token) {
@@ -175,140 +175,87 @@ async function fetchAndRenderBookInfo(token) {
                 isAnchor: true,
             }))
 
+            // 把 anchor 插入到顶层位置
             chapters.splice(i+1, 0, ...anchorChapters)
         }
     }
 
     // 构造成树形结构
-    bookToc = transformChaptersToToc(chapters)
+    bookToc = convertChaptersToToc(chapters)
 
     document.querySelector('#toc').innerHTML = renderToc(bookToc)
 }
 
 
 /**
- * 通过一个 iframe 渲染图片并调整图片大小
- * @param chapterHtml
- * @return {Promise<string>}
- */
-function fixImgSizeInChapter(chapterHtml) {
-    return new Promise((resolve, reject) => {
-        const iframe = document.createElement('iframe')
-        iframe.srcdoc = chapterHtml
-        iframe.style.visibility = 'hidden'
-        iframe.style.position = 'absolute'
-        iframe.style.left = '0'
-        iframe.style.top = '0'
-        iframe.style.zIndex = '-1'
-        iframe.style.width = '800px'
-        iframe.style.frameborder = '0'
-        iframe.onload = function () {
-            fixImgSize(iframe.contentDocument.documentElement, 800)
-            const resultHtml = iframe.contentDocument.body.innerHTML
-            resolve(resultHtml)
-            iframe.remove()
-        }
-        iframe.onerror = function (event) {
-            console.error(event)
-            reject(new Error('图片加载失败'))
-            iframe.remove()
-        }
-        document.body.appendChild(iframe)
-    })
-}
-
-
-/**
  * 格式化日期
- * @param date
+ * @param {string} date
  * @return {string}
  */
-function formatDate(date) {
+function formatDateString(date) {
     const year = date.slice(0, 4)
     const month = date.slice(5, 7).replace(/^0+/, '')
     return `${year}年${month}月`
 }
 
-
 /**
- * 打包 zip 文件
- * @param {string} filename
- * @param {string} content
- * @return {Promise<void>}
- */
-async function zip(filename, content) {
-    const zip = new JSZip()
-    zip.file(`${filename}.html`, content)
-    const blob = await zip.generateAsync({type: "blob"})
-    saveAs(blob, `${filename}.zip`)
-}
-
-/**
- * 合并章节及添加自定义内容，包括样式与脚本
- * @param bookDetail
- * @param {{chapterIdx: number, chapterUid: number, title: string, level: number, anchor: string, children: {}[]}[]} bookToc
+ * 打包书籍
+ * @param {'html'|'epub'}format 打包格式
  * @param {{chapterIdx: number, chapterUid: number, title: string, html: string, style: string}[]} chapters
- * @param {string[]} styles
- * @param {string[]} scripts
- * @return {Promise<void>}
+ * @param {number} receivedChapterCount
+ * @param {string[]} commonStyles
+ * @param {string[]} commonScripts
  */
-async function zipBookContent2HTML(bookDetail, bookToc, chapters, styles = [], scripts = []) {
-    const {title} = bookDetail
-    const style = styles.map(style => `<style>${style}</style>`).join('\n')
-    const script = scripts.map(script => `<script>${script}\x3c/script>`).join('\n')
-    const contentHtml = chapters.map(chapter => `<!-- ${chapter.title} -->\n<style>${chapter.style}</style>\n${chapter.html}`)
-
-    let html = `<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>${title}</title>
-    ${style}
-</head>
-<body>
-<!-- todo: toc -->
-${contentHtml.join("\n")}
-${script}
-</body>
-</html>
-`
-    await zip(title, html)
-}
-
-/**
- * 打包epub
- * @param bookDetail
- * @param {{chapterIdx: number, chapterUid: number, title: string, level: number, anchor: string, children: {}[]}[]} bookToc
- * @param {{chapterIdx: number, chapterUid: number, title: string, html: string, style: string}[]} chapters
- * @param {string[]} styles
- * @param {string[]} scripts
- * @return {Promise<void>}
- */
-async function zipBookContent2Epub(bookDetail, bookToc, chapters, styles = [], scripts = []) {
-    let {title, author, cover, intro, isbn, publishTime, publisher} = bookDetail
-
-    /**
-     * @type {import('../epub/index.js').Book}
-     */
-    const book = {
-        id: uuid(),
-        cover: cover,
-        isbn: isbn,
-        author: author.replace(/\s+著$/i, ''),
-        description: intro,
-        publisher: publisher,
-        publishTime: publishTime,
-        title: title,
-        toc: bookToc,
-        chapters: chapters,
-        styles: styles,
-        scripts: scripts,
+function bundleBook(format, chapters, receivedChapterCount, commonStyles, commonScripts) {
+    if (format === 'html') {
+        document.querySelector('.download_btn').textContent = '正在打包'
+    } else if (format === 'epub') {
+        document.querySelector('.download_btn').textContent = '正在打包图片'
     }
-    await exportToEpub(book)
+    if (chapters.length === receivedChapterCount) {
+        setTimeout(async () => {
+            // 因为经过前面图片尺寸调整，顺序可能已经乱了，所以这里需要重新整理章节顺序
+            const sortedChapters = chapters.sort((a, b) => a.chapterIdx - b.chapterIdx)
+
+            let {title, author, cover, intro, isbn, publishTime, publisher} = bookDetail
+            const book = new Book({
+                cover: cover,
+                isbn: isbn,
+                author: author,
+                description: intro,
+                publisher: publisher,
+                publishTime: publishTime,
+                title: title,
+                toc: bookToc,
+                chapters: sortedChapters,
+                styles: commonStyles,
+                scripts: commonScripts,
+            })
+
+            console.debug(book)
+
+            if (format === 'html') {
+                await book.export2html()
+            } else if (format === 'epub') {
+                book.addEventListener('image', (evt) => {
+                    const {chapterIdx, imageIdx} = evt.detail
+                    // 更新进度提示
+                    document.querySelector('.download_btn').textContent = `打包图片进度: (${chapterIdx}:${imageIdx})`
+                })
+                await book.export2epub()
+            } else {
+                alert('不支持的下载格式: ' + format)
+            }
+
+            document.querySelector('.download_btn').classList.remove('disabled')
+            document.querySelector('.download_btn').textContent = '下载'
+        }, 0)
+    } else {
+        // 等待所有的章节图片调整好尺寸
+        setTimeout(bundleBook, 500)
+    }
 }
+
 
 /**
  * 获取下载凭证
@@ -368,7 +315,7 @@ function downloadEBook(secret, token, format = 'html') {
     evtSource.addEventListener('progress', (event) => {
         const {total, current, chapterUid, title, html, style} = JSON.parse(event.data)
         receivedChapterCount++
-        fixImgSizeInChapter(html).then(html => {
+        adjustImgSizeInChapter(html).then(html => {
             chapters.push({
                 chapterIdx: current,
                 chapterUid: chapterUid,
@@ -379,38 +326,12 @@ function downloadEBook(secret, token, format = 'html') {
         }).catch(err => {
             alert(err.message)
         })
-        document.querySelector('.download_btn').textContent = `进度: ${current}/${total}`
+        document.querySelector('.download_btn').textContent = `章节进度: ${current}/${total}`
     }, false)
-
-    function bundleBook() {
-        if (format === 'html') {
-            document.querySelector('.download_btn').textContent = '正在打包'
-        } else if (format === 'epub') {
-            document.querySelector('.download_btn').textContent = '正在打包图片'
-        }
-        if (chapters.length === receivedChapterCount) {
-            setTimeout(async () => {
-                // 重新整理章节顺序
-                const sortedChapters = chapters.sort((a, b) => a.chapterIdx - b.chapterIdx)
-                if (format === 'html') {
-                    await zipBookContent2HTML(bookDetail, bookToc, sortedChapters, commonStyles, commonScripts)
-                } else if (format === 'epub') {
-                    await zipBookContent2Epub(bookDetail, bookToc, sortedChapters, commonStyles, commonScripts)
-                } else {
-                    alert('不支持的下载格式: ' + format)
-                }
-
-                document.querySelector('.download_btn').classList.remove('disabled')
-                document.querySelector('.download_btn').textContent = '下载'
-            }, 0)
-        } else {
-            setTimeout(bundleBook, 500)
-        }
-    }
 
     // 整本书下载完成
     evtSource.addEventListener('complete', () => {
-        bundleBook()
+        bundleBook(format, chapters, receivedChapterCount, commonStyles, commonScripts)
         hasDownloaded = true
     }, false)
 
@@ -424,7 +345,7 @@ function downloadEBook(secret, token, format = 'html') {
 
         // 出错时将已经下载好的章节合并导出
         if (!hasDownloaded) {
-            bundleBook()
+            bundleBook(format, chapters, receivedChapterCount, commonStyles, commonScripts)
         }
     }, false)
 }

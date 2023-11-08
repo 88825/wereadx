@@ -24,6 +24,7 @@ export function processStyles(styles: string, bookId: string) {
       return "";
     }
 
+    // 把 epub 内联图片地址替换成绝对地址，方便 html 进行访问
     return matchArray.map((_0x4fc4e3) => {
       return ".readerChapterContent " +
         (_0x4fc4e3 = _0x4fc4e3.trim()).split("\n").map(function (_0xde9e6d) {

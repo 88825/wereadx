@@ -1,11 +1,11 @@
 import {escapeXml} from "../utils.js";
 
 /**
- * @param {import('../index.js').Epub} epub
+ * @param {import('../index.js').Epub} book
  * @return {string}
  */
-export default function getPackage(epub) {
-    const {id, cover, coverMineType, title, description, lang, author, isbn, publisher, publishTime, chapters} = epub;
+export default function getPackage(book) {
+    const {id, cover, coverMineType, title, description, lang, author, isbn, publisher, publishTime, chapters} = book;
     // 微信读书的出版时间是一个字符串，没办法确定时区，比如 2000-01-01T00:00:00Z
     // 这里按照北京时间算
     let created
@@ -37,7 +37,7 @@ export default function getPackage(epub) {
     ${cover && coverMineType ? '<item id="cover-image" href="' + cover + '" media-type="' + coverMineType + '" properties="cover-image" />' : ''}
     <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav" />
 ${chapters.map(chapter => `    <item id="chapter-${chapter.chapterIdx}" href="${chapter.chapterIdx}.xhtml" media-type="application/xhtml+xml" properties="scripted" />`).join('\n')}
-${chapters.flatMap(chapter => chapter.images).map(([id, mimeType]) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${mimeType}" fallback="chapter-image-placeholder" />`).join('\n')}
+${chapters.flatMap(chapter => chapter.images).map(({id, type}) => `    <item id="chapter-image-${id}" href="images/${id}" media-type="${type}" fallback="chapter-image-placeholder" />`).join('\n')}
     <item id="common-style" href="styles/common.css" media-type="text/css" />
     <item id="common-script" href="scripts/common.js" media-type="application/javascript" />
   </manifest>
