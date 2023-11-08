@@ -45,13 +45,13 @@ yarn dev
 
 ### 3. 部署完成，在 Deno Deploy 的设置页面，添加环境变量
 
-| 变量名            | 功能                                            |
-|----------------|-----------------------------------------------|
-| DEPLOY_DOMAIN  | 最终部署的域名，格式为: `https://xxx.deno.dev`，与发送提醒邮件有关 |
-| RESEND_API_KEY | 用于发送邮件，格式为: `re_xxx`                          |
-| RESEND_DOMAIN  | Resend 配置的域名，不含`https://`前缀                   |
-| DATABASE_URL   | 记录日志，格式为: `postgresql://xxx`                  |
-| CRON_KEY       | cron任务的key                                    |
+| 变量名            | 功能                                            | 是否必填          |
+|----------------|-----------------------------------------------|---------------|
+| DEPLOY_DOMAIN  | 最终部署的域名，格式为: `https://xxx.deno.dev`，与发送提醒邮件有关 | 需要自动阅读暂停提醒时必填 |
+| RESEND_API_KEY | 用于发送邮件，格式为: `re_xxx`                          | 需要自动阅读暂停提醒时必填 |
+| RESEND_DOMAIN  | Resend 配置的域名，不含`https://`前缀                   | 需要自动阅读暂停提醒时必填 |
+| DATABASE_URL   | 记录日志，格式为: `postgresql://xxx`                  | 选填            |
+| CRON_KEY       | cron任务的key (自定义的随机字符串，在下面的触发器任务中使用)           | 使用cron任务时必填   |
 
 
 <details>
@@ -124,6 +124,20 @@ export default {
 ```
 触发周期设置为 `30 15 * * sun`(北京时间每周日晚11点30分)，如下图所示：
 ![兑换体验卡的触发器](assets/cron-exchange.png)
+
+
+### 5. 后续更新操作
+如果发现 fork 的版本比源版本落后，需要更新到最新版本时，只需要在 github 更新仓库代码即可，不需要删除 deploy 上面的项目重新 fork。
+
+![fork版本是最新版本](assets/fork-is-latest.png)
+上面这个图表示当前 fork 的代码是最新版本，不需要更新。
+
+![fork版本是落后版本](assets/fork-is-behind.png)
+上面这个图表示当前 fork 的代码落后源版本1个版本，可以点击右边的**Sync fork**更新代码，如下图所示：
+
+![更新fork版本](assets/update-fork.png)
+
+更新完之后，deploy 上面会自动重新部署最新版本。
 
 
 ## 特别注意
