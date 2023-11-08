@@ -36,13 +36,8 @@ export function loginSSE(_: Request): Response {
                     return;
                 }
 
-                console.debug('info: ', info);
-
                 const auth = await web_login_weblogin(info);
-                console.debug('auth: ', auth);
                 const resp = await web_login_session_init(auth);
-                console.debug('resp: ', resp);
-
                 if (resp.success === 1) {
                     // 登录成功，生成一个随机数作为前端的 token
                     const token = getUlid();
