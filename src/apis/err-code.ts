@@ -1,5 +1,5 @@
 import { ErrLogRecord, insertErrLogRecords } from "../database/errlog.ts";
-import { now, runInDenoDeploy } from "../utils/index.ts";
+import { now } from "../utils/index.ts";
 
 export enum ErrCode {
   /**
@@ -79,14 +79,11 @@ export async function checkErrCode(resp: Response, user: number | string) {
       };
 
       if (errCode) {
-        // 如果是运行在 Deno Deploy 上面，则记录下载的书
-        if (runInDenoDeploy()) {
-          // 可能没有配置，所以包在 try catch 里面执行
-          try {
-            await insertErrLogRecords([errlog]);
-          } catch (e) {
-            console.warn(e.message);
-          }
+        // 可能没有配置，所以包在 try catch 里面执行
+        try {
+          await insertErrLogRecords([errlog]);
+        } catch (e) {
+          console.warn(e.message);
         }
       }
     }
