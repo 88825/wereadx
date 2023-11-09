@@ -50,6 +50,8 @@ export class Book extends EventTarget {
     async resolveHtmlImages() {
         const chapters = []
         // 解析图片
+        let imageCount = 0
+        let errorCount = 0
         for (const chapter of this.chapters) {
             const $htmlDom = new DOMParser().parseFromString(
                 chapter.html,
@@ -69,6 +71,7 @@ export class Book extends EventTarget {
                 // todo: 检测重复图片的下载
                 try {
                     const imgBlob = await fetch(CORS_PROXY + encodeURIComponent(src)).then(resp => resp.blob())
+                    imageCount++
 
                     const uid = getUid();
                     const ext = getImgExt({mimeType: imgBlob.type, fileUrl: src});
@@ -80,20 +83,22 @@ export class Book extends EventTarget {
                         type: imgBlob.type,
                         blob: imgBlob,
                     })
-                    this.dispatchEvent(
-                        new CustomEvent('image', {
-                            detail: {
-                                chapterIdx: chapter.chapterIdx,
-                                imageIdx: chapterImages.length,
-                            }
-                        })
-                    )
                 } catch (e) {
                     // todo: 失败时重试 3 次
+                    errorCount++
                     console.error(e);
                     console.warn("Failed to fetch (will use placeholder):", src);
                     imgEl.setAttribute("src", "images/img-placeholder.png");
                 }
+
+                this.dispatchEvent(
+                    new CustomEvent('image', {
+                        detail: {
+                            success: imageCount,
+                            error: errorCount,
+                        }
+                    })
+                )
             }
 
             chapters.push({

@@ -19,6 +19,8 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
 
                 const bookInfo = await web_book_info(bookId, cookie)
                 const chapterInfos = await web_book_chapterInfos([bookId], cookie)
+
+                // todo: 检查是否获取章节失败
                 const chapters = chapterInfos.data[0].updated
 
                 // Windows 环境下通过 `import.meta.resolve()` 函数获取到的路径为 'file:///C:/Users/...'，而 `Deno.readTextFileSync()` 函数

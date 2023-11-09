@@ -238,9 +238,9 @@ function bundleBook(format, chapters, receivedChapterCount, commonStyles, common
                 await book.export2html()
             } else if (format === 'epub') {
                 book.addEventListener('image', (evt) => {
-                    const {chapterIdx, imageIdx} = evt.detail
+                    const {success, error} = evt.detail
                     // 更新进度提示
-                    document.querySelector('.download_btn').textContent = `打包图片进度: (${chapterIdx}:${imageIdx})`
+                    document.querySelector('.download_btn').textContent = `打包图片进度: (${success}:${error})`
                 })
                 await book.export2epub()
             } else {
