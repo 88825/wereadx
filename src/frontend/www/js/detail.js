@@ -206,13 +206,17 @@ function formatDateString(date) {
  * @param {string[]} commonStyles
  * @param {string[]} commonScripts
  */
-function bundleBook(format, chapters, receivedChapterCount, commonStyles, commonScripts) {
+function bundleBook(format, chapters, receivedChapterCount, commonStyles, commonScripts) {   
+
+    
     if (format === 'html') {
         document.querySelector('.download_btn').textContent = '正在打包'
     } else if (format === 'epub') {
         document.querySelector('.download_btn').textContent = '正在打包图片'
     }
-    if (chapters.length === receivedChapterCount) {
+    
+    //非空判定
+    if ( chapters !== null && (chapters.length === receivedChapterCount)) {
         setTimeout(async () => {
             // 因为经过前面图片尺寸调整，顺序可能已经乱了，所以这里需要重新整理章节顺序
             const sortedChapters = chapters.sort((a, b) => a.chapterIdx - b.chapterIdx)
@@ -251,8 +255,8 @@ function bundleBook(format, chapters, receivedChapterCount, commonStyles, common
             document.querySelector('.download_btn').textContent = '下载'
         }, 0)
     } else {
-        // 等待所有的章节图片调整好尺寸
-        setTimeout(bundleBook, 500)
+        // 等待所有的章节图片调整好尺寸,时间由500 到5000，并把携带参数传入
+        setTimeout(bundleBook, 5000, format, chapters, receivedChapterCount, commonStyles, commonScripts)
     }
 }
 
