@@ -44,40 +44,40 @@ window.addEventListener('DOMContentLoaded', async () => {
         await downloadPDF(token, bookId)
         document.querySelector('.download_btn').classList.remove('disabled')
     })
-    // 添加阅读
-    document.querySelector('.add_task').addEventListener('click', async () => {
-        document.querySelector('.add_task').classList.add('disabled')
-        const resp = await fetch('/api/task/read/start', {
-            headers: {
-                token: token,
-                bookId: bookId,
-            }
-        }).then(resp => resp.json()).finally(() => {
-            document.querySelector('.add_task').classList.remove('disabled')
-        })
+    // // 添加阅读
+    // document.querySelector('.add_task').addEventListener('click', async () => {
+    //     document.querySelector('.add_task').classList.add('disabled')
+    //     const resp = await fetch('/api/task/read/start', {
+    //         headers: {
+    //             token: token,
+    //             bookId: bookId,
+    //         }
+    //     }).then(resp => resp.json()).finally(() => {
+    //         document.querySelector('.add_task').classList.remove('disabled')
+    //     })
 
-        handleRespError(resp)
-        if (resp.data.succ !== 1 || !resp.data.synckey) {
-            alert('接口调用失败，请提交issue')
-        } else {
-            alert('添加成功')
-        }
-    })
-    // 去微信读书阅读
-    document.querySelector('.begin_read').addEventListener('click', async () => {
-        document.querySelector('.begin_read').classList.add('disabled')
-        const resp = await fetch('/api/book/hash', {
-            headers: {
-                token: token,
-                bookId: bookId,
-            }
-        }).then(resp => resp.json()).finally(() => {
-            document.querySelector('.begin_read').classList.remove('disabled')
-        })
+    //     handleRespError(resp)
+    //     if (resp.data.succ !== 1 || !resp.data.synckey) {
+    //         alert('接口调用失败，请提交issue')
+    //     } else {
+    //         alert('添加成功')
+    //     }
+    // })
+    // // 去微信读书阅读
+    // document.querySelector('.begin_read').addEventListener('click', async () => {
+    //     document.querySelector('.begin_read').classList.add('disabled')
+    //     const resp = await fetch('/api/book/hash', {
+    //         headers: {
+    //             token: token,
+    //             bookId: bookId,
+    //         }
+    //     }).then(resp => resp.json()).finally(() => {
+    //         document.querySelector('.begin_read').classList.remove('disabled')
+    //     })
 
-        handleRespError(resp)
-        window.open(`https://weread.qq.com/web/bookDetail/${resp.data}`)
-    })
+    //     handleRespError(resp)
+    //     window.open(`https://weread.qq.com/web/bookDetail/${resp.data}`)
+    // })
 })
 
 
