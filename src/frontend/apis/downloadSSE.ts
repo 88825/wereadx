@@ -60,7 +60,7 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                     };
                     sendEvent(isClosed, controller, "progress", data);
 
-                    await sleep(randomInteger(4500, 8500));
+                    await sleep(randomInteger(8500, 15000));
                 }
 
                 sendEvent(isClosed, controller, "complete", null);
