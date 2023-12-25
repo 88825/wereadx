@@ -44,6 +44,20 @@ window.addEventListener('DOMContentLoaded', async () => {
         await downloadPDF(token, bookId)
         document.querySelector('.download_btn').classList.remove('disabled')
     })
+    //暂停下载
+    document.querySelector('.download_pause').addEventListener('click', async (event) => {
+        window.globalVariable = "暂停"
+        
+        document.querySelector('.download_pause').classList.add('disabled')
+        document.querySelector('.download_recover').classList.remove('disabled')
+    })
+    //恢复下载
+    document.querySelector('.download_recover').addEventListener('click', async (event) => {
+        window.globalVariable = "恢复"
+
+        document.querySelector('.download_recover').classList.add('disabled')
+        document.querySelector('.download_pause').classList.remove('disabled')
+    })
     // // 添加阅读
     // document.querySelector('.add_task').addEventListener('click', async () => {
     //     document.querySelector('.add_task').classList.add('disabled')

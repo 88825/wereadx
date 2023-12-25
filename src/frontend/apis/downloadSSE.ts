@@ -48,19 +48,24 @@ export function downloadSSE(bookId: string, credential: Credential): Response {
                         return;
                     }
 
-                    // 单章下载
-                    const [title, html, style] = await web_book_chapter_e(bookInfo, chapter, cookie);
-                    const data = {
-                        total: chapters.length,
-                        current: chapter.chapterIdx, // 从1开始的递增序列
-                        chapterUid: chapter.chapterUid, // 可能不连续
-                        title: title,
-                        html: html,
-                        style: style,
-                    };
-                    sendEvent(isClosed, controller, "progress", data);
+                    if( window.globalVariable == "暂停") {
+                        await sleep(randomInteger(8500, 15000))
+                    } else {
+                        // 单章下载
+                        const [title, html, style] = await web_book_chapter_e(bookInfo, chapter, cookie);
+                        const data = {
+                            total: chapters.length,
+                            current: chapter.chapterIdx, // 从1开始的递增序列
+                            chapterUid: chapter.chapterUid, // 可能不连续
+                            title: title,
+                            html: html,
+                            style: style,
+                        };
+                        sendEvent(isClosed, controller, "progress", data);
+                        await sleep(randomInteger(8500, 15000));
+                    }
 
-                    await sleep(randomInteger(8500, 15000));
+                  
                 }
 
                 sendEvent(isClosed, controller, "complete", null);
