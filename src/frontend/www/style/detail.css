@@ -107,37 +107,6 @@
     }
 }
 
-.btn_primary {
-    flex-shrink: 0;
-    display: flex;
-    padding: 0 25px;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    background-image: linear-gradient(90deg, #0087fc, #28b7ff);
-    color: #fff;
-
-    &[disabled] {
-        background-color: rgba(13, 20, 30, .04);
-        color: #717882;
-        cursor: not-allowed;
-        background-image: none;
-    }
-}
-.download {
-    margin-right: 30px;
-}
-
-.origin-download {
-    color: #0087fc;
-    cursor: pointer;
-    display: none;
-}
-
 .bookInfo_author_container {
     margin-top: 2px
 }
@@ -190,16 +159,8 @@
 .introDialog_content_title {
     font-family: "SourceHanSerifCN-Bold", PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
     font-size: 18px;
-    color: #eef0f4;
+    color: #212832;
     margin-bottom: 16px
-}
-
-.wr_whiteTheme .introDialog_content_title {
-    color: #212832
-}
-
-.introDialog_content_title:not(:first-child) {
-    margin-top: 32px
 }
 
 .introDialog_content_intro_para {
@@ -224,52 +185,15 @@
     max-width: 100%
 }
 
-.introDialog_content_pub_title {
-    color: #8a8c90
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    min-width: 200px;
+    gap: 10px;
 }
 
-.wr_whiteTheme .introDialog_content_pub_title {
-    color: #858c96
-}
-
-button {
-    background: none;
-    border: 0;
-    padding: 0;
-    text-decoration: none;
-    cursor: pointer
-}
-
-.chapters {
+#toc ol,
+#toc ul {
     list-style-type: none;
-    padding-left: 0;
-    .chapter {
-        &[data-level="1"] {
-            padding-left: 0;
-        }
-        &[data-level="2"] {
-            padding-left: 2rem;
-        }
-        &[data-level="3"] {
-            padding-left: 4rem;
-        }
-        &[data-level="4"] {
-            padding-left: 6rem;
-        }
-        &[data-level="5"] {
-            padding-left: 8rem;
-        }
-        &[data-level="6"] {
-            padding-left: 10rem;
-        }
-        &[data-level="7"] {
-            padding-left: 10rem;
-        }
-        &[data-level="8"] {
-            padding-left: 10rem;
-        }
-        &[data-level="9"] {
-            padding-left: 10rem;
-        }
-    }
 }

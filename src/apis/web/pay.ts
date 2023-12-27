@@ -1,4 +1,5 @@
 import {get, postJSON} from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 获取账户余额
@@ -11,6 +12,7 @@ export async function web_pay_balance(pf = "ios", cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }
 
@@ -25,5 +27,6 @@ export async function web_pay_memberCardSummary(pf = "ios", cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }

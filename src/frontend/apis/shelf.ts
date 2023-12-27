@@ -1,17 +1,12 @@
 import {web_shelf_sync} from "../../apis/web/shelf.ts";
 import {web_book_chapterInfos, web_book_info} from "../../apis/web/book.ts";
 import {downloadSSE} from "./downloadSSE.ts";
-import {
-    checkDownloadCount,
-    newDownloadSecret,
-    useSecret,
-} from "../../kv/download.ts";
+import {checkDownloadCount, newDownloadSecret, useSecret,} from "../../kv/download.ts";
 import {MAX_DOWNLOAD_COUNT_PER_MONTH} from "../../config.ts";
-import {ResponseCode, ParamCheckEntity, apiCallWithRetry} from "./common.ts";
-import {jsonResponse} from "../../utils/index.ts";
-import {search} from "../../database/bookid.ts";
-import * as credentialUtil from "../../kv/credential.ts";
+import {apiCallWithRetry, ParamCheckEntity, ResponseCode} from "./common.ts";
+import {calcHash, jsonResponse} from "../../utils/index.ts";
 import type {Credential} from "../../kv/credential.ts";
+import * as credentialUtil from "../../kv/credential.ts";
 
 
 /**
@@ -104,9 +99,9 @@ export async function bookDownload(req: Request) {
     ];
 
     return await apiCallWithRetry(req, params, async ({secret}: Record<string, string>, credential: Credential) => {
-        const [ok, bookId, chapterUids] = await useSecret(credential, secret);
+        const [ok, bookId] = await useSecret(credential, secret);
         if (ok) {
-            return downloadSSE(bookId, chapterUids, credential);
+            return downloadSSE(bookId, credential);
         } else {
             return jsonResponse({code: ResponseCode.ParamError, msg: 'secret无效'})
         }
@@ -131,15 +126,9 @@ export async function getDownloadSecret(req: Request) {
             statusCode: ResponseCode.ParamError,
             statusText: "bookId不能为空",
         },
-        {
-            name: "chapterUids",
-            from: "header",
-            statusCode: ResponseCode.ParamError,
-            statusText: "chapterUids不能为空",
-        },
     ];
 
-    return await apiCallWithRetry(req, params, async ({bookId, chapterUids}: Record<string, string>, credential: Credential) => {
+    return await apiCallWithRetry(req, params, async ({bookId}: Record<string, string>, credential: Credential) => {
         // 验证该用户的月下载量
         if (!(await checkDownloadCount(credential))) {
             // 无法下载
@@ -149,18 +138,13 @@ export async function getDownloadSecret(req: Request) {
             const secret = await newDownloadSecret(
                 credential,
                 bookId,
-                chapterUids.split("|").map((uid: string) => Number(uid)),
             );
             return jsonResponse({code: ResponseCode.Success, data: secret, msg: 'success'})
         }
     })
 }
 
-/**
- * 书籍查询
- * @param req
- */
-export async function bookSearch(req: Request) {
+export async function bookHash(req: Request) {
     const params: ParamCheckEntity[] = [
         {
             name: "token",
@@ -169,21 +153,13 @@ export async function bookSearch(req: Request) {
             statusText: "token无效",
         },
         {
-            name: "hash",
+            name: "bookId",
             from: "header",
             statusCode: ResponseCode.ParamError,
-            statusText: "hash无效",
+            statusText: "bookId不能为空",
         },
-    ];
-
-    return await apiCallWithRetry(req, params, async ({hash}: Record<string, string>) => {
-        console.log(hash)
-        const bookId = await search(hash)
-        console.log('search bookId: ', bookId)
-        if (bookId) {
-            return jsonResponse({code: ResponseCode.Success, data: bookId, msg: 'success'})
-        } else {
-            return jsonResponse({code: ResponseCode.Error, msg: '未找到，欢迎提供反馈'})
-        }
+    ]
+    return await apiCallWithRetry(req, params, ({bookId}) => {
+        return Promise.resolve(calcHash(bookId))
     })
 }

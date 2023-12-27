@@ -1,40 +1,30 @@
-/* 携带注释信息的元素，下面的样式用来让它显示为一个黑色的圆 */
+/* footer_note.css */
 span.reader_footer_note {
-    text-indent: 0; /* 避免继承段落的缩进样式 */
-    text-align: left; /* 文字左对齐 */
-    position: relative; /* 用来给伪元素做定位参照 */
-    display: inline-block; /* 使宽度和高度指定有效 */
-    width: 1em; /* 设定宽度 */
-    height: 1em; /* 设定高度 */
-    background-color: black; /* 设定背景为黑色 */
-    vertical-align: super; /* 设置为上标形式 */
-    border-radius: 50%; /* 圆角化为圆形 */
-    cursor: pointer; /* 光标样式改为手指 */
+    position: relative;
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    background-color: black;
+    vertical-align: sub;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 3px;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAQAAAACNCElAAACuUlEQVR42q2WTWgTQRTHX4v1UNFiDgVFPEmRXETbS0V6yKESpMGLl3rw7MGLBizoTTAXmx78wAUpIvHSFAq7JqbGpjWm1kA/Y2I/qOgam1qbLNbEJDXNPpmuS5PMbJqtu//Lzhveb3fmvZn3ALQfE1jBDg7gwA1u4MABdrCCCXQ+DWCDXhA01As2aKgNVA8W6NcEqeoHC9TvhmqGvl1BqvqguRrKDK6aUUQuMGuhOmBIF4poCDrYf6UfpeDM9F659oRSFttcHsGSbW/xD355sNAVUscnXi3/nFy/P3/UVyUUJZG1lE8+XUZEnPxxyKOML45vFRGzBVtIE2fZSdGKvNr/IpEhuJszqoVbJOOVtDrPyLt/aWyjv9Qzi1iUu0I9s8q4yfv7D2Iyq8xFUsfoJdsUmJOG1QmdwbZAW8ARbfQoujbli1961+hpH81vISYyZwLUIds+zmXGe7E7H86/Vd55kVsa/Ew0/p0sE2VlRHRrlvoFE4C13HQljDLi1Pphb4t/XlKt3ROEVSxWTRErgL3S+GaVODqizz89XtQFswM4Ko2X35MFXZ/OFzqDumAOAI42nxtrH+UWpVydwIJ1T2ikLwfgZk2YvJlNXgQGrDWQKyQyrQGGlxtggAVzfkS8OgnC7TleJAqvKdHkxa9pWZblVO74MOU1wFxmk3cjj/IRHwi69oxjBACEJ0uI4q9SS60BqEiNs2PBVZJpwVXdMDuVtOQYSznESEo3zEodJ6KZJKIsnx7RCduuqFSFjCSJ66MFNuykP5o6NcKopuwrKJ4mri/jLNg+IZJC3Ni8EGJfQdTlmC0Q14cLd6NKlvHi65WYFJOiEi8OfyNvMSm8dtDDuhypa/vG9Fzy2fIBj46iYtEoKHtQX3mrYGCpM7gIG9weGNy4GNxSGdzs7bShTk2Qs/Y29D8a5L99J97IcV5pLgAAAABJRU5ErkJggg==');
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
 
-/* before 伪元素用来显示“注”这个字 */
-span.reader_footer_note:before {
-    position: absolute; /* 绝对位置，基准为 span.reader_footer_note */
-    content: "注"; /* 显示“注”字 */
-    color: white; /* 字颜色为白色 */
-    left: 0.15em; /* 微调字的位置 */
-    top: 0.1em; /* 微调字的位置 */
-    font-size: 0.75em; /* 设定文字大小 */
-    font-family: "汉仪楷体"; /* 设定字体 */
-}
-
-/* after 伪元素用来显示注释内容，只在光标移至“注”上方时才显示 */
 span.reader_footer_note:hover:after {
-    position: fixed; /* 相对于视窗的位置 */
-    content: attr(data-wr-footernote); /* 获取并设置注释内容 */
-    left: 0; /* 设定相对于视窗的位置 */
-    bottom: 0; /* 设定相对于视窗的位置 */
-    margin: 1em; /* 设定背景气泡与视窗边缘预留的空间 */
-    background: black; /* 设定背景气泡为黑色 */
-    border-radius: 0.25em; /* 背景气泡圆角 */
-    color: white; /* 设定文字为白色 */
-    padding: 0.5em; /* 设定文字内容与背景气泡边缘预留的空间 */
-    font-size: 1em; /* 设定文字大小 */
-    font-family: "汉仪楷体"; /* 设定字体 */
-    z-index: 1; /* 避免被其它元素遮挡 */
+    position: fixed;
+    content: attr(data-wr-footernote);
+    left: 0;
+    bottom: 0;
+    margin: 1em;
+    background: black;
+    border-radius: 0.25em;
+    color: white;
+    padding: 0.5em;
+    font-size: 1em;
+    font-family: "汉仪楷体", sans-serif;
+    z-index: 10;
 }

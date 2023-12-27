@@ -1,4 +1,6 @@
-import { UserAgentForWeb } from "../config.ts";
+// deno-lint-ignore-file no-explicit-any
+
+import { UserAgentForWeb, Referer } from "../config.ts";
 
 function stringifyQuery(
   query: Record<string, string | number | boolean> = {},
@@ -21,6 +23,8 @@ export function get(
   }
   const headers: Record<string, string> = {
     "User-Agent": UserAgentForWeb,
+    "Referer": Referer,
+    "Origin": "https://weread.qq.com",
     ...header,
   };
   return fetch(url, {
@@ -39,6 +43,8 @@ function post(
   let body;
   const headers: Record<string, string> | undefined = {
     "User-Agent": UserAgentForWeb,
+    "Referer": Referer,
+    "Origin": "https://weread.qq.com",
     ...header,
   };
 

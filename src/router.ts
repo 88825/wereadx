@@ -3,8 +3,8 @@ import {
     bookChapters,
     bookDetail,
     bookDownload,
+    bookHash,
     bookList,
-    bookSearch,
     getDownloadSecret,
 } from "./frontend/apis/shelf.ts";
 import {reviewList} from "./frontend/apis/review.ts";
@@ -18,6 +18,8 @@ import {
 import {runExchangeTask} from "./cron/exchange.ts";
 import {runReadTask} from "./cron/read.ts";
 import {getPdfUrl} from "./frontend/apis/misc.ts";
+import {downloadAsset} from "./frontend/apis/assets.ts";
+import {bindEmail, deleteNotifyMethod, getSettings, sendVerifyEmail} from "./frontend/apis/notify.ts";
 
 type APIHandler = (req: Request) => Response | Promise<Response>
 
@@ -30,8 +32,8 @@ const config: Record<string, APIHandler> = {
     '/api/book/chapters': bookChapters,
     '/api/book/download/secret': getDownloadSecret,
     '/api/book/download': bookDownload,
-    '/api/book/search': bookSearch,
     '/api/book/getUrl': getPdfUrl,
+    '/api/book/hash': bookHash,
 
     '/api/review/list': reviewList,
 
@@ -42,6 +44,13 @@ const config: Record<string, APIHandler> = {
 
     '/cron/exchange-awards': runExchangeTask,   // 兑换体验卡
     '/cron/read/v2': runReadTask,               // 自动阅读任务
+
+    '/api/asset/download': downloadAsset,       // 代理前端进行资源下载
+
+    '/api/getSettings': getSettings,            // 获取用户设置
+    '/api/notify/deleteNotifyMethod': deleteNotifyMethod,
+    '/api/notify/sendVerifyEmail': sendVerifyEmail,
+    '/api/bind/email': bindEmail,                   // 绑定邮箱
 }
 
 /**

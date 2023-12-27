@@ -1,4 +1,5 @@
 import { get } from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 查询用户信息
@@ -11,5 +12,6 @@ export async function web_user(vid: number | string, cookie = "") {
     }, {
         cookie: cookie,
     });
+    await checkErrCode(resp, cookie)
     return resp.json();
 }

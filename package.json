@@ -1,24 +1,26 @@
 {
-  "name": "weread",
+  "name": "wereadx",
   "version": "1.0.1",
-  "repository": "git@github.com:champkeh/weread.git",
+  "description": "微信读书辅助工具，可用于书籍下载及自动阅读、自动兑换体验卡等",
+  "repository": "git@github.com:champkeh/wereadx.git",
   "author": "champkeh <champion.ge@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "deno run -A --unstable src/server.ts",
-    "style": "deno run -A test/style.ts",
-    "html": "deno run -A test/html.ts",
-    "clean": "deno run -A --unstable scripts/clean.ts",
-    "read": "deno run -A --unstable scripts/read.ts",
+    "dev": "deno run -A --unstable src/server.ts local",
+    "serve": "deno run -A --unstable src/server.ts",
     "check:type": "deno check --unstable src/**/*.ts",
     "lint": "deno lint src/**/*.ts",
     "fmt": "deno fmt src/**/*.ts",
-    "logs": "deno run -A scripts/logs.ts",
     "compile:pre-push": "deno compile -A --output .husky/pre-push scripts/pre-push.ts",
     "prepare": "husky install",
-    "webnovel": "deno run -A --unstable src/apis/webnovel/chapter.ts"
+    "log": "deno run -A --unstable scripts/pre-push.ts",
+    "example:jdread": "deno run -A --unstable examples/jdread/index.ts"
   },
   "devDependencies": {
     "husky": "^8.0.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "uuid": "^9.0.1"
   }
 }

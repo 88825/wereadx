@@ -1,4 +1,5 @@
 import {get, postJSON} from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 // 评分
 export enum ReviewRatingLevel {
@@ -55,6 +56,7 @@ export async function web_review_list_myself(bookId: string, startIdx = 0, count
         listMode: 2,
         synckey: synckey,
     }, {cookie})
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -83,6 +85,7 @@ export async function web_review_list(bookId: string, startIdx = 0, count = 20, 
         listMode: 2,
         synckey: synckey,
     })
+    await checkErrCode(resp, "anonymous")
     return resp.json()
 }
 
@@ -93,6 +96,7 @@ export async function web_review_single(reviewId: string, cookie = "") {
     }, {
         cookie,
     })
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -125,5 +129,6 @@ export async function web_review_add(
     }
 
     const resp = await postJSON("https://weread.qq.com/web/review/add", payload, {cookie})
+    await checkErrCode(resp, cookie)
     return resp.json()
 }

@@ -1,4 +1,5 @@
 import {get} from "../../utils/request.ts";
+import {checkErrCode} from "../err-code.ts";
 
 /**
  * 获取pdf书籍的下载地址
@@ -12,6 +13,7 @@ export async function getPDFUrl(bookId: string, cookie = "") {
     }, {
         cookie,
     })
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -21,6 +23,7 @@ export async function getPDFUrl(bookId: string, cookie = "") {
  */
 export async function getConfig(cookie = "") {
     const resp = await get("https://weread.qq.com/web/getConfig", {}, {cookie})
+    await checkErrCode(resp, cookie)
     return resp.json()
 }
 
@@ -33,5 +36,6 @@ export async function pdf2epub(bookId: string, cookie = "") {
     const resp = await get("https://weread.qq.com/web/pdf2epub/notify", {
         cbid: bookId,
     }, {cookie})
+    await checkErrCode(resp, cookie)
     return resp.json()
 }

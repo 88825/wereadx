@@ -2,6 +2,7 @@
 
 import {postJSON} from "../../utils/request.ts";
 import {UserAgentForApp} from "../../config.ts";
+import {checkErrCode} from "../err-code.ts";
 
 const platform = "weread_wx-2001-iap-2001-iphone"
 
@@ -21,6 +22,7 @@ export async function queryAllAwards(vid: string | number, skey: string) {
         skey: skey,
         "User-Agent": UserAgentForApp,
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 
@@ -62,6 +64,7 @@ async function exchangeAward(id: number | string, vid: string | number, skey: st
         skey: skey,
         "User-Agent": UserAgentForApp,
     })
+    await checkErrCode(resp, vid)
     return resp.json()
 }
 

@@ -1,52 +1,47 @@
 import * as credentialUtil from "../../kv/credential.ts";
-import {
-    web_book_chapter_e,
-    web_book_chapter_e0,
-    web_book_chapter_e1,
-    web_book_chapter_e2,
-    web_book_chapter_e3,
-    web_book_chapter_t0,
-    web_book_chapter_t1,
-    web_book_info
-} from "../../apis/web/book.ts";
-import {sleep} from "../../utils/index.ts";
+import {web_book_chapter_e, web_book_chapterInfos, web_book_info} from "../../apis/web/book.ts";
+import {randomInteger, sleep} from "../../utils/index.ts";
 import {incrementDownloadCount} from "../../kv/download.ts";
 import {sendEvent} from "./common.ts";
 import {Credential} from "../../kv/credential.ts";
-import {processHtmls, processStyles} from "../../utils/process.ts";
-import styleParser from "../../utils/style.ts";
-import htmlParser from "../../utils/html.ts";
-import {dH, dS, dT} from "../../utils/decrypt.ts";
+import {os} from "../../deps.ts"
 
+function allfor() {
+    for(;;) {
+        if( window.globalVariable == "暂停") {
+       
+        } else {
+            break
+        }
+    }
+}
 
 /**
  * 下载
  */
-export function downloadSSE(
-    bookId: string,
-    chapterUids: number[],
-    credential: Credential,
-): Response {
+export function downloadSSE(bookId: string, credential: Credential): Response {
     let isClosed = false;
     const body = new ReadableStream({
         start: async (controller) => {
             try {
                 const cookie = credentialUtil.getCookieByCredential(credential)
 
-                for (const chapterUid of chapterUids) {
-                    if (isClosed) {
-                        return;
-                    }
+                const bookInfo = await web_book_info(bookId, cookie)
+                const chapterInfos = await web_book_chapterInfos([bookId], cookie)
 
-                    // 单章下载
-                    const html = await web_book_chapter_e(bookId, chapterUid, cookie);
-                    const data = {total: chapterUids.length, current: chapterUid, content: html}
-                    sendEvent(isClosed, controller, "progress", data);
+                // todo: 检查是否获取章节失败
+                const chapters = chapterInfos.data[0].updated
 
-                    await sleep(300);
+                // Windows 环境下通过 `import.meta.resolve()` 函数获取到的路径为 'file:///C:/Users/...'，而 `Deno.readTextFileSync()` 函数
+                // 在读取 '/C:/Users/...' 文件会出错，需要去掉开头的 '/' 字符，变为 'C:/Users/...' 才可以正确读取。
+                // 详情查看 https://github.com/champkeh/wereadx/issues/17
+                let fileRe = /^file:\/\//
+                const platform = os.platform()
+                if (platform === "win32") {
+                    fileRe = /^file:\/\/\//
                 }
 
-                const fileRe = /^file:\/\//
+                // 开始下载前，先发送公共样式及脚本
                 const resetStyle = Deno.readTextFileSync(import.meta.resolve("../assets/styles/reset.css").replace(fileRe, ''))
                 const footerNoteStyle = Deno.readTextFileSync(
                     import.meta.resolve("../assets/styles/footer_note.css").replace(fileRe, ""),
@@ -54,8 +49,34 @@ export function downloadSSE(
                 const footerNoteScript = Deno.readTextFileSync(
                     import.meta.resolve("../assets/js/footer_note.js").replace(fileRe, "")
                 )
-                const extra = {styles: [resetStyle, footerNoteStyle], scripts: [footerNoteScript]}
-                sendEvent(isClosed, controller, "complete", extra);
+                const preface = {styles: [resetStyle, footerNoteStyle], scripts: [footerNoteScript]}
+                sendEvent(isClosed, controller, "preface", preface);
+
+                for (const chapter of chapters) {
+                    if (isClosed) {
+                        return;
+                    }
+
+                    await allfor();
+                  
+                     // 单章下载
+                     const [title, html, style] = await web_book_chapter_e(bookInfo, chapter, cookie);
+                     const data = {
+                         total: chapters.length,
+                         current: chapter.chapterIdx, // 从1开始的递增序列
+                         chapterUid: chapter.chapterUid, // 可能不连续
+                         title: title,
+                         html: html,
+                         style: style,
+                     };
+                     sendEvent(isClosed, controller, "progress", data);
+                     console.log("web_book_chapter_e")
+                     await sleep(randomInteger(8500, 15000));
+
+                  
+                }
+
+                sendEvent(isClosed, controller, "complete", null);
 
                 await incrementDownloadCount(credential, bookId);
             } catch (e) {
@@ -78,102 +99,4 @@ export function downloadSSE(
             "Access-Control-Allow-Origin": "*",
         },
     });
-}
-
-
-/**
- * 下载章节内容
- * @param bookId
- * @param chapterUid
- * @param cookie
- */
-export async function download_chapter(
-    bookId: string,
-    chapterUid: number,
-    cookie = "",
-): Promise<string> {
-    let promise: Promise<[string[], string | null]>;
-    const resp = await web_book_info(bookId, cookie);
-    console.log(resp)
-    const {format} = resp
-    if (format === "epub" || format === "pdf") {
-        promise = Promise.all([
-            web_book_chapter_e0(bookId, chapterUid, cookie),
-            web_book_chapter_e1(bookId, chapterUid, cookie),
-            web_book_chapter_e2(bookId, chapterUid, cookie),
-            web_book_chapter_e3(bookId, chapterUid, cookie),
-        ]).then((results) => {
-            if (
-                "string" == typeof results[0] && results[0].length > 0 &&
-                "string" == typeof results[1] && results[1].length > 0 &&
-                "string" == typeof results[3] && results[3].length > 0
-            ) {
-                let styles = dS(results[2]);
-                styles = styleParser.parse(styles, {
-                    removeFontSizes: true,
-                    enableTranslate: false,
-                });
-
-                const html = dH(results[0] + results[1] + results[3]);
-                const htmls = htmlParser.parse(html, styles, 10000);
-                return [htmls, styles];
-            } else {
-                console.log(results);
-                throw Error(`下载失败(${bookId})`);
-            }
-        });
-    } else if (format === "txt") {
-        promise = Promise.all([
-            web_book_chapter_t0(bookId, chapterUid, cookie),
-            web_book_chapter_t1(bookId, chapterUid, cookie),
-        ]).then((results) => {
-            if (
-                "string" === typeof results[0] && results[0].length > 0 &&
-                "string" == typeof results[1] && results[1].length > 0
-            ) {
-                const html = dT(results[0] + results[1]);
-                const htmls = htmlParser.parseTxt(html, 10000);
-                return [htmls, null];
-            } else {
-                console.log(results);
-                throw Error("下载失败");
-            }
-        });
-    } else {
-        throw Error(`暂不支持${format}格式(${bookId})`);
-    }
-
-    let [htmls, styles] = await promise;
-
-    // 处理style
-    if (styles) {
-        styles = processStyles(styles, bookId);
-    }
-
-    // 处理html
-    htmls = processHtmls(htmls, bookId);
-
-    // 对 html 进行一些处理
-    const sections = htmls.map((html) => {
-        // 图片的处理
-        // 去掉 base64 图片地址(该图片是占位符)
-        html = html.replaceAll(/(<img[^>]+?)(src="data:[^"]+")/gs, "$1");
-        // 将 data-src 替换成 src
-        html = html.replaceAll(/(<img[^>]+?)data-src="/gs, '$1src="');
-
-        // 剥离body外壳
-        const bodyRe = /^<html><head><\/head><body>(?<body>.*)<\/body><\/html>$/s;
-        const match = html.match(bodyRe);
-        if (match) {
-            return match.groups!.body;
-        }
-        return html;
-    }).join("");
-
-    return `
-<section data-book-id="${bookId}" data-chapter-uid="${chapterUid}" class="readerChapterContent">
-<style>${styles}</style>
-${sections}
-</section>
-`;
 }
